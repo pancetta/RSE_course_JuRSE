@@ -27,6 +27,11 @@ jobs:
         environment-file: environment-dev.yml
         cache-environment: true
     
+    - name: Register Jupyter kernel
+      run: |
+        python -m ipykernel install --user --name rse_lecture --display-name "Python 3 (RSE Lecture)"
+      shell: bash -el {0}
+    
     - name: Check formatting with black
       run: |
         # Check code formatting with black
@@ -111,6 +116,11 @@ jobs:
             micromamba env update -f "$lecture_env" -y
           fi
         done
+      shell: bash -el {0}
+    
+    - name: Register Jupyter kernel
+      run: |
+        python -m ipykernel install --user --name rse_lecture --display-name "Python 3 (RSE Lecture)"
       shell: bash -el {0}
     
     - name: Convert lectures to notebooks

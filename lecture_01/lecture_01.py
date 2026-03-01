@@ -8,9 +8,9 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: Python 3 (RSE Lecture)
 #     language: python
-#     name: python3
+#     name: rse_lecture
 # ---
 
 # %% [markdown]
@@ -165,7 +165,7 @@
 # micromamba activate rse_lecture
 # ```
 #
-# Or using the Makefile:
+# Or using the Makefile (recommended - also registers the Jupyter kernel):
 #
 # ```bash
 # make install
@@ -190,6 +190,9 @@
 # make convert
 # jupyter notebook
 # ```
+#
+# > **Tip:** If you see "kernel not found" warnings in Jupyter, run `make register-kernel`
+# > to register the course environment's Python as a Jupyter kernel.
 
 # %% [markdown]
 # ## Part 4: Introduction to Essential Tools

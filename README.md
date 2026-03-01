@@ -98,6 +98,13 @@ make convert
 jupyter notebook
 ```
 
+> **Note:** The `make install` and `make install-dev` commands automatically register the
+> `rse_lecture` environment's Python as the `Python 3 (RSE Lecture)` Jupyter kernel. If you
+> installed the environment manually or see "kernel not found" warnings, run:
+> ```bash
+> make register-kernel
+> ```
+
 ## Platform Support
 
 - ✅ Linux (Ubuntu and other distributions)
