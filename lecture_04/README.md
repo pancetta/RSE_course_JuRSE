@@ -41,7 +41,7 @@ This lecture teaches you how to organize research code into professional Python 
 
 ## Running the Lecture
 
-1. Create and activate the base environment:
+1. Create and activate the environment:
 ```bash
 cd /path/to/RSE_lecture
 make install

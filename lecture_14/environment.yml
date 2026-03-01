@@ -1,6 +1,0 @@
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies: []
-  # Lecture 14 has no additional Python dependencies beyond the base environment
-  # This is a summary lecture focusing on course review and community resources

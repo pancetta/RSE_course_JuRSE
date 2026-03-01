@@ -1,7 +1,0 @@
-# Additional dependencies for Lecture 8
-# Install on top of base environment.yml
-# Lecture 8 uses only base dependencies (no additions needed - Sphinx and tools covered conceptually)
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies: []

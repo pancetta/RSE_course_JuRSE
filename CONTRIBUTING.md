@@ -5,9 +5,9 @@ Thank you for your interest in contributing to the Research Software Engineering
 ## Quick Start for Contributors
 
 1. **Fork and clone** the repository
-2. **Install the development environment:**
+2. **Install the environment:**
    ```bash
-   make install-dev
+   make install
    micromamba activate rse_lecture
    ```
 3. **Make your changes** (edit `.py` files, not `.ipynb` files)
@@ -161,10 +161,7 @@ All PRs must pass CI checks before merging.
 
 When adding new dependencies:
 
-1. **Add to appropriate environment file:**
-   - Common dependencies → `environment.yml`
-   - Development tools → `environment-dev.yml`
-   - Lecture-specific → `lecture_XX/environment.yml`
+1. **Add to `environment.yml`**
 
 2. **Test the dependency:**
    ```bash

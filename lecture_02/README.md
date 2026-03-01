@@ -28,14 +28,13 @@ This lecture uses only the base dependencies (no additional packages required be
 1. Create and activate the environment:
 ```bash
 cd /path/to/RSE_lecture
-make install-lecture2
+make install
 micromamba activate rse_lecture
 ```
 
 Or manually:
 ```bash
 micromamba env create -f environment.yml
-micromamba install -n rse_lecture -c conda-forge matplotlib>=3.5.0
 micromamba activate rse_lecture
 ```
 

@@ -17,23 +17,23 @@ This is a quick reference for using the automated conda dependency management sy
 
 ```bash
 # Linux
-micromamba create -n rse_lecture --file environment-dev-linux-64.lock
+micromamba create -n rse_lecture --file environment-linux-64.lock
 
 # macOS (Intel)
-micromamba create -n rse_lecture --file environment-dev-osx-64.lock
+micromamba create -n rse_lecture --file environment-osx-64.lock
 
 # macOS (Apple Silicon)
-micromamba create -n rse_lecture --file environment-dev-osx-arm64.lock
+micromamba create -n rse_lecture --file environment-osx-arm64.lock
 
 # Windows
-micromamba create -n rse_lecture --file environment-dev-win-64.lock
+micromamba create -n rse_lecture --file environment-win-64.lock
 ```
 
 ### Install with Latest Compatible Versions (Current Method)
 
 ```bash
 # Continue using the current method
-make install-dev
+make install
 micromamba activate rse_lecture
 ```
 
@@ -63,7 +63,7 @@ When tests fail with updated dependencies:
 
 1. **Identify the problem package** from workflow logs
 
-2. **Pin the version** in `environment.yml` or `environment-dev.yml`:
+2. **Pin the version** in `environment.yml`:
    ```yaml
    dependencies:
      - problematic-package>=1.0.0,<2.0.0  # Exclude breaking v2.0
@@ -114,10 +114,7 @@ make test-deps
 
 ### Adding New Dependencies
 
-1. **Add to appropriate file:**
-   - Common deps → `environment.yml`
-   - Dev tools → `environment-dev.yml`
-   - Lecture-specific → `lecture_XX/environment.yml`
+1. **Add to `environment.yml`:**
 
 2. **Test:**
    ```bash
@@ -133,7 +130,7 @@ make test-deps
 | Test dependencies | `make test-deps` |
 | Create lock files | `make create-locks` |
 | Update & test | `make update-deps` |
-| Install from lock | `micromamba create -n rse --file environment-dev-linux-64.lock` |
+| Install from lock | `micromamba create -n rse --file environment-linux-64.lock` |
 | View help | `make help` |
 | Manual trigger | GitHub Actions → Conda Dependency Update → Run workflow |
 
@@ -151,7 +148,7 @@ Check workflow logs to see which
 ### Tests pass locally but fail in workflow
 
 **Try:**
-- Check you're testing same environment (use `environment-dev.yml`)
+- Check you're testing same environment (use `environment.yml`)
 - Check platform differences (workflow runs on Linux)
 
 ### Can't create lock files locally

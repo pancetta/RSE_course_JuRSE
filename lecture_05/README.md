@@ -23,21 +23,19 @@ This lecture introduces software testing practices essential for reliable resear
 
 ## Files
 - `lecture_05.py` - Main lecture content in Jupytext format
-- `environment.yml` - Additional dependencies (pytest, pytest-cov)
 
 ## Running the Lecture
 
-1. Create and activate the lecture 5 environment:
+1. Create and activate the environment:
 ```bash
 cd /path/to/RSE_lecture
-make install-lecture5
+make install
 micromamba activate rse_lecture
 ```
 
 Or manually:
 ```bash
 micromamba env create -f environment.yml
-micromamba env update -f lecture_05/environment.yml
 micromamba activate rse_lecture
 ```
 

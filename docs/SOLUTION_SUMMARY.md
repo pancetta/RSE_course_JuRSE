@@ -115,9 +115,9 @@ When a new package version breaks compatibility:
 
 ### What To Do
 1. **Check the workflow logs** to identify the problematic package
-2. **Pin the version** in the appropriate environment file:
+2. **Pin the version** in `environment.yml`:
    ```yaml
-   # environment.yml or environment-dev.yml
+   # environment.yml
    dependencies:
      - matplotlib>=3.5.0,<3.9.0  # Exclude breaking version
      # or
@@ -161,13 +161,13 @@ This ensures bit-for-bit reproducible environments.
 
 ```bash
 # Install from lock file (exact versions)
-micromamba create -n rse_lecture --file environment-dev-linux-64.lock
+micromamba create -n rse_lecture --file environment-linux-64.lock
 
 # Platform-specific files
-# - environment-dev-linux-64.lock
-# - environment-dev-osx-64.lock
-# - environment-dev-osx-arm64.lock
-# - environment-dev-win-64.lock
+# - environment-linux-64.lock
+# - environment-osx-64.lock
+# - environment-osx-arm64.lock
+# - environment-win-64.lock
 ```
 
 ### When Lock Files are Created

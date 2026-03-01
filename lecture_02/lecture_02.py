@@ -327,7 +327,7 @@
 # 4. **Update**: Push new commits to address feedback
 # 5. **Merge**: Maintainer merges when ready
 #
-# #### Working with Remotes
+# #### Working with Remotes (this is not a GitHub feature!)
 #
 # ```bash
 # # View remote repositories
@@ -359,14 +359,14 @@
 # %% [markdown]
 # ## Part 2b: GitLab Collaboration
 #
-# GitLab is another popular platform for Git repository hosting and collaboration.
+# Don't want to use GitHub, fear not: GitLab is another popular platform for Git repository hosting and collaboration.
 # While similar to GitHub, GitLab has some unique features and terminology.
 #
 # ### GitLab vs GitHub: Key Differences
 #
 # - **Merge Requests** (GitLab) vs **Pull Requests** (GitHub)
 # - GitLab can be self-hosted or used on GitLab.com
-# - Integrated CI/CD pipelines built into GitLab
+# - Integrated CI/CD pipelines built into GitLab vs GitHub Actions
 # - Different interface and feature set
 #
 # ### Forking in GitLab
@@ -382,7 +382,7 @@
 #    - Set visibility level (public, internal, or private)
 # 5. **Create fork**: GitLab creates your personal copy
 #
-# #### Keeping Your Fork Updated
+# #### Keeping Your Fork Updated (will work similarly for all git remote repos)
 #
 # ```bash
 # # Add the upstream repository
@@ -529,11 +529,9 @@
 # </div>
 
 # %% [markdown]
-# ## Part 3: Introduction to Python
+# ## Part 3: Getting started with code
 #
-# Python is a versatile, beginner-friendly programming language widely used in research. Now that
-# we've covered version control, it's time to start writing code! This section introduces Python
-# fundamentals that you'll build on in later lectures.
+# We now need to talk about actual code. There are many programming languages out there, but Python is a versatile, beginner-friendly programming language widely used in research. Now that we've covered version control, it's time to start writing code! This section introduces Python fundamentals that you'll build on in later lectures.
 #
 # ### Why Python for Research?
 #
@@ -544,6 +542,16 @@
 # - **Community**: Large, helpful community with extensive documentation and Stack Overflow answers
 # - **Cross-platform**: Write once, run anywhere—Windows, macOS, or Linux
 # - **Research-ready**: Used across all scientific domains from genomics to astronomy to economics
+#
+# ### Why *Not* Python for Research?
+#
+# - **Performance limitations**: Slower than compiled languages like C or Fortran for compute-intensive tasks without optimization
+# - **Dependency management headaches**: Version conflicts and environment issues can be frustrating to resolve
+# - **Memory usage**: Large datasets can quickly consume RAM, especially without careful optimization, no full control over memory
+# - **Global Interpreter Lock (GIL)**: Limits true multi-threaded CPU-bound parallelism
+# - **Dynamic typing pitfalls**: Type-related bugs may only appear at runtime
+# - **Scaling challenges**: May require additional frameworks (e.g., distributed computing tools) for very large-scale workloads
+#
 #
 # **Fun fact**: Python is named after Monty Python's Flying Circus, not the snake! The language was
 # designed to be fun to use, and you'll often see Monty Python references in Python documentation.
@@ -581,6 +589,8 @@ print(f"Type of is_complete: {type(is_complete)}")
 # **Understanding types**: Even though you don't declare types, Python still keeps track of them
 # internally. This matters when you try to combine values—you can't add a string to a number
 # directly. Use the `type()` function when debugging to check what type a variable actually is.
+#
+# **Duck typing**: "If it walks like a duck and it quacks like a duck, then it must be a duck". For Python objects: If it behaves like the expected object (for example, implements the same methods), it can be used interchangeably regardless of its class.
 
 # %% [markdown]
 # ### Working with Strings
@@ -863,11 +873,11 @@ for key, value in stats.items():
 # %% [markdown]
 # ## Putting It Together: A Small Project
 #
-# Let's combine Git, GitHub knowledge, and Python skills.
+# Here is a small project bringing (nearly) all of this together.
 
 
 # %%
-def process_experimental_data(data_points, threshold=25.0):
+def process_experimental_data(data_points, threshold=25.0, name=""):
     """
     Process experimental data and filter by threshold.
 
@@ -877,6 +887,8 @@ def process_experimental_data(data_points, threshold=25.0):
         List of measurements
     threshold : float
         Minimum value to include
+    name : string
+        Descriptive name for the data
 
     Returns
     -------
@@ -895,6 +907,7 @@ def process_experimental_data(data_points, threshold=25.0):
         mean = min_val = max_val = 0
 
     return {
+        "name": name,
         "original_count": len(data_points),
         "filtered_count": len(filtered),
         "mean": mean,
@@ -906,9 +919,10 @@ def process_experimental_data(data_points, threshold=25.0):
 
 # Example usage
 experimental_data = [23.5, 24.1, 26.8, 24.3, 27.1, 23.9, 25.5]
-results = process_experimental_data(experimental_data, threshold=25.0)
+results = process_experimental_data(experimental_data, threshold=25.0, name="my_experiment")
 
 print("Processing Results:")
+print(f"  Data name: {results['name']}")
 print(f"  Original samples: {results['original_count']}")
 print(f"  Samples above threshold: {results['filtered_count']}")
 print(f"  Mean of filtered data: {results['mean']:.2f}")
@@ -1022,5 +1036,3 @@ print(f"  Range: {results['min']:.2f} - {results['max']:.2f}")
 # - List comprehensions and functional programming
 #
 # **Ready to continue? Move on to Lecture 3: Python Fundamentals and Advanced Concepts!**
-
-# %%
