@@ -104,8 +104,6 @@ This starts Jupyter Notebook with `jupytext.TextFileContentsManager` configured,
 - Loads notebooks from the paired `.py` source files each session
 - Saves any changes back to both `.ipynb` and `.py` files automatically
 
-Alternatively, copy `jupyter_server_config.py` from the repository root to your Jupyter
-config directory (find it with `jupyter --config-dir`) and restart Jupyter.
 
 > **Note on "Kernel does not exist" (404) warnings:** These warnings appear when Jupyter
 > tries to reconnect to a kernel from a previous session that no longer exists (e.g. after
