@@ -24,7 +24,7 @@ jobs:
       uses: mamba-org/setup-micromamba@v1
       with:
         micromamba-version: 'latest'
-        environment-file: environment-dev.yml
+        environment-file: environment.yml
         cache-environment: true
     
     - name: Check formatting with black
@@ -92,7 +92,7 @@ jobs:
       uses: mamba-org/setup-micromamba@v1
       with:
         micromamba-version: 'latest'
-        environment-file: environment-dev.yml
+        environment-file: environment.yml
         cache-environment: true
     
     - name: Install LaTeX dependencies
@@ -100,17 +100,6 @@ jobs:
         # Install LaTeX via apt for PDF generation
         sudo apt-get update
         sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-plain-generic latexmk
-      shell: bash -el {0}
-    
-    - name: Install lecture dependencies
-      run: |
-        # Install lecture-specific dependencies
-        for lecture_env in lecture_*/environment.yml; do
-          if [ -f "$lecture_env" ]; then
-            echo "Installing dependencies from $lecture_env..."
-            micromamba env update -f "$lecture_env" -y
-          fi
-        done
       shell: bash -el {0}
     
     - name: Convert lectures to notebooks

@@ -14,16 +14,12 @@ The repository uses conda for dependency management with an automated update sys
 
 ### 1. Conda Environment Files
 
-- `environment.yml` - Base environment with core dependencies
-- `environment-dev.yml` - Development environment with dev tools
-- `lecture_XX/environment.yml` - Lecture-specific additional dependencies
+- `environment.yml` - Environment with all dependencies for all lectures
 
 ### 2. Conda Lock Files
 
 Lock files ensure reproducible environments across different platforms:
-- `environment-{platform}.lock` - Locked base environment
-- `environment-dev-{platform}.lock` - Locked dev environment
-- `lecture_XX/environment-{platform}.lock` - Locked lecture environments
+- `environment-{platform}.lock` - Locked environment
 
 Supported platforms: `linux-64`, `osx-64`, `osx-arm64`, `win-64`
 
@@ -52,16 +48,16 @@ Install from lock files for exact reproducibility:
 
 ```bash
 # Linux
-micromamba create -n rse_lecture --file environment-dev-linux-64.lock
+micromamba create -n rse_lecture --file environment-linux-64.lock
 
 # macOS Intel
-micromamba create -n rse_lecture --file environment-dev-osx-64.lock
+micromamba create -n rse_lecture --file environment-osx-64.lock
 
 # macOS Apple Silicon
-micromamba create -n rse_lecture --file environment-dev-osx-arm64.lock
+micromamba create -n rse_lecture --file environment-osx-arm64.lock
 
 # Windows
-micromamba create -n rse_lecture --file environment-dev-win-64.lock
+micromamba create -n rse_lecture --file environment-win-64.lock
 ```
 
 ### For Developers
@@ -103,7 +99,7 @@ If the weekly workflow fails (no PR created):
 
 4. **Pin the problematic version**:
    
-   Edit `environment.yml` or `environment-dev.yml`:
+   Edit `environment.yml`:
    ```yaml
    dependencies:
      # Pin to exclude breaking version
@@ -130,10 +126,7 @@ If the weekly workflow fails (no PR created):
 
 When adding a new dependency to a lecture:
 
-1. **Add to appropriate environment file**:
-   - Common dependencies → `environment.yml`
-   - Dev tools → `environment-dev.yml`
-   - Lecture-specific → `lecture_XX/environment.yml`
+1. **Add to `environment.yml`**
 
 2. **Test locally**:
    ```bash
@@ -226,8 +219,8 @@ make create-locks
 If you need to update dependencies manually (outside the automated workflow):
 
 ```bash
-# 1. Update environment files as needed
-vim environment.yml  # or environment-dev.yml
+# 1. Update environment.yml as needed
+vim environment.yml
 
 # 2. Test the changes
 make test-deps
@@ -236,7 +229,7 @@ make test-deps
 make create-locks
 
 # 4. Commit everything
-git add environment*.yml *-*.lock lecture_*/environment*.yml lecture_*/*-*.lock
+git add environment.yml *-*.lock
 git commit -m "chore: update dependencies"
 git push
 

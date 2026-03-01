@@ -1,7 +1,0 @@
-# Additional dependencies for Lecture 2
-# Install on top of base environment.yml
-# Lecture 2 uses only base dependencies (no additions needed)
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies: []

@@ -108,30 +108,6 @@ def _create_lock_for_env(env_file, lock_file, platform):
         return False
 
 
-def _create_lock_for_lecture(lecture_dir, platform):
-    """Helper function to create lock file for a lecture."""
-    lock_file = f"{lecture_dir}/environment-{platform}.lock"
-    try:
-        run_command(
-            [
-                "conda-lock",
-                "lock",
-                "--file",
-                "environment.yml",
-                "--file",
-                f"{lecture_dir}/environment.yml",
-                "--platform",
-                platform,
-                "--lockfile",
-                lock_file,
-            ]
-        )
-        print(f"  ✅ Created {lock_file}")
-        return True
-    except subprocess.CalledProcessError:
-        print(f"  ❌ Failed to create {lock_file}")
-        return False
-
 
 def _create_locks_for_platforms(env_file, prefix, platforms):
     """Create lock files for an environment across multiple platforms."""
@@ -140,17 +116,6 @@ def _create_locks_for_platforms(env_file, prefix, platforms):
         lock_file = f"{prefix}-{platform}.lock"
         if _create_lock_for_env(env_file, lock_file, platform):
             count += 1
-    return count
-
-
-def _create_lecture_locks(lecture_dirs, platforms):
-    """Create lock files for lecture environments."""
-    count = 0
-    for lecture_dir in lecture_dirs:
-        print(f"\nCreating lock files for {lecture_dir}...")
-        for platform in platforms:
-            if _create_lock_for_lecture(lecture_dir, platform):
-                count += 1
     return count
 
 
@@ -180,17 +145,9 @@ def create_lock_files(platforms=None):
 
     lock_count = 0
 
-    # Create lock for base environment
-    print("Creating lock files for base environment...")
+    # Create lock for unified environment
+    print("Creating lock files for environment...")
     lock_count += _create_locks_for_platforms("environment.yml", "environment", platforms)
-
-    # Create lock for dev environment
-    print("\nCreating lock files for development environment...")
-    lock_count += _create_locks_for_platforms("environment-dev.yml", "environment-dev", platforms)
-
-    # Create locks for lecture-specific environments
-    lecture_dirs = ["lecture_01", "lecture_02", "lecture_03", "lecture_04"]
-    lock_count += _create_lecture_locks(lecture_dirs, platforms)
 
     print(f"\n✅ Created {lock_count} lock files")
     return True
@@ -217,8 +174,8 @@ def main():
     print("Conda Dependency Update and Testing")
     print("=" * 60)
 
-    # Test the current dev environment
-    success, error = test_environment("environment-dev.yml", "test-rse-env")
+    # Test the current environment
+    success, error = test_environment("environment.yml", "test-rse-env")
 
     if not success:
         print("\n" + "=" * 60)
@@ -228,7 +185,7 @@ def main():
         print("This may indicate that a recent package update broke compatibility.")
         print("\nRecommended actions:")
         print("1. Check the error message above to identify the problematic package")
-        print("2. Pin the previous working version in environment.yml or environment-dev.yml")
+        print("2. Pin the previous working version in environment.yml")
         print("3. Open an issue with the package maintainer if it's a bug")
         print("\nExample pinning:")
         print("  - matplotlib==3.8.0  # Pin to specific version")

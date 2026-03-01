@@ -23,7 +23,7 @@ essential for writing robust, maintainable research software.
 
 ## Running the Lecture
 
-1. Create and activate the base environment:
+1. Create and activate the environment:
 ```bash
 cd /path/to/RSE_lecture
 make install
@@ -35,8 +35,6 @@ Or manually:
 micromamba env create -f environment.yml
 micromamba activate rse_lecture
 ```
-
-**Note:** Lecture 3 uses only the base environment with no additional dependencies.
 
 2. Convert to notebook and run:
 ```bash

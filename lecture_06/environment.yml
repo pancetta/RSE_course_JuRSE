@@ -1,7 +1,0 @@
-# Additional dependencies for Lecture 6
-# Install on top of base environment.yml
-# Lecture 6 uses only base dependencies (no additions needed beyond pytest from lecture 5)
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies: []

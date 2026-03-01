@@ -233,7 +233,7 @@ Most workflow steps can be tested locally:
 
 ```bash
 # Install dependencies
-make install-dev
+make install
 
 # Run lint
 flake8 . --count --statistics

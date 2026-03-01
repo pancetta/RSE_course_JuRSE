@@ -20,7 +20,7 @@ This introductory lecture provides an overview of Research Software Engineering 
 
 ## Running the Lecture
 
-1. Create and activate the base environment:
+1. Create and activate the environment:
 ```bash
 cd /path/to/RSE_lecture
 make install

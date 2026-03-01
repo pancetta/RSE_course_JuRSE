@@ -32,7 +32,7 @@ This will:
 **Expected output:**
 ```
 ============================================================
-Testing environment from: environment-dev.yml
+Testing environment from: environment.yml
 ============================================================
 
 Creating test environment...
@@ -57,9 +57,7 @@ make create-locks
 ```
 
 This creates:
-- `environment-linux-64.lock` - Base environment for Linux
-- `environment-dev-linux-64.lock` - Dev environment for Linux
-- `lecture_XX/environment-linux-64.lock` - Lecture environments for Linux
+- `environment-linux-64.lock` - Environment for Linux
 - Same for `osx-64`, `osx-arm64`, `win-64`
 
 **Note:** Lock file creation requires conda-lock to be installed.
@@ -110,7 +108,7 @@ After creating lock files, verify they work:
 
 ```bash
 # Create environment from lock file
-micromamba create -n test-from-lock --file environment-dev-linux-64.lock
+micromamba create -n test-from-lock --file environment-linux-64.lock
 
 # Activate and test
 micromamba activate test-from-lock
@@ -128,7 +126,7 @@ micromamba env remove -n test-from-lock
 
 To test how the system handles breaking changes:
 
-1. **Edit environment-dev.yml** to include a known incompatible version:
+1. **Edit environment.yml** to include a known incompatible version:
    ```yaml
    dependencies:
      - numpy>=2.0.0  # Might break with older code
@@ -246,15 +244,15 @@ python update_dependencies.py --test-only 2>&1 | tee test-output.log
 
 ```bash
 # View lock file to see exact versions
-cat environment-dev-linux-64.lock | grep "name:"
+cat environment-linux-64.lock | grep "name:"
 ```
 
 ### Test specific lecture
 
 ```bash
-# Create environment for specific lecture
-micromamba create -n lecture4-test --file lecture_04/environment-linux-64.lock
-micromamba activate lecture4-test
+# Create environment and test a specific lecture
+micromamba create -n lecture-test --file environment-linux-64.lock
+micromamba activate lecture-test
 python scripts/convert_to_notebooks.py
 jupyter nbconvert --to notebook --execute lecture_04/lecture_04.ipynb
 ```

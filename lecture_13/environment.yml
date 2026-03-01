@@ -1,7 +1,0 @@
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies: []
-  # Lecture 13 has no additional Python dependencies beyond the base environment
-  # AI coding assistants are IDE extensions/tools, not Python packages
-  # Students will use existing Python, Jupyter, and standard libraries

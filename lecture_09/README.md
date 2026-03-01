@@ -26,7 +26,7 @@ See `container-demo/README.md` for instructions on building and running the exam
 This lecture uses only base dependencies. No additional packages required.
 
 ```bash
-make install-lecture9
+make install
 micromamba activate rse_lecture
 ```
 

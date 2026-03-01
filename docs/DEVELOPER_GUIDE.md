@@ -15,8 +15,7 @@ RSE_course_JuRSE/
 │   └── update_dependencies.py      # Dependency management
 ├── docs/                           # Detailed documentation
 ├── .github/workflows/              # CI/CD pipelines
-├── environment.yml                 # Base dependencies
-├── environment-dev.yml             # Development dependencies
+├── environment.yml                 # All dependencies for all lectures
 ├── Makefile                        # Build automation
 └── myst.yml                        # Jupyter Book configuration
 ```
@@ -25,10 +24,10 @@ RSE_course_JuRSE/
 
 ### Environment Setup
 
-Install the development environment with all dependencies:
+Install the environment with all dependencies:
 
 ```bash
-make install-dev
+make install
 micromamba activate rse_lecture
 ```
 
@@ -108,23 +107,14 @@ python scripts/generate_qr_codes.py
 
 ### Environment Files
 
-The repository uses a multi-environment approach:
+The repository uses a single environment file with all dependencies:
 
-- **`environment.yml`**: Base environment with core dependencies
-- **`lecture_XX/environment.yml`**: Additional dependencies for specific lectures
-- **`environment-dev.yml`**: All dependencies plus dev tools (flake8, nbconvert)
+- **`environment.yml`**: All dependencies for all lectures
 
-### Installation Pattern
-
-All lectures follow the same two-step process:
+### Installation
 
 ```bash
-# Install base + lecture-specific dependencies
-make install-lectureX
-
-# Or manually
-micromamba env create -f environment.yml
-micromamba env update -f lecture_XX/environment.yml
+make install
 micromamba activate rse_lecture
 ```
 
@@ -202,26 +192,9 @@ Configuration in `.lycherc.toml` includes:
    - Name it `lecture_XX/lecture_XX.py`
    - Use Jupytext percent format
 
-3. **Create environment file:**
-   ```bash
-   # lecture_XX/environment.yml
-   name: rse_lecture
-   channels:
-     - conda-forge
-   dependencies:
-     # List only additional dependencies beyond base
-   ```
+3. **Add any new dependencies** to `environment.yml` if needed
 
-4. **Add Makefile target:**
-   ```makefile
-   install-lectureXX:
-       @echo "Creating base environment..."
-       micromamba env create -f environment.yml -y
-       @echo "Adding lecture XX specific dependencies..."
-       micromamba env update -f lecture_XX/environment.yml -y
-       @echo "Environment created for lecture XX."
-       @echo "Activate with: micromamba activate rse_lecture"
-   ```
+4. **Add Makefile target:** (no additional target needed - `make install` works for all lectures)
 
 5. **Update myst.yml:**
    Add lecture to table of contents.
@@ -233,7 +206,7 @@ Configuration in `.lycherc.toml` includes:
 
 8. **Test:**
    ```bash
-   make install-lectureXX
+   make install
    python scripts/convert_to_notebooks.py
    make ci-local
    ```
@@ -309,9 +282,7 @@ Test on multiple platforms or ensure code is platform-agnostic.
 
 | Target | Description |
 |--------|-------------|
-| `install` | Create base environment |
-| `install-dev` | Create development environment |
-| `install-lectureX` | Create environment for lecture X |
+| `install` | Create environment with all dependencies |
 | `convert` | Convert lectures to notebooks |
 | `notebooks` | Alias for convert |
 | `generate-qr-codes` | Generate QR codes |
@@ -330,22 +301,22 @@ Test on multiple platforms or ensure code is platform-agnostic.
 
 ### "jupytext not found"
 
-Install development environment:
+Install the environment:
 ```bash
-make install-dev
+make install
 ```
 
 ### "flake8 not found"
 
-Install development environment:
+Install the environment:
 ```bash
-make install-dev
+make install
 ```
 
 ### CI failing but local tests pass
 
 - Check platform differences (workflow runs on Linux)
-- Ensure you're testing with `environment-dev.yml`
+- Ensure you're testing with `environment.yml`
 - Check workflow logs for specific errors
 
 ### Notebooks won't execute

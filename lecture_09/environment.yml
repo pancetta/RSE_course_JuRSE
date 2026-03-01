@@ -1,7 +1,0 @@
-# Additional dependencies for Lecture 9
-# Install on top of base environment.yml
-# Lecture 9 uses only base dependencies (no additions needed - Docker/Podman/Apptainer covered conceptually)
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies: []

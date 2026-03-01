@@ -70,14 +70,7 @@ This lecture series covers 14 lectures (~90 minutes each) on Research Software E
    Install [micromamba](https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html), then create the environment:
    
    ```bash
-   # For development (includes all dependencies)
-   make install-dev
-   micromamba activate rse_lecture
-   ```
-   
-   Or for a specific lecture:
-   ```bash
-   make install-lecture4  # Example for lecture 4
+   make install
    micromamba activate rse_lecture
    ```
 
