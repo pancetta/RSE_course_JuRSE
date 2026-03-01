@@ -108,7 +108,6 @@ def _create_lock_for_env(env_file, lock_file, platform):
         return False
 
 
-
 def _create_locks_for_platforms(env_file, prefix, platforms):
     """Create lock files for an environment across multiple platforms."""
     count = 0
