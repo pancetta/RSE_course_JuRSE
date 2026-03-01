@@ -46,21 +46,19 @@ This lecture introduces research data management best practices and specialized 
 
 ## Files
 - `lecture_11.py` - Main lecture content in Jupytext format
-- `environment.yml` - Additional dependencies (h5py, netCDF4, pandas)
 
 ## Running the Lecture
 
-1. Create and activate the lecture 11 environment:
+1. Create and activate the environment:
 ```bash
 cd /path/to/RSE_lecture
-make install-lecture11
+make install
 micromamba activate rse_lecture
 ```
 
 Or manually:
 ```bash
 micromamba env create -f environment.yml
-micromamba env update -f lecture_11/environment.yml
 micromamba activate rse_lecture
 ```
 

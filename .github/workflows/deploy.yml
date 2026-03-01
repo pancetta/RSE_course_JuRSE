@@ -45,15 +45,6 @@ jobs:
           # Install LaTeX via apt for PDF generation
           sudo apt-get update
           sudo apt-get install -y texlive-xetex texlive-fonts-recommended texlive-plain-generic latexmk
-          # Install Python dependencies via conda
-          micromamba install -c conda-forge matplotlib>=3.5.0 nbconvert qrcode pillow -y
-          # Install lecture-specific dependencies
-          for lecture_env in lecture_*/environment.yml; do
-            if [ -f "$lecture_env" ]; then
-              echo "Installing dependencies from $lecture_env..."
-              micromamba env update -f "$lecture_env" -y
-            fi
-          done
         shell: bash -el {0}
 
       - name: Convert lectures to notebooks

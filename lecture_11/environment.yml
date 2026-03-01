@@ -1,9 +1,0 @@
-# Additional dependencies for Lecture 11
-# Install on top of base environment.yml
-name: rse_lecture
-channels:
-  - conda-forge
-dependencies:
-  - h5py>=3.0.0
-  - netCDF4>=1.5.0
-  - pandas>=1.3.0

@@ -31,46 +31,14 @@ jobs:
       run: |
         echo "Creating conda-lock files for all environments..."
         
-        # Create lock file for base environment
+        # Create lock file for the unified environment
         conda-lock lock --file environment.yml --platform linux-64 --lockfile environment-linux-64.lock
-        
-        # Create lock file for dev environment
-        conda-lock lock --file environment-dev.yml --platform linux-64 --lockfile environment-dev-linux-64.lock
-        
-        # Create lock files for each lecture (base + lecture-specific)
-        # Only process lectures that have non-empty dependencies
-        for lecture_dir in lecture_*; do
-          # Skip if not a directory
-          [ ! -d "$lecture_dir" ] && continue
-          # Check if environment.yml exists and has non-empty dependencies
-          if [ -f "$lecture_dir/environment.yml" ]; then
-            # Use Python to check if dependencies list is non-empty
-            # If the check fails, we'll log a warning and assume no dependencies
-            has_deps=$(python -c "import yaml; config = yaml.safe_load(open('$lecture_dir/environment.yml')); deps = config.get('dependencies', []); print('yes' if deps and len([d for d in deps if d]) > 0 else 'no')" 2>&1)
-            
-            if [ $? -ne 0 ]; then
-              echo "⚠️  Warning: Failed to parse $lecture_dir/environment.yml, assuming no dependencies"
-              echo "   Error: $has_deps"
-              has_deps="no"
-            fi
-            
-            if [ "$has_deps" = "yes" ]; then
-              echo "Processing $lecture_dir (has additional dependencies)..."
-              conda-lock lock --file environment.yml --file $lecture_dir/environment.yml \
-                --platform linux-64 --lockfile ${lecture_dir}/environment-linux-64.lock
-            else
-              echo "Skipping $lecture_dir (no additional dependencies, using base environment lock)"
-              # Create a symlink to the base environment lock file
-              ln -sf ../environment-linux-64.lock ${lecture_dir}/environment-linux-64.lock
-            fi
-          fi
-        done
       shell: bash -el {0}
     
     - name: Test updated environment with current CI checks
       run: |
         # Create a fresh test environment from the updated lock files
-        micromamba create -n test-env --file environment-dev-linux-64.lock -y
+        micromamba create -n test-env --file environment-linux-64.lock -y
         micromamba activate test-env
         
         # Run the same checks as CI
@@ -109,7 +77,7 @@ jobs:
         
         # Check if there are changes
         if [[ -n $(git status --porcelain) ]]; then
-          git add environment-linux-64.lock environment-dev-linux-64.lock lecture_*/environment-*.lock
+          git add environment-linux-64.lock
           git commit -m "chore: update conda lock files with latest compatible versions
           
           This automated update was tested and verified to pass all CI checks."
@@ -140,9 +108,7 @@ jobs:
           - ✅ Notebook execution (all lectures)
           
           ### Lock files updated:
-          - Base environment lock file
-          - Development environment lock file
-          - Lecture-specific lock files (all lectures)
+          - Unified environment lock file
           
           The updated dependencies have been tested and verified to work correctly with all lecture materials.
           
