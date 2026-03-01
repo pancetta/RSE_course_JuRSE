@@ -88,8 +88,32 @@ This lecture series covers 14 lectures (~90 minutes each) on Research Software E
 Convert lecture files to Jupyter notebooks:
 ```bash
 make convert
-jupyter notebook
 ```
+
+#### Launching Jupyter with Jupytext Syncing
+
+To enable **bidirectional syncing** between the `.py` source files and the `.ipynb` notebooks
+(so that edits made in the Jupyter browser interface are automatically reflected in the `.py` files),
+use the dedicated Makefile target:
+
+```bash
+make start-notebook
+```
+
+This starts Jupyter Notebook with `jupytext.TextFileContentsManager` configured, which:
+- Loads notebooks from the paired `.py` source files each session
+- Saves any changes back to both `.ipynb` and `.py` files automatically
+
+Alternatively, copy `jupyter_server_config.py` from the repository root to your Jupyter
+config directory (find it with `jupyter --config-dir`) and restart Jupyter.
+
+> **Note on "Kernel does not exist" (404) warnings:** These warnings appear when Jupyter
+> tries to reconnect to a kernel from a previous session that no longer exists (e.g. after
+> restarting the server). They are harmless and can be safely ignored. Using
+> `make start-notebook` reduces their frequency because notebooks are loaded fresh from the
+> `.py` source files each session, rather than restoring stale notebook state that references
+> old kernel IDs. Some warnings may still appear briefly on page reload — this is normal
+> Jupyter behaviour.
 
 ## Platform Support
 

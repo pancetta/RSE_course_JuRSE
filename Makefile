@@ -1,4 +1,4 @@
-.PHONY: help install convert clean notebooks build-website serve-website clean-website build-pdf clean-pdf update-deps test-deps create-locks ci-local lint format generate-qr-codes
+.PHONY: help install convert clean notebooks build-website serve-website clean-website build-pdf clean-pdf update-deps test-deps create-locks ci-local lint format generate-qr-codes start-notebook
 
 help:
 	@echo "Research Software Engineering Lectures - Makefile"
@@ -8,6 +8,7 @@ help:
 	@echo "  convert          - Convert all Python lectures to Jupyter notebooks (includes QR code generation)"
 	@echo "  notebooks        - Alias for convert"
 	@echo "  generate-qr-codes - Generate QR codes for course website and all lectures"
+	@echo "  start-notebook   - Start Jupyter with Jupytext syncing enabled (edits sync back to .py files)"
 	@echo "  build-website    - Build the Jupyter Book website"
 	@echo "  serve-website    - Build and serve the website locally"
 	@echo "  build-pdf        - Build the course as a PDF document"
@@ -33,6 +34,11 @@ notebooks:
 
 generate-qr-codes:
 	python scripts/generate_qr_codes.py
+
+start-notebook:
+	@echo "Starting Jupyter Notebook with Jupytext syncing enabled..."
+	@echo "Edits in the browser will sync back to the .py source files."
+	jupyter notebook --ServerApp.contents_manager_class=jupytext.TextFileContentsManager
 
 build-website: notebooks
 	@echo "Building Jupyter Book v2 static HTML site..."
