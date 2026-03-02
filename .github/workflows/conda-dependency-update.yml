@@ -38,7 +38,7 @@ jobs:
     - name: Test updated environment with current CI checks
       run: |
         # Create a fresh test environment from the updated lock files
-        conda-lock install --name test-env environment-linux-64.lock
+        conda-lock install --prefix $MAMBA_ROOT_PREFIX/envs/test-env environment-linux-64.lock
         micromamba activate test-env
         
         # Run the same checks as CI
