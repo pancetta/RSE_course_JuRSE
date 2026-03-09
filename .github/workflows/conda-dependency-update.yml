@@ -39,33 +39,34 @@ jobs:
       run: |
         # Create a fresh test environment from the updated lock files
         conda-lock install --prefix $MAMBA_ROOT_PREFIX/envs/test-env environment-linux-64.lock
-        micromamba activate test-env
-        
-        # Run the same checks as CI
-        echo "=== Linting with flake8 ==="
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        flake8 . --count --statistics
-        
+
+        # Run the same checks as CI using 'micromamba run' to target the test environment
+        echo "=== Checking formatting with black ==="
+        micromamba run -n test-env black --check .
+
+        echo "=== Linting with ruff ==="
+        micromamba run -n test-env ruff check .
+
         echo "=== Checking Python syntax ==="
-        python -m py_compile scripts/convert_to_notebooks.py
+        micromamba run -n test-env python -m py_compile scripts/convert_to_notebooks.py
         for lecture_file in lecture_*/lecture_*.py; do
           echo "Checking syntax: $lecture_file"
-          python -m py_compile "$lecture_file"
+          micromamba run -n test-env python -m py_compile "$lecture_file"
         done
-        
+
         echo "=== Converting lectures to notebooks ==="
-        python scripts/convert_to_notebooks.py
-        
+        micromamba run -n test-env python scripts/convert_to_notebooks.py
+
         echo "=== Executing notebooks to verify they run ==="
         for lecture_file in lecture_*/lecture_*.py; do
           notebook_file="${lecture_file%.py}.ipynb"
           echo "Executing: $notebook_file"
-          jupyter nbconvert --to notebook --execute --inplace "$notebook_file" || {
+          micromamba run -n test-env jupyter nbconvert --to notebook --execute --inplace "$notebook_file" || {
             echo "ERROR: Failed to execute $notebook_file"
             exit 1
           }
         done
-        
+
         echo "✅ All tests passed with updated dependencies!"
       shell: bash -el {0}
     
@@ -102,7 +103,8 @@ jobs:
           This PR updates the conda lock files with the latest compatible versions of all dependencies.
           
           ### What was tested:
-          - ✅ Code linting with flake8
+          - ✅ Code formatting with black
+          - ✅ Code linting with ruff
           - ✅ Python syntax validation
           - ✅ Lecture conversion to notebooks
           - ✅ Notebook execution (all lectures)
