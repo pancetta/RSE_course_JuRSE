@@ -8,9 +8,10 @@ __pycache__/
 *.ipynb
 
 # Generated images from notebook execution (but keep QR codes)
-lecture_*/figure_*.png
-lecture_*/figure_*.pdf
-lecture_*/figure_*.svg
+lecture_*/*.png
+lecture_*/*.pdf
+lecture_*/*.svg
+!lecture_*/*_qr_code.png
 
 # Jupyter Book
 _build/
