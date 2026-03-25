@@ -60,7 +60,19 @@
 # %% [markdown]
 # ## Part 1: Advanced Functions
 #
+# In Lecture 2, you wrote functions with simple positional parameters. Python supports several
+# additional parameter types that make functions much more flexible: parameters with default
+# values (so callers can omit them), keyword arguments (so callers can name them in any order),
+# and variable-length argument lists. In this part, we'll explore these features and look at
+# how to document functions professionally.
+#
 # ### Function Parameters and Arguments
+#
+# A function parameter can have a **default value**, making it optional when the function is
+# called. If the caller doesn't supply a value, Python uses the default. This is useful when
+# most calls need the same setting but some calls need to override it. The example below shows
+# a function with two optional parameters: `method` (which analysis to perform) and
+# `remove_outliers` (whether to clean the data first).
 
 
 # %%
@@ -124,6 +136,12 @@ print(f"Mean (outliers removed): {analyze_data(data, method='mean', remove_outli
 
 # %% [markdown]
 # ### Default Arguments and Keyword Arguments
+#
+# When calling a function, Python normally matches arguments to parameters by position. However,
+# you can also pass arguments **by name** (as keyword arguments), which makes the call more
+# readable and lets you supply optional arguments in any order. The special `**kwargs` syntax
+# captures any extra named arguments as a dictionary—useful when you want to accept arbitrary
+# configuration options without listing them all explicitly.
 
 
 # %%
@@ -638,6 +656,12 @@ except ValueError as e:
 
 # %% [markdown]
 # ### Reading Text Files
+#
+# Python reads files using the built-in `open()` function. The recommended pattern is the
+# `with` statement, which automatically closes the file when the block ends—even if an error
+# occurs. Text files are typically processed line by line: you skip comment lines or blank
+# lines, then parse each data line into the type you need. The example below simulates reading
+# a temperature data file by working with a multi-line string that represents the file contents.
 
 # %%
 # Writing data to demonstrate reading
@@ -685,6 +709,12 @@ print(f"Average: {sum(temps) / len(temps):.2f}°C")
 
 # %% [markdown]
 # ### Writing Files
+#
+# Writing files follows the same `with open()` pattern as reading, but you use `'w'` (write)
+# mode to create a new file or overwrite an existing one, or `'a'` (append) mode to add to an
+# existing file. In the example below, we simulate writing by building the output as a list of
+# strings and joining them—in real code you would pass the actual filename to `open()` instead
+# of printing the result.
 
 
 # %%
@@ -744,6 +774,13 @@ save_results("results.txt", results, metadata)
 
 # %% [markdown]
 # ### Working with CSV Data
+#
+# CSV (Comma-Separated Values) is one of the most common file formats for research data.
+# Python's built-in `csv` module handles the parsing for you. `csv.DictReader` reads each row
+# as a dictionary, using the header row as keys—this is especially convenient because you can
+# access columns by name (`row["Temperature"]`) instead of by index. Note that every value from
+# a CSV file arrives as a string, so you need to convert numeric fields to `float` or `int`
+# yourself, as shown below.
 
 # %%
 import csv
@@ -826,6 +863,10 @@ print(f"Average valid temperature: {sum(valid_temps) / len(valid_temps):.2f}°C"
 # List comprehensions provide elegant, concise ways to create and transform lists. They're not just
 # syntactic sugar—they're often faster than traditional loops and make your code's intent clearer.
 # In research contexts, you'll use them constantly for data filtering, transformation, and processing.
+#
+# The basic syntax is: `[expression for item in iterable]`. You read this as "for each item in the
+# iterable, compute the expression and collect the results into a list". Compare the traditional
+# loop approach with the comprehension below to see how much more compact the syntax is.
 
 # %%
 # Traditional approach
@@ -837,6 +878,13 @@ print(f"Traditional: {squares}")
 # List comprehension
 squares_comp = [i**2 for i in range(10)]
 print(f"Comprehension: {squares_comp}")
+
+# %% [markdown]
+# ### Filtering with List Comprehensions
+#
+# You can add an `if` clause to a list comprehension to keep only the items that satisfy a
+# condition. The extended syntax is: `[expression for item in iterable if condition]`. This
+# replaces the pattern of looping and conditionally appending—all in one readable line.
 
 # %%
 # Filtering with list comprehensions
@@ -854,6 +902,14 @@ print(f"Fahrenheit: {temps_f}")
 high_temps_f = [t * 9 / 5 + 32 for t in temperatures if t > 25]
 print(f"High temps in Fahrenheit: {high_temps_f}")
 
+# %% [markdown]
+# ### Nested List Comprehensions
+#
+# You can iterate over multiple sequences in one comprehension by chaining `for` clauses. This
+# is useful for working with matrices (lists of lists) or for creating all combinations of two
+# sequences. Read the nested comprehension left to right: the outer `for` iterates over rows
+# and the inner `for` iterates over the numbers in each row.
+
 # %%
 # Nested list comprehensions
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
@@ -865,6 +921,17 @@ print(f"Flattened: {flattened}")
 # Get diagonal
 diagonal = [matrix[i][i] for i in range(len(matrix))]
 print(f"Diagonal: {diagonal}")
+
+# %% [markdown]
+# ### Dictionary Comprehensions
+#
+# Just like list comprehensions build lists, **dictionary comprehensions** build dictionaries.
+# The syntax is `{key: value for item in iterable}`. They're especially convenient when you want
+# to pair up two lists into a mapping.
+#
+# The `zip()` function is used below to pair two lists together element by element:
+# `zip(["A", "B"], [1, 2])` produces `[("A", 1), ("B", 2)]`. You can then unpack each pair
+# in the comprehension using `for key, value in zip(...)`.
 
 # %%
 # Dictionary comprehensions
@@ -887,18 +954,28 @@ print(f"High temperatures: {high_temp_dict}")
 #         <li><strong>Refactor loops to comprehensions:</strong> Take existing code with
 #         nested for-loops and multiple if statements and rewrite it as concise list/dict
 #         comprehensions—see how readability improves.</li>
-#         <li><strong>Chain transformations:</strong> Process data in multiple steps using comprehensions—filter, transform,
-#         aggregate—and compare the performance against traditional loops using timeit.</li>
-#         <li><strong>Explore generator expressions:</strong> Convert memory-heavy list
-#         comprehensions to generator expressions for large datasets and observe the memory
-#         difference using sys.getsizeof().</li>
+#         <li><strong>Chain transformations:</strong> Process data in multiple steps—first filter
+#         a list of measurements using an <code>if</code> clause, then transform the remaining
+#         values (e.g., convert Celsius to Fahrenheit)—and verify the result matches a
+#         traditional loop approach.</li>
+#         <li><strong>Combine list and dict comprehensions:</strong> Given a list of sample names
+#         and a list of temperature readings, use <code>zip()</code> and a dict comprehension to
+#         create a mapping from sample name to temperature, then filter the dictionary to keep
+#         only samples above a threshold value.</li>
 #     </ul>
 # </div>
 
 # %% [markdown]
 # ## Part 5: Command-Line Scripts with argparse
 #
-# Create professional command-line tools with argument parsing.
+# When you write a Python script that others will run from the command line, you need a way for
+# users to pass options and file names to it. The standard library module `argparse` handles this
+# for you. You declare what arguments your script accepts (positional arguments, optional flags,
+# typed values), and `argparse` automatically parses `sys.argv`, validates the input, and
+# generates a `--help` message. This makes your scripts behave like professional Unix tools.
+#
+# The typical pattern is: create a parser, add arguments with `add_argument()`, then call
+# `parse_args()` to get an object whose attributes are the argument values.
 
 # %%
 import argparse
