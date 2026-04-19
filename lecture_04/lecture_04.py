@@ -125,6 +125,11 @@
 # another for visualization). No need to do this manually, there are good tools for that (and AI).
 #
 # #### Example Module Structure
+#
+# In a real project each of the functions below would live in its own `.py` file. Here we
+# keep them in a single notebook cell so we can run them without a file system, but the
+# key point is how the pieces fit together: one module owns data loading, another owns
+# analysis, and the package's `__init__.py` decides what the outside world sees.
 
 # %%
 # Let's simulate creating a simple package structure
@@ -191,6 +196,12 @@ for key, value in stats.items():
 # as expected. Understanding the patterns below helps you choose the right approach for your project.
 #
 # #### Different `__init__.py` Patterns
+#
+# There is no single "right" way to write an `__init__.py`. The three patterns below show
+# a progression from minimal (do nothing, force explicit imports) to maximal (expose a
+# curated public API via `__all__`). Most research packages sit somewhere in the middle:
+# they re-export the most commonly used names so callers don't need to know the internal
+# file layout.
 
 # %%
 # Pattern 1: Empty __init__.py
@@ -1291,6 +1302,12 @@ plt.show()
 
 # %% [markdown]
 # ### Customizing Plots: Colors, Markers, and Styles
+#
+# A bare `plt.plot()` call works, but the defaults are rarely good enough for a
+# presentation or paper. Small choices—marker shape, line style, color, font size—
+# collectively determine whether a reader can extract your message at a glance.
+# The cell below takes the same data as the previous example and shows how to control
+# each of these elements explicitly.
 
 # %%
 # Same data, better presentation
@@ -1355,6 +1372,12 @@ plt.show()
 
 # %% [markdown]
 # ### Multiple Lines on One Plot
+#
+# When you want to compare experimental conditions, overlaying all series on the same
+# axes—rather than in separate figures—makes differences jump out immediately. The
+# example below simulates three decay curves (a control and two treatments) and shows
+# how `label=` combined with `plt.legend()` turns colour and marker differences into
+# something a reader can actually interpret.
 
 # %%
 # Compare three experimental conditions
@@ -1424,6 +1447,12 @@ plt.show()
 
 # %% [markdown]
 # ### Advanced Customization: Publication-Quality Figures
+#
+# Getting a figure accepted by a journal often requires going beyond the Matplotlib
+# defaults: thicker axis lines, hidden top/right spines, bold labels with units, and a
+# carefully placed legend. This cell walks through each of those refinements on a
+# synthetic oscillation dataset, producing a figure that is clean and immediately
+# reproducible from the code alone.
 
 # %%
 # Create a publication-ready figure
@@ -1466,6 +1495,13 @@ plt.show()
 
 # %% [markdown]
 # ### Different Plot Types
+#
+# The right chart type depends on your data and question. The 2×3 grid below demonstrates
+# six plot types that cover most research needs: error-bar line plots for trends with
+# uncertainty, bar charts for categorical comparisons, histograms for distributions, box
+# plots for group statistics, heatmaps for 2-D data, and filled-area plots for ranges or
+# confidence bands. Each sub-plot uses the same API pattern—create the axes, call the
+# appropriate plotting function, then add labels and a grid.
 
 # %%
 # Demonstrate various plot types useful in research
@@ -1652,6 +1688,13 @@ plt.show()
 
 # %% [markdown]
 # ### Practical Research Example: Complete Analysis with Visualization
+#
+# This example brings together the full data-analysis workflow in one place: synthetic
+# data generation, statistical summarization, and a two-panel publication-style figure.
+# The scenario is a 30-day enzyme-activity experiment run at four different pH levels.
+# The left panel shows the raw daily time series for each condition; the right panel
+# condenses the same information into a bar chart with error bars, making the pH optimum
+# immediately visible. This is the kind of figure you might submit alongside a paper.
 
 # %%
 # Complete workflow: data generation → analysis → visualization
