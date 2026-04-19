@@ -702,7 +702,7 @@ check_virtual_env()
 # ```toml
 # # pyproject.toml
 # [build-system]
-# requires = ["setuptools>=61", "wheel"]
+# requires = ["setuptools>=61"]
 # build-backend = "setuptools.backends.legacy:build"
 #
 # [project]
