@@ -8,7 +8,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.19.1
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -73,11 +73,11 @@
 # - **Reproducibility**: Others (including future you!) can run and verify your work
 # - **Collaboration**: Team members can navigate and contribute without getting lost
 # - **Testing**: Easier to write and run tests when code is modular
-# - **Distribution**: Package your code for others to install with `pip install`
+# - **Distribution**: Package your code for others to install, e.g. with `pip install` for Python projects
 #
 # **Research context**: Many research projects fail to be reproducible not because the science is
 # wrong, but because the code is poorly organized and documented. Proper structure from the start
-# prevents this problem.
+# prevents this problem. Great science does not mean great code and, sadly, vice versa.
 #
 # ### Anatomy of a Research Python Project
 #
@@ -87,7 +87,7 @@
 # my_research_project/
 # ├── README.md              # Project description and usage
 # ├── LICENSE                # Software license
-# ├── requirements.txt       # Python dependencies (pip)
+# ├── requirements.txt       # Python dependencies (if using pip)
 # ├── environment.yml        # Conda environment specification
 # ├── setup.py              # Package installation configuration
 # ├── .gitignore            # Files to exclude from version control
@@ -122,7 +122,7 @@
 # **Why this matters**: When you start out, a single file might be enough. But as your project grows,
 # splitting code into modules makes each file manageable and lets you import only what you need.
 # Packages let you organize modules into logical groups (e.g., one package for data processing,
-# another for visualization).
+# another for visualization). No need to do this manually, there are good tools for that (and AI).
 #
 # #### Example Module Structure
 
@@ -183,14 +183,14 @@ for key, value in stats.items():
 # 1. **Marks a directory as a Python package**: Without it, older Python versions won't recognize
 #    the directory as importable
 # 2. **Controls what gets imported** when someone does `import package_name`: You decide what's
-#    exposed vs. internal
+#    exposed vs. internal (at least conceptually)
 # 3. **Can contain initialization code** for the package: Run setup code when the package is first
 #    imported
 #
 # **Common mistake**: People often leave `__init__.py` empty and wonder why their imports don't work
 # as expected. Understanding the patterns below helps you choose the right approach for your project.
 #
-# #### Different __init__.py Patterns
+# #### Different `__init__.py` Patterns
 
 # %%
 # Pattern 1: Empty __init__.py
@@ -245,7 +245,7 @@ print("__init__.py patterns demonstrated above")
 # behavior that's hard to track down.
 #
 # **The solution**: Write code once, reuse it everywhere. If you find yourself copying and pasting,
-# extract that code into a function or class.
+# extract that code into a function or class. This is where a good project structure is helpful!
 #
 # **Bad example - Repetitive code:**
 
@@ -485,7 +485,7 @@ print(report)
 
 # %% [markdown]
 # **Real research example**: Imagine you wrote a paper analyzing temperature data from CSV files.
-# Later, you get a grant to analyze 10 years of satellite data from a NASA database. If your analysis
+# Later, you get a grant to analyze 10 years of satellite data from a NASA non-CSV database. If your analysis
 # logic is mixed with CSV parsing, you'll have to rewrite everything. If concerns are separated, you
 # just write a new `load_experiment_data()` function and reuse all the analysis code!
 #
@@ -506,7 +506,8 @@ print(report)
 #
 # **Start simple**: You don't need perfect design on day one. But as your research code grows beyond
 # a few hundred lines, applying these principles will save you countless hours of debugging and
-# refactoring. Future you will thank present you!
+# refactoring. Start as early as possible with a good file/folder structure AND basic software engineering practices. Future you will thank present you!
+#
 #
 # **Further reading** on design principles:
 # - Robert C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship* (2008)
@@ -516,7 +517,7 @@ print(report)
 # %% [markdown]
 # ### Managing Dependencies: requirements.txt
 #
-# The `requirements.txt` file lists all Python packages your project needs. This is crucial for
+# For `pip`-based Python projects, the `requirements.txt` file lists all Python packages your project needs.  This is crucial for
 # reproducibility—anyone who wants to run your code can install exactly the right dependencies
 # with a single command. Think of it as a recipe: just as a cooking recipe lists ingredients,
 # `requirements.txt` lists your code's "ingredients."
@@ -721,27 +722,13 @@ check_virtual_env()
 # - Share with others: `pip install git+https://github.com/user/repo.git`
 # - Publish to PyPI: `pip install my-research-project`
 
-# %%
-# Demonstrate what setup.py enables
-# After installing with setup.py, you can do:
-
-# Instead of:
-# sys.path.append('../src')  # Fragile!
-# from src import analysis
-
-# You can simply:
-# from my_research_project import analysis  # Clean!
-
-print("setup.py enables clean, absolute imports")
-print("Your package becomes a proper Python package")
-
 # %% [markdown]
 # ### Best Practices Summary: Project Structure
 #
 # 1. **Use a clear directory structure** - Separate source, tests, data, notebooks
 # 2. **Always use virtual environments** - One per project
 # 3. **Document dependencies** - requirements.txt or environment.yml
-# 4. **Make your code a package** - Use __init__.py and setup.py
+# 4. **Make your code a package** - Use `__init__.py` and `setup.py`
 # 5. **Keep data out of git** - Use .gitignore for large/sensitive data
 # 6. **Include a README** - Explain what, why, and how
 # 7. **Add a LICENSE** - Make sharing clear and legal
@@ -766,7 +753,9 @@ print("Your package becomes a proper Python package")
 
 # %% [markdown]
 # ---
-# ## Part 2: Working with NumPy (30 minutes)
+# ## Part 2: Working with NumPy
+#
+# Here we make use of well-engineered software used for research. Since you now know what it takes to create a package, here is an example that highlights why making packages is so relevant: others can use your software and don't have to reinvent the wheel. This is another very important lesson from software engineering!
 #
 # ### Why NumPy for Scientific Computing?
 #
@@ -826,7 +815,7 @@ print(f"NumPy is {time_python/time_numpy:.1f}x faster!")
 # %% [markdown]
 # ### Creating NumPy Arrays
 #
-# NumPy's fundamental data structure is the **ndarray** (n-dimensional array).
+# NumPy's fundamental data structure is the **ndarray** (n-dimensional array). Below are a few examples:
 
 # %%
 # Method 1: From Python lists
@@ -871,6 +860,8 @@ print(f"Empty (random values): {empty}")
 
 # %% [markdown]
 # ### Array Attributes and Information
+#
+# Arrays have lots of information you can read out and use:
 
 # %%
 # Create a sample array
@@ -888,7 +879,7 @@ print(f"Total bytes: {data.nbytes} bytes")  # Total memory
 # ### Array Operations: Vectorization
 #
 # NumPy's power comes from **vectorized operations** - operations on entire arrays
-# without explicit loops.
+# without explicit loops. A standard Python philosophy: if you think you have to use loops, there is probably a better way to do this.
 
 # %%
 # Create experimental temperature data (in Celsius)
@@ -990,7 +981,7 @@ print(f"Number of high results: {n_high}")
 # %% [markdown]
 # ### Statistical Operations
 #
-# NumPy provides comprehensive statistical functions.
+# NumPy provides comprehensive statistical functions. Why would you implement something like this yourself?
 
 # %%
 # Simulate daily temperature measurements over 2 weeks
@@ -1204,7 +1195,7 @@ print(f"Days with average > {threshold}°C: {hot_days}")
 
 # %% [markdown]
 # ---
-# ## Part 3: Visualization with Matplotlib (30 minutes)
+# ## Part 3: Visualization with Matplotlib
 #
 # ### Why Visualization Matters in Research
 #
@@ -1558,7 +1549,7 @@ plt.show()
 # - `tight_layout()` or `bbox_inches='tight'` to avoid cropping
 #
 # **6. Accessibility**
-# - Use **markers** and **line styles**, not just colors
+# - Use **markers** and **line styles**, not just colors. Yes, both is fine and appreciated!
 # - Add **annotations** for key features
 # - Keep it **simple** - remove chart junk
 # - Test in **grayscale**
@@ -1690,6 +1681,9 @@ print("-" * 50)
 for ph in ph_levels:
     print(f"pH {ph}: {mean_activities[ph]:.1f} ± {std_activities[ph]:.1f} U/mL")
 print(f"\nOptimal pH: {max(mean_activities, key=mean_activities.get)}")
+
+# %% [markdown]
+# This seems a log of code for two plots, doesn't it? All those parameters, knobs, and switches Matplotlib brings to the table can feel overwhelming. The good news: it's [documentation](https://matplotlib.org/stable/index.html) is really good and since there are lots of examples out there, the standard AI chatbots can help you with finding the best way to present your data. But don't let it create your data 😉.
 
 # %% [markdown]
 # ---
