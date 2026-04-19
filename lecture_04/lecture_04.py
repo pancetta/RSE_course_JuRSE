@@ -684,12 +684,16 @@ def check_virtual_env():
 
     if conda_env and conda_env != "base":
         print(f"✓ Running in a conda/mamba environment: {conda_env}")
-        print(f"  Environment path: {conda_prefix}")
+        if conda_prefix:
+            print(f"  Environment path: {conda_prefix}")
+    elif conda_env == "base":
+        print("⚠ Running in the conda base environment (consider using a dedicated env)")
+        print(f"  Python prefix: {sys.prefix}")
     elif in_venv:
         print("✓ Running in a venv virtual environment")
         print(f"  Environment: {sys.prefix}")
     else:
-        print("✗ Not in a dedicated virtual environment (or running in the base conda environment)")
+        print("✗ Not in any virtual environment (using system Python)")
         print(f"  Python prefix: {sys.prefix}")
 
     print(f"  Python version: {sys.version.split()[0]}")
@@ -713,8 +717,8 @@ check_virtual_env()
 # ```toml
 # # pyproject.toml
 # [build-system]
-# requires = ["setuptools>=61"]
-# build-backend = "setuptools.backends.legacy:build"
+# requires = ["setuptools>=61"]  # >=61 required for PEP 621 declarative metadata
+# build-backend = "setuptools.build_meta"
 #
 # [project]
 # name = "my-research-project"
