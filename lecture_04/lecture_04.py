@@ -89,7 +89,7 @@
 # ├── LICENSE                # Software license
 # ├── requirements.txt       # Python dependencies (if using pip)
 # ├── environment.yml        # Conda environment specification
-# ├── setup.py              # Package installation configuration
+# ├── pyproject.toml        # Modern package configuration (PEP 517/518)
 # ├── .gitignore            # Files to exclude from version control
 # ├── data/                 # Data files (often in .gitignore)
 # │   ├── raw/              # Original, immutable data
@@ -515,19 +515,25 @@ print(report)
 # - John Ousterhout, *A Philosophy of Software Design* (2018)
 
 # %% [markdown]
-# ### Managing Dependencies: requirements.txt
+# ### Managing Dependencies
 #
-# For `pip`-based Python projects, the `requirements.txt` file lists all Python packages your project needs.  This is crucial for
-# reproducibility—anyone who wants to run your code can install exactly the right dependencies
-# with a single command. Think of it as a recipe: just as a cooking recipe lists ingredients,
-# `requirements.txt` lists your code's "ingredients."
+# Python famously has *too many* ways to handle packaging and dependency management. This can be
+# confusing, but the core idea is always the same: record what your project needs so that others
+# (including future you) can reproduce your environment.
 #
-# **Why version pinning matters**: The line `numpy>=1.20.0` means "numpy version 1.20.0 or newer."
-# This gives flexibility for minor updates while ensuring a minimum version with features you need.
-# For maximum reproducibility, you can pin exact versions: `numpy==1.20.3`. The tradeoff is between
-# flexibility (allowing updates) and reproducibility (exact versions).
+# Common approaches include:
+# - **`requirements.txt`** – plain-text list of pip packages; simple but pip-only
+# - **`environment.yml`** – conda/mamba environment specification; better for scientific stacks
+# - **`pyproject.toml`** – the modern, unified standard (PEP 517/518/621) that covers both
+#   dependency declaration *and* package build configuration in one file
+# - **`setup.py` / `setup.cfg`** – older setuptools-based approach, still encountered in legacy projects
 #
-# #### Creating requirements.txt
+# The safest advice: use whatever your team or community already uses, but prefer `pyproject.toml`
+# for new projects and `environment.yml` when working in conda/mamba environments.
+#
+# #### requirements.txt (pip-based projects)
+#
+# If your project is pip-based, `requirements.txt` lists the packages your code needs.
 #
 # ```bash
 # # Method 1: Manually create
@@ -545,13 +551,12 @@ print(report)
 # pipreqs /path/to/project
 # ```
 #
-# #### Installing from requirements.txt
-#
 # ```bash
+# # Install from requirements.txt
 # pip install -r requirements.txt
 # ```
 #
-# #### Best Practices
+# #### Best Practices (version pinning)
 #
 # - **Pin versions** for reproducibility: `numpy==1.21.0`
 # - **Use minimum versions** for flexibility: `numpy>=1.20.0`
@@ -655,21 +660,26 @@ print(report)
 # ```
 
 # %%
-# Check if we're in a virtual environment
+# Check if we're in an isolated environment (venv or conda/mamba)
 import sys
 import os
 
 
 def check_virtual_env():
-    """Check if running in a virtual environment."""
+    """Check if running in a virtual environment or conda/mamba environment."""
+    conda_env = os.environ.get("CONDA_DEFAULT_ENV")
+    conda_prefix = os.environ.get("CONDA_PREFIX")
     in_venv = hasattr(sys, "real_prefix") or (hasattr(sys, "base_prefix") and sys.base_prefix != sys.prefix)
 
-    if in_venv:
-        print("✓ Running in a virtual environment")
+    if conda_env and conda_env != "base":
+        print(f"✓ Running in a conda/mamba environment: {conda_env}")
+        print(f"  Environment path: {conda_prefix}")
+    elif in_venv:
+        print("✓ Running in a venv virtual environment")
         print(f"  Environment: {sys.prefix}")
     else:
-        print("✗ Not in a virtual environment")
-        print(f"  Using system Python: {sys.prefix}")
+        print("✗ Not in a dedicated virtual environment (or running in the base conda environment)")
+        print(f"  Python prefix: {sys.prefix}")
 
     print(f"  Python version: {sys.version.split()[0]}")
     print(f"  Executable: {sys.executable}")
@@ -678,13 +688,47 @@ def check_virtual_env():
 check_virtual_env()
 
 # %% [markdown]
-# ### Setup.py Basics
+# ### Making Your Project Installable: pyproject.toml and setup.py
 #
-# `setup.py` makes your project installable with `pip install .`
+# To make your code importable from anywhere (not just the directory it lives in) and shareable,
+# you need to turn it into an *installable package*.
 #
-# #### Minimal setup.py
+# #### Modern approach: pyproject.toml (recommended)
+#
+# Since PEP 517/518/621, `pyproject.toml` is the community-endorsed, single-file standard for
+# Python packaging. It replaces the older `setup.py` / `setup.cfg` approach and is used by tools
+# like `pip`, `build`, `hatch`, `poetry`, and `flit`.
+#
+# ```toml
+# # pyproject.toml
+# [build-system]
+# requires = ["setuptools>=61", "wheel"]
+# build-backend = "setuptools.backends.legacy:build"
+#
+# [project]
+# name = "my-research-project"
+# version = "0.1.0"
+# authors = [{name = "Your Name", email = "your.email@university.edu"}]
+# description = "Analysis tools for X research"
+# requires-python = ">=3.9"
+# dependencies = [
+#     "numpy>=1.20.0",
+#     "matplotlib>=3.3.0",
+#     "pandas>=1.2.0",
+# ]
+#
+# [project.optional-dependencies]
+# dev = ["pytest", "flake8"]
+# ```
+#
+# #### Legacy approach: setup.py
+#
+# `setup.py` was the original way to make a project installable and is still found in many
+# existing projects. **New projects should use `pyproject.toml` instead**, but understanding
+# `setup.py` helps when maintaining older code.
 #
 # ```python
+# # setup.py  (legacy – prefer pyproject.toml for new projects)
 # from setuptools import setup, find_packages
 #
 # setup(
@@ -716,7 +760,7 @@ check_virtual_env()
 # pip install -e ".[dev]"  # if you defined dev extras
 # ```
 #
-# #### Why Use setup.py?
+# #### Why Make It a Package?
 #
 # - Import your code from anywhere: `from my_research_project import analysis`
 # - Share with others: `pip install git+https://github.com/user/repo.git`
@@ -727,8 +771,8 @@ check_virtual_env()
 #
 # 1. **Use a clear directory structure** - Separate source, tests, data, notebooks
 # 2. **Always use virtual environments** - One per project
-# 3. **Document dependencies** - requirements.txt or environment.yml
-# 4. **Make your code a package** - Use `__init__.py` and `setup.py`
+# 3. **Document dependencies** - requirements.txt, environment.yml, or pyproject.toml
+# 4. **Make your code a package** - Use `__init__.py` and `pyproject.toml`
 # 5. **Keep data out of git** - Use .gitignore for large/sensitive data
 # 6. **Include a README** - Explain what, why, and how
 # 7. **Add a LICENSE** - Make sharing clear and legal
@@ -743,7 +787,7 @@ check_virtual_env()
 #         research and split it into logical modules (data_processing.py, analysis.py,
 #         visualization.py)—experience how organization improves maintainability.</li>
 #         <li><strong>Create your first package:</strong> Set up a complete project with
-#         setup.py, __init__.py, requirements.txt, and README, then practice installing it
+#         pyproject.toml, __init__.py, and README, then practice installing it
 #         in development mode with <code>pip install -e .</code></li>
 #         <li><strong>Build a CLI tool:</strong> Turn your analysis script into a
 #         command-line tool with argparse that accepts input files and parameters—make your
@@ -1122,6 +1166,13 @@ print(f"Reshaped to 4×3:\n{data_1d.reshape(4, 3)}")
 
 # %% [markdown]
 # ### Practical Example: Analyzing Experimental Data
+#
+# The following example demonstrates how NumPy operations translate to a realistic research
+# scenario: processing a week of temperature measurements taken three times per day. We create
+# a 2-D array (days × readings), then use NumPy's axis-aware aggregation functions to derive
+# per-day statistics (mean, peak-to-peak range) and per-time-of-day averages—all without a
+# single explicit loop. This pattern—load data into an array, reshape if needed, apply
+# vectorised statistics—is the bread and butter of scientific data analysis.
 
 # %%
 # Simulate a week of temperature measurements (3 readings per day)
@@ -1454,7 +1505,7 @@ axes[0, 2].grid(True, alpha=0.3, axis="y")
 data1 = np.random.normal(100, 10, 100)
 data2 = np.random.normal(110, 15, 100)
 data3 = np.random.normal(95, 8, 100)
-axes[1, 0].boxplot([data1, data2, data3], labels=["Group A", "Group B", "Group C"])
+axes[1, 0].boxplot([data1, data2, data3], tick_labels=["Group A", "Group B", "Group C"])
 axes[1, 0].set_title("Box Plot Comparison", fontweight="bold")
 axes[1, 0].set_ylabel("Measurement")
 axes[1, 0].grid(True, alpha=0.3, axis="y")
@@ -1693,8 +1744,8 @@ print(f"\nOptimal pH: {max(mean_activities, key=mean_activities.get)}")
 #
 # ✓ **Organization matters** - Use packages, modules, and clear directory structure
 # ✓ **Virtual environments** - Isolate dependencies per project
-# ✓ **Document dependencies** - requirements.txt or environment.yml
-# ✓ **Make it a package** - Use __init__.py and setup.py for reusable code
+# ✓ **Document dependencies** - requirements.txt, environment.yml, or pyproject.toml
+# ✓ **Make it a package** - Use __init__.py and pyproject.toml for reusable code
 # ✓ **Version control** - .gitignore data files, track code
 #
 # ### Part 2: NumPy for Scientific Computing
