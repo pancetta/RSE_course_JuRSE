@@ -58,7 +58,7 @@
 # - Apply best practices for reproducible research software
 
 # %% [markdown]
-# ## Part 1: Python Project Structure and Beyond (35 minutes)
+# ## Part 1: Python Project Structure and Beyond (30 minutes)
 #
 # ### Why Project Structure Matters
 #
