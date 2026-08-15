@@ -50,9 +50,10 @@ make ci-local
 
 This runs:
 1. Python syntax validation
-2. flake8 linting (strict and full)
-3. Notebook conversion
-4. Notebook verification
+2. Black formatting check
+3. Ruff linting
+4. Notebook conversion
+5. Notebook verification
 
 ### Building the Website
 
@@ -145,7 +146,7 @@ For details, see [DEPENDENCY_MANAGEMENT.md](DEPENDENCY_MANAGEMENT.md).
 ### Continuous Integration (`.github/workflows/ci.yml`)
 
 Runs on every push and PR:
-1. Lints code with flake8
+1. Checks formatting with black and lints code with ruff
 2. Checks Python syntax
 3. Converts lectures to notebooks
 4. Executes all notebooks to verify they run
@@ -217,7 +218,8 @@ Configuration in `.lycherc.toml` includes:
 2. **Test locally:**
    ```bash
    python -m py_compile lecture_XX/lecture_XX.py
-   flake8 lecture_XX/lecture_XX.py
+   black --check lecture_XX/lecture_XX.py
+   ruff check lecture_XX/lecture_XX.py
    python scripts/convert_to_notebooks.py
    jupyter nbconvert --to notebook --execute --inplace lecture_XX/lecture_XX.ipynb
    ```
@@ -247,15 +249,15 @@ jupytext --set-formats py:percent,ipynb lecture_XX/lecture_XX.py
 
 ## Code Quality Standards
 
-- **Linting**: All code must pass flake8 checks
-- **Style**: Follow PEP 8 (enforced by `.flake8` config)
+- **Formatting**: All code must pass `black --check`
+- **Linting**: All code must pass `ruff check` (enforced alongside PEP 8 style)
 - **Syntax**: All Python files must have valid syntax
 - **Execution**: All notebooks must execute without errors
 
-Configuration in `.flake8`:
-- Max line length: 127 characters
-- Max complexity: 10
-- Ignored errors: E402, W293, W291, E302, E305, F401, F841, E226, F541
+Configuration in `pyproject.toml`:
+- Max line length: 127 characters (`black`)
+- Ruff rule sets: `E`, `F`, `W`
+- Ignored ruff rules: E402, F401, F841, E226, F541, E501, W291, W293
 
 ## Platform Compatibility
 
@@ -294,7 +296,8 @@ Test on multiple platforms or ensure code is platform-agnostic.
 | `test-deps` | Test current dependencies |
 | `create-locks` | Create conda-lock files |
 | `ci-local` | Run local CI checks |
-| `lint` | Run flake8 linting |
+| `lint` | Run black formatting check and ruff linting |
+| `format` | Auto-format all Python files with black |
 | `help` | Show help message |
 
 ## Troubleshooting
@@ -306,7 +309,7 @@ Install the environment:
 make install
 ```
 
-### "flake8 not found"
+### "black" or "ruff" not found
 
 Install the environment:
 ```bash
@@ -330,7 +333,8 @@ make install
 - [Jupytext Documentation](https://jupytext.readthedocs.io/)
 - [Jupyter Book Documentation](https://jupyterbook.org/)
 - [MyST Documentation](https://mystmd.org/)
-- [flake8 Documentation](https://flake8.pycqa.org/)
+- [Black Documentation](https://black.readthedocs.io/)
+- [Ruff Documentation](https://docs.astral.sh/ruff/)
 - [conda-lock Documentation](https://conda.github.io/conda-lock/)
 
 ## Getting Help

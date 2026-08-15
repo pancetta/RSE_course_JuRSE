@@ -27,10 +27,11 @@ make ci-local
 ```
 
 This runs the same checks as the GitHub Actions CI pipeline:
-1. Flake8 linting (strict and full)
-2. Python syntax validation
-3. Notebook conversion
-4. Notebook verification
+1. Python syntax validation
+2. Black formatting check
+3. Ruff linting
+4. Notebook conversion
+5. Notebook verification
 
 Running these checks locally saves time and prevents CI failures!
 
@@ -59,35 +60,30 @@ When modifying lectures:
 
 All contributions must meet these standards:
 
-- **Pass flake8 linting** (max line length: 127 characters)
+- **Pass black formatting** (max line length: 127 characters)
+- **Pass ruff linting**
 - **Valid Python syntax** (test with `python -m py_compile`)
 - **Execute without errors** (all notebooks must run successfully)
 - **Platform compatibility** (Linux, macOS, Windows)
 
-Configuration is in `.flake8`.
+Configuration is in `pyproject.toml`.
 
-### Common flake8 Issues
+### Common Formatting/Linting Issues
 
-**Line too long (E501):**
-```python
-# BAD
-print(f"A very long message that exceeds the maximum line length of 127 characters and needs to be broken up")
-
-# GOOD
-print(
-    f"A very long message that exceeds the maximum line length "
-    f"and is broken into multiple lines")
+**Formatting issues:** Black auto-formats code, so most style issues (line length,
+spacing, indentation) can be fixed automatically:
+```bash
+make format
+# or
+black .
 ```
 
-**Continuation line indentation (E128):**
-```python
-# BAD
-result = some_function(arg1, arg2,
-    arg3, arg4)
-
-# GOOD
-result = some_function(arg1, arg2,
-                      arg3, arg4)
+**Linting issues:** Ruff checks for the `E`, `F`, and `W` rule sets (with a few
+research-notebook-friendly exceptions ignored — see `pyproject.toml`, e.g. unused
+imports/variables and line length, since black already handles wrapping). Run it
+directly to see what needs fixing:
+```bash
+ruff check .
 ```
 
 ## Types of Contributions
@@ -121,8 +117,9 @@ result = some_function(arg1, arg2,
    # Check syntax
    python -m py_compile lecture_XX/lecture_XX.py
    
-   # Lint
-   flake8 lecture_XX/lecture_XX.py
+   # Check formatting and lint
+   black --check lecture_XX/lecture_XX.py
+   ruff check lecture_XX/lecture_XX.py
    
    # Convert to notebook
    make convert
