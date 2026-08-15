@@ -1,4 +1,4 @@
-.PHONY: help install convert clean notebooks build-website serve-website clean-website build-pdf clean-pdf update-deps test-deps create-locks ci-local lint format generate-qr-codes start-notebook
+.PHONY: help install convert clean notebooks build-website serve-website clean-website build-pdf clean-pdf update-deps test-deps create-locks ci-local lint format generate-qr-codes start-notebook test
 
 help:
 	@echo "Research Software Engineering Lectures - Makefile"
@@ -19,6 +19,7 @@ help:
 	@echo "  test-deps        - Test current dependencies without creating lock files"
 	@echo "  create-locks     - Create conda-lock files for all platforms"
 	@echo "  ci-local         - Run local CI checks (lint, syntax, convert) before committing"
+	@echo "  test             - Run smoke tests for the automation scripts in scripts/"
 	@echo "  lint             - Run black formatting check and ruff linting on all Python files"
 	@echo "  format           - Auto-format all Python files with black"
 	@echo "  help             - Show this help message"
@@ -90,6 +91,10 @@ create-locks:
 ci-local:
 	@echo "Running local CI checks (same as GitHub Actions)..."
 	@bash scripts/local_ci_check.sh
+
+test:
+	@echo "Running smoke tests for automation scripts..."
+	pytest tests/
 
 lint:
 	@echo "Running black formatting check..."
