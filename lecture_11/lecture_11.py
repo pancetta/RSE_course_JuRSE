@@ -516,8 +516,7 @@ import numpy as np
 
 print("NetCDF File Creation Example:")
 print("=" * 50)
-print(
-    """
+print("""
 # Example NetCDF file creation structure:
 
 nc_file = Dataset('ocean_temperature.nc', 'w', format='NETCDF4')
@@ -553,8 +552,7 @@ depth_var[:] = np.linspace(0, 500, 50)
 temp_var[0, :, 0, 0] = 22 - depth_var[:] / 50  # Thermocline
 
 nc_file.close()
-"""
-)
+""")
 
 # %% [markdown]
 # ### Reading NetCDF Files
@@ -566,8 +564,7 @@ nc_file.close()
 # Example of reading a NetCDF file structure
 print("NetCDF File Reading Example:")
 print("=" * 50)
-print(
-    """
+print("""
 # Reading NetCDF files:
 
 nc = Dataset('ocean_temperature.nc', 'r')
@@ -593,8 +590,7 @@ temp_at_100m = temp[:, 20, 0, 0]  # ~100m depth
 
 # Don't forget to close
 nc.close()
-"""
-)
+""")
 
 # %% [markdown]
 # **Why NetCDF is excellent for research:**
@@ -690,8 +686,7 @@ conn = sqlite3.connect(db_file)
 cursor = conn.cursor()
 
 # Create tables with proper schema
-cursor.execute(
-    """
+cursor.execute("""
 CREATE TABLE experiments (
     experiment_id INTEGER PRIMARY KEY AUTOINCREMENT,
     experiment_name TEXT NOT NULL,
@@ -703,11 +698,9 @@ CREATE TABLE experiments (
     metadata TEXT,  -- JSON for flexible metadata
     created_at TEXT DEFAULT CURRENT_TIMESTAMP
 )
-"""
-)
+""")
 
-cursor.execute(
-    """
+cursor.execute("""
 CREATE TABLE measurements (
     measurement_id INTEGER PRIMARY KEY AUTOINCREMENT,
     experiment_id INTEGER NOT NULL,
@@ -718,21 +711,16 @@ CREATE TABLE measurements (
     uncertainty REAL,
     FOREIGN KEY (experiment_id) REFERENCES experiments (experiment_id)
 )
-"""
-)
+""")
 
 # Create index for fast queries
-cursor.execute(
-    """
+cursor.execute("""
 CREATE INDEX idx_experiment_date ON experiments(date_conducted)
-"""
-)
+""")
 
-cursor.execute(
-    """
+cursor.execute("""
 CREATE INDEX idx_measurement_property ON measurements(property_name)
-"""
-)
+""")
 
 # Insert sample experiments with FAIR metadata
 experiments = [
@@ -815,52 +803,44 @@ print("✅ Database created with experiments and measurements")
 
 # %%
 # Query 1: Get all experiments by date
-cursor.execute(
-    """
+cursor.execute("""
     SELECT experiment_name, researcher, date_conducted, temperature
     FROM experiments
     ORDER BY date_conducted
-"""
-)
+""")
 
 print("All experiments:")
 for row in cursor.fetchall():
     print(f"  {row[0]}: {row[2]}, {row[3]}K by {row[1]}")
 
 # Query 2: Get average thickness over time for experiment 1
-cursor.execute(
-    """
+cursor.execute("""
     SELECT measurement_time, AVG(value) as avg_thickness, AVG(uncertainty) as avg_uncertainty
     FROM measurements
     WHERE experiment_id = 1 AND property_name = 'thickness'
     GROUP BY measurement_time
     ORDER BY measurement_time
-"""
-)
+""")
 
 print("\nThickness evolution (Experiment 1):")
 for row in cursor.fetchall():
     print(f"  Time {row[0]:.1f}h: {row[1]:.2f} ± {row[2]:.2f} nm")
 
 # Query 3: Find experiments with temperature above 1175K
-cursor.execute(
-    """
+cursor.execute("""
     SELECT experiment_name, temperature, pressure
     FROM experiments
     WHERE temperature > 1175
-"""
-)
+""")
 
 print("\nHigh-temperature experiments:")
 for row in cursor.fetchall():
     print(f"  {row[0]}: {row[1]}K, {row[2]} Pa")
 
 # Query 4: Get metadata for specific experiment
-cursor.execute(
-    """
+cursor.execute("""
     SELECT metadata FROM experiments WHERE experiment_name = 'Graphene_Synthesis_001'
-"""
-)
+""")
 metadata_json = cursor.fetchone()[0]
 metadata = json.loads(metadata_json)
 print(f"\nExperiment metadata:")
