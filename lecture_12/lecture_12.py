@@ -281,7 +281,13 @@
 # ```
 
 # %% [markdown]
+# Drawn as a graph, this Makefile is exactly the DAG `make` builds internally to decide what
+# to run and in what order:
+#
 # <img src="figures/make_dependency_dag.svg" alt="Directed acyclic graph of the Make pipeline: raw temperature data flows through cleaning, then fans out in parallel to plots and statistics, which join into the final report" width="760"/>
+#
+# *`plots.png` and `statistics.txt` both depend only on `temperature_clean.csv`, not on each
+# other—that's what makes them safe to build in parallel with `make -j`.*
 #
 # **Key Make features demonstrated:**
 #

@@ -122,6 +122,10 @@
 #
 # <img src="figures/ai_tool_spectrum.svg" alt="Spectrum of AI coding tools from autocomplete-style through chat-style to agentic, with review effort increasing as autonomy increases" width="700"/>
 #
+# *The three categories sit on a spectrum, not in separate boxes: as tools move from
+# autocomplete toward agentic, you see less of the process and the review effort you owe
+# on the result goes up accordingly.*
+#
 # ### How These Tools Actually Work
 #
 # AI coding assistants are built on **Large Language Models (LLMs)** trained on huge amounts

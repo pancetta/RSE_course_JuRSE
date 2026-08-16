@@ -146,7 +146,12 @@
 # - BibTeX entry
 # - DOI for specific versions
 #
+# These six types form a hierarchy, from the widest audience to the narrowest:
+#
 # <img src="figures/documentation_hierarchy.svg" alt="Documentation hierarchy pyramid from README at the broad base to citation guide at the narrow, specialist top" width="700"/>
+#
+# *Every visitor reads the README; almost none of them need the citation guide. Write in
+# that order, and stop as soon as the documentation matches the size of your audience.*
 
 # %% [markdown]
 # ## Part 3: Writing an Effective README

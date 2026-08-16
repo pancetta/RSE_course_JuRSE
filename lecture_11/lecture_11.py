@@ -108,6 +108,9 @@
 #
 # <img src="figures/fair_principles.svg" alt="The FAIR principles: Findable, Accessible, Interoperable, and Reusable, each shown with its defining criteria" width="700"/>
 #
+# *Note that FAIR is about metadata and access, not about openness—FAIR data can still be
+# restricted, as long as the conditions for accessing it are clearly documented.*
+#
 # **Reference**: Wilkinson et al. (2016), "The FAIR Guiding Principles for
 # scientific data management and stewardship", *Scientific Data*, 3:160018.
 # DOI: 10.1038/sdata.2016.18

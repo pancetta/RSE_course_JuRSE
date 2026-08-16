@@ -113,6 +113,10 @@
 # it from happening again.
 #
 # <img src="figures/stationwatch_what_went_wrong.svg" alt="StationWatch before and after: two nearly-identical 80-line functions reaching into differently-structured readings, versus one shared calculate_statistics function" width="700"/>
+#
+# *Nothing here was a bug — every check the team ran passed. The problem was structural, and
+# structural problems don't show up until the second time you need the same logic. Part 2
+# starts with the principle that would have prevented it.*
 
 # %% [markdown]
 # ## Part 2: Design Principles for Maintainable Code
@@ -331,6 +335,10 @@ print("Each function has ONE clear job! ✓")
 # ```
 #
 # <img src="figures/separation_of_concerns_pipeline.svg" alt="Pipeline diagram of five separated concerns: data access, validation, analysis, presentation, and export" width="700"/>
+#
+# *Each box only needs to know about its own job. Swap the data source—CSV file to NASA
+# satellite database—and only the first box changes; validation, analysis, and export are
+# untouched.*
 #
 # **Example in practice:** exactly the separation StationWatch was missing—if data access,
 # validation, and analysis had been kept apart, adding soil-moisture sensors would have meant

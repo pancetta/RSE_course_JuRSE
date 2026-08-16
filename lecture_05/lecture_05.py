@@ -205,6 +205,10 @@ print(f"Average anomaly: {sum(anomalies) / len(anomalies):.2f}°C")
 # system). Start with unit tests—they give you the most value for the least effort.
 #
 # <img src="figures/testing_pyramid.svg" alt="Testing pyramid: many fast unit tests at the base, fewer integration tests, and few slow acceptance tests at the top" width="600"/>
+#
+# *The pyramid shape is the point: the cheaper and faster a test is to write and run, the
+# more of them you should have. Regression tests aren't a separate layer—they apply at
+# every level, re-checking that a fixed bug stays fixed.*
 
 # %% [markdown]
 # ## Part 3: Writing Your First Test

@@ -171,7 +171,13 @@
 # feature branch, your colleague merges their changes into main. When you go to merge, Git needs to
 # reconcile both sets of changes.
 #
+# The two commit graphs below show the difference directly:
+#
 # <img src="figures/fast_forward_vs_three_way_merge.svg" alt="Comparison of a fast-forward merge, where the main pointer just slides forward, and a three-way merge, where Git creates a new merge commit with two parents" width="700"/>
+#
+# *Top: main hasn't moved, so `git merge` just slides the `main` pointer forward — no new
+# commit. Bottom: both branches gained commits, so Git creates a merge commit with two
+# parents, preserving both histories.*
 
 # %% [markdown]
 # ### Handling Merge Conflicts

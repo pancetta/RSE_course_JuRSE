@@ -122,7 +122,12 @@
 # - Write a test to prevent regression
 # - Verify the bug is actually fixed
 #
+# Notice this is a cycle, not a checklist you run once:
+#
 # <img src="figures/debugging_cycle.svg" alt="Cyclic flowchart of the debugging process: reproduce, isolate, hypothesize, test, fix and verify, then repeat" width="600"/>
+#
+# *If step 4 disproves your hypothesis, go back to step 3 with a new one—don't start
+# guessing at random fixes. Once verified, the cycle starts over for the next bug.*
 #
 # Let's see this process in action.
 

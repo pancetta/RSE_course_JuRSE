@@ -310,7 +310,13 @@
 # gives you fine control over what goes into each commit, allowing you to create logical,
 # focused commits even if you've changed multiple files.
 #
+# The diagram below shows how a single file moves through these three states:
+#
 # <img src="figures/git_three_stage_workflow.svg" alt="Diagram of the Git three-stage workflow: working directory, staging area, and repository" width="700"/>
+#
+# *`git add` copies a file's current content into the staging area; `git commit` writes what's
+# staged into the repository's permanent history. `git restore` (or `git checkout -- file`) can
+# send a file back to a previous state.*
 #
 # ```bash
 # # Configure Git (first time only)
