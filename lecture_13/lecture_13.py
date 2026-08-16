@@ -1041,21 +1041,14 @@ def analyze_nearby_stations_only(stations):
 #
 # ### Why Architectural Review Matters
 #
-# You've already seen this story — it's the StationWatch PR from Part 1. It "worked perfectly":
-# tests passed, the reviewer approved it, and it merged. Three months later, adding a third
-# instrument type meant untangling two tightly-coupled, duplicated functions — three weeks of
-# work for what should have taken three days. **A five-minute architectural review during that PR
-# would have caught the design issue early.**
+# You know why: it's the StationWatch PR from Part 1. **A five-minute architectural review during
+# that PR would have caught the design issue that cost three weeks later.** Architectural problems
+# compound—a poorly designed function becomes a poorly designed module, then a poorly designed
+# system—so catching them in review is far cheaper than refactoring later.
 #
-# **Architectural problems compound**: A poorly designed function becomes a poorly designed module,
-# then a poorly designed system. Catching design issues in review prevents expensive refactoring later.
-#
-# **What architectural review catches**:
-# - Code smells (Part 3): god functions, tight coupling, duplication
-# - Violation of design principles (Part 2): DRY, single responsibility
-# - Technical debt accumulation (Part 4): quick hacks that should be refactored
-# - Missing abstractions or poor API design
-# - Inconsistent patterns across the codebase
+# **What architectural review catches, beyond correctness and style**: code smells (Part 3),
+# violations of the design principles from Part 2, technical debt (Part 4), missing abstractions,
+# and inconsistent patterns across the codebase.
 #
 # ### Architectural Review Checklist
 #
@@ -1081,44 +1074,14 @@ def analyze_nearby_stations_only(stations):
 # #  a shared calculate_statistics(data) function and call it from both?"
 # ```
 #
-# **Single Responsibility Principle**
-# ```python
-# # ❌ Violates SRP:
-# def process_experiment(filename):
-#     # Loads data
-#     # Cleans data
-#     # Analyzes data
-#     # Generates plots
-#     # Saves results
-#     # Sends email notification
-#     pass  # 300 lines of mixed concerns
+# **Single Responsibility and Separation of Concerns get the same treatment in review** — watch
+# for one function whose name would need "and" to describe honestly, or calculation logic mixed
+# with file I/O:
 #
-# # Review comment:
-# # "This function has too many responsibilities. Consider splitting into:
-# #  - load_data(filename)
-# #  - clean_data(raw_data)
-# #  - analyze_data(clean_data)
-# #  - save_results(results, output_path)
-# # This would make testing easier and allow reuse of individual steps."
-# ```
-#
-# **Separation of Concerns**
-# ```python
-# # ❌ Mixes calculation with I/O:
-# def calculate_correlation(file1, file2):
-#     with open(file1) as f:
-#         data1 = [float(line) for line in f]
-#     with open(file2) as f:
-#         data2 = [float(line) for line in f]
-#     # correlation calculation...
-#
-# # Review comment:
-# # "This function mixes file I/O with calculation logic. Suggest:
-# #  def calculate_correlation(data1, data2):  # Pure calculation
-# #      ...
-# # This makes it testable without creating files and reusable with
-# # data from databases, APIs, or other sources."
-# ```
+# | Violation | Review Comment Example |
+# |-----------|------------------------|
+# | **SRP**: one 300-line function loads, cleans, analyzes, plots, *and* emails results | "Could we split this into `load_data`, `clean_data`, `analyze_data`, and `save_results`? That would make each piece testable and reusable on its own." |
+# | **Separation of Concerns**: `calculate_correlation(file1, file2)` opens the files itself | "Could this take `data1, data2` instead of filenames? Pure calculation is testable without creating files, and reusable with data from a database or API." |
 #
 # #### 2. Code Smells (Part 3)
 #
@@ -1132,19 +1095,6 @@ def analyze_nearby_stations_only(stations):
 # | **Global State** | Uses/modifies global variables | "Pass this as a parameter for testability" |
 # | **Poor Naming** | Variables like `tmp`, `x2`, `calc` | "More descriptive names would help readability" |
 # | **Duplication** | Same logic in multiple places | "Extract shared logic to avoid duplication" |
-#
-# **Example review comment addressing smell:**
-# ```
-# The new process_climate_data() function looks like it's doing a lot.
-# I count at least 6 different responsibilities (loading, validation,
-# transformation, analysis, visualization, export). This makes it hard
-# to test and reuse.
-#
-# Suggestion: Could we split this into a pipeline of smaller functions?
-# That would also make it easier to profile performance bottlenecks later.
-#
-# See Part 3's "God Function" anti-pattern above.
-# ```
 #
 # #### 3. API Design and Consistency
 #
@@ -1168,19 +1118,9 @@ def analyze_nearby_stations_only(stations):
 # #  (Pa, hPa, bar, etc.). API consistency makes the library easier to learn."
 # ```
 #
-# **Look for good abstractions:**
-# ```python
-# # ✅ Good abstraction in PR:
-# def load_scientific_data(filename, data_type, units=None):
-#     """Generic loader for any scientific data type."""
-#     # Handles temperature, pressure, humidity, etc.
-#     pass
-#
-# # Review comment:
-# # "Nice abstraction! This unifies our data loading interface and will
-# #  make adding new data types easier. One suggestion: document the
-# #  supported data_type values in the docstring."
-# ```
+# The flip side is worth praising, not just flagging: when a PR *does* unify an interface — say,
+# one `load_scientific_data(filename, data_type, units=None)` instead of a loader per instrument
+# type — say so. A good abstraction deserves the same specific feedback as a missing one.
 #
 # #### 4. Testability
 #
@@ -1225,21 +1165,11 @@ def analyze_nearby_stations_only(stations):
 #
 # ### When to Suggest Refactoring in Review
 #
-# **The refactoring judgment call:**
+# ✅ **Do suggest it** when a design issue blocks testability, violates a project standard, or is
+# localized and low-risk to fix while the PR is already touching that code.
 #
-# ✅ **Do suggest refactoring when:**
-# - Design issue makes code hard to test (blocks quality)
-# - Pattern violates established project standards (consistency)
-# - Change will prevent future bugs (safety)
-# - Refactoring is localized and low-risk (small change)
-# - PR is already touching that code (no extra churn)
-#
-# ⚠️ **Don't insist on refactoring when:**
-# - Change is purely aesthetic (nitpicking)
-# - Refactoring would expand PR scope significantly (scope creep)
-# - Code is temporary/experimental (premature optimization)
-# - Team has more urgent priorities (time constraints)
-# - Author is new contributor (overwhelming)
+# ⚠️ **Don't insist on it** when the change is purely aesthetic, would expand the PR's scope,
+# touches temporary/experimental code, or would overwhelm a new contributor.
 #
 # **Balance is key**: Focus on architectural issues that matter, not perfection.
 #
@@ -1262,47 +1192,25 @@ def analyze_nearby_stations_only(stations):
 #
 # **Components of good architectural feedback:**
 #
-# 1. **Explain the problem**: "This makes testing hard because..."
-# 2. **Suggest a solution**: "Could we extract this into..."
-# 3. **Explain the benefit**: "This would make it easier to..."
-# 4. **Ask, don't demand**: "What do you think?"
-# 5. **Provide references**: "See Part 3 on code smells"
-# 6. **Offer to discuss**: "Happy to chat if you want to explore options"
+# 1. **Explain the problem and suggest a solution**: "This makes testing hard because... could we
+#    extract this into..."
+# 2. **Ask, don't demand, and offer to discuss**: "What do you think? Happy to chat if you want to
+#    explore options."
+# 3. **Provide references**: "See Part 3 on code smells"
 #
 # ### Balancing Nitpicking vs. Structural Issues
 #
 # **Not all review comments are equally important. Prioritize:**
 #
-# **🔴 Critical (must fix before merge):**
-# - Correctness bugs
-# - Security vulnerabilities
-# - Breaking changes to public APIs
-# - Major architectural flaws (god functions, tight coupling)
-# - Missing tests for critical functionality
+# - **🔴 Critical (must fix before merge)**: correctness bugs, security vulnerabilities, major
+#   architectural flaws (god functions, tight coupling), missing tests for critical functionality
+# - **🟡 Important (should fix, but negotiable)**: inconsistencies with project patterns, code
+#   smells that hinder maintenance, missing documentation
+# - **🟢 Nice-to-have (optional suggestions)**: style preferences, naming improvements,
+#   refactoring opportunities beyond the PR's scope
 #
-# **🟡 Important (should fix, but negotiable):**
-# - Minor design improvements
-# - Inconsistencies with project patterns
-# - Missing documentation
-# - Performance concerns
-# - Code smells that hinder maintenance
-#
-# **🟢 Nice-to-have (optional suggestions):**
-# - Style preferences
-# - Variable naming improvements
-# - Additional test cases for rare edge cases
-# - Refactoring opportunities
-#
-# **Mark priority in reviews:**
-# ```
-# [Critical] This function modifies global state, which will cause race
-# conditions in our parallel processing pipeline. We must fix this.
-#
-# [Important] The duplicated logic here violates DRY. Suggest extracting
-# to a shared function for maintainability.
-#
-# [Nit] Consider renaming 'tmp' to 'temporary_values' for clarity.
-# ```
+# **Mark the priority explicitly** — a `[Critical]`, `[Important]`, or `[Nit]` tag at the start of
+# a comment tells the author what blocks the merge and what's a suggestion for later.
 #
 # ### Spotting Architectural Smells Across PRs
 #
@@ -1323,31 +1231,21 @@ def analyze_nearby_stations_only(stations):
 #
 # ### Code Review: A Learning Opportunity
 #
-# **Reviews teach design skills both ways:**
-#
-# **For reviewers:**
-# - See how others solve similar problems
-# - Learn new patterns and idioms
-# - Practice articulating design principles
-#
-# **For authors:**
-# - Get feedback on design choices
-# - Learn team standards and expectations
-# - Improve design skills through iteration
-#
-# **Research software insight**: Many researchers haven't had formal software engineering
-# training. Code review is how we collectively learn good design. Be patient, be educational,
-# and remember: we're all learning together.
+# Reviews teach design skills in both directions: reviewers see how others solve similar
+# problems and practice articulating design principles, while authors get feedback on their
+# design choices and learn team standards through iteration. Many researchers haven't had formal
+# software engineering training — code review is how a team collectively learns good design. Be
+# patient, be educational, and remember: everyone is still learning this.
 #
 # ### Key Takeaways: Architectural Code Review
 #
-# 1. **Look beyond correctness** - review for maintainability and design quality
+# 1. **Look beyond correctness** - review for maintainability and design quality, and think
+#    about whether the design will adapt well to future change
 # 2. **Apply the principles from Parts 2-3** - DRY, SRP, code smells
-# 3. **Think about future evolution** - will this design adapt well?
-# 4. **Balance perfectionism and pragmatism** - not every issue needs fixing now
-# 5. **Be constructive and educational** - reviews are learning opportunities
-# 6. **Prioritize feedback** - critical vs. important vs. nice-to-have
-# 7. **Catch patterns early** - prevent architectural debt from accumulating
+# 3. **Balance perfectionism and pragmatism** - not every issue needs fixing now; prioritize
+#    critical vs. important vs. nice-to-have
+# 4. **Be constructive and educational** - reviews are learning opportunities in both directions
+# 5. **Catch patterns early** - watch for the same design problem recurring across PRs
 #
 # **Connections:**
 # - **Part 2**: Apply design principles in review
