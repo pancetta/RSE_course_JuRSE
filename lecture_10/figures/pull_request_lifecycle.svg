@@ -1,0 +1,65 @@
+<svg viewBox="0 0 780 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The pull request lifecycle: sync main, create a branch, edit and commit, push, open the pull request, then a review feedback loop back to editing until the reviewer approves, CI passes, and the branch is merged.">
+  <defs>
+    <marker id="arrow10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrow10warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="778" height="398" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">The Pull Request Lifecycle</text>
+
+  <!-- Row 1 -->
+  <rect x="40" y="70" width="150" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="115" y="94" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1e3a8a">1. Sync main</text>
+  <text x="115" y="112" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">git pull origin</text>
+  <text x="115" y="124" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">main</text>
+
+  <rect x="220" y="70" width="150" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="295" y="94" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1e3a8a">2. New branch</text>
+  <text x="295" y="112" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">git checkout -b</text>
+  <text x="295" y="124" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">fix/...</text>
+
+  <rect x="400" y="70" width="150" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="475" y="94" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1e3a8a">3. Edit, test, commit</text>
+  <text x="475" y="112" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">pytest tests/</text>
+  <text x="475" y="124" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">git commit</text>
+
+  <rect x="580" y="70" width="150" height="72" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="655" y="94" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#1e3a8a">4. Push</text>
+  <text x="655" y="112" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">git push origin</text>
+  <text x="655" y="124" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#1e40af">&lt;branch&gt;</text>
+
+  <line x1="190" y1="106" x2="216" y2="106" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow10)"/>
+  <line x1="370" y1="106" x2="396" y2="106" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow10)"/>
+  <line x1="550" y1="106" x2="576" y2="106" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow10)"/>
+
+  <!-- wrap to row 2 -->
+  <path d="M 655 142 C 655 190, 140 190, 140 246" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow10)"/>
+
+  <!-- Row 2 -->
+  <rect x="40" y="250" width="200" height="72" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="140" y="274" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#9a3412">5. Open PR / MR</text>
+  <text x="140" y="292" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#9a3412">fill template,</text>
+  <text x="140" y="304" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#9a3412">request reviewers</text>
+
+  <rect x="285" y="250" width="200" height="72" rx="8" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="385" y="274" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#9a3412">6. Review</text>
+  <text x="385" y="292" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#9a3412">reviewer comments,</text>
+  <text x="385" y="304" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#9a3412">requests changes</text>
+
+  <rect x="530" y="250" width="200" height="72" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="630" y="274" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#14532d">7. Approve + CI ✓</text>
+  <text x="630" y="292" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#166534">Merge →</text>
+  <text x="630" y="304" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#166534">delete branch</text>
+
+  <line x1="240" y1="286" x2="281" y2="286" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow10)"/>
+  <line x1="485" y1="286" x2="526" y2="286" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow10)"/>
+
+  <!-- feedback loop -->
+  <path d="M 385 246 C 385 200, 475 200, 475 146" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow10warn)"/>
+  <text x="480" y="196" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#9a3412">changes requested — revise and re-push</text>
+
+  <text x="390" y="360" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#334155">GitHub calls it a Pull Request, GitLab a Merge Request — same lifecycle either way.</text>
+</svg>

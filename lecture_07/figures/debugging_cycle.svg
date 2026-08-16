@@ -1,0 +1,55 @@
+<svg viewBox="0 0 600 620" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cyclic flowchart of the systematic debugging process: reproduce the bug, isolate the problem, form a hypothesis, test the hypothesis, fix and verify, then repeat for the next bug. A feedback arrow returns from testing to hypothesis when the hypothesis is wrong.">
+  <defs>
+    <marker id="arrow7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="arrow7warn" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="598" height="618" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="300" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">Debugging as the Scientific Method</text>
+
+  <!-- cycle arrows -->
+  <path d="M 355 158 C 400 190, 440 210, 452 248" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow7)"/>
+  <path d="M 468 308 C 468 370, 450 430, 435 470" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow7)"/>
+  <line x1="338" y1="510" x2="262" y2="510" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow7)"/>
+  <path d="M 165 470 C 150 430, 132 370, 132 308" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow7)"/>
+  <path d="M 148 248 C 160 210, 200 190, 245 158" fill="none" stroke="#2563eb" stroke-width="2.5" marker-end="url(#arrow7)"/>
+  <text x="118" y="185" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#2563eb">repeat for</text>
+  <text x="118" y="198" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#2563eb">next bug</text>
+
+  <!-- feedback: hypothesis wrong -->
+  <path d="M 300 545 C 300 575, 340 575, 400 495" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow7warn)"/>
+  <text x="300" y="590" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#9a3412">hypothesis wrong — try another</text>
+
+  <!-- N1 top: Reproduce -->
+  <rect x="215" y="95" width="170" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="300" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">1. Reproduce</text>
+  <text x="300" y="139" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">get a reliable failing case</text>
+  <text x="300" y="154" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">before touching any code</text>
+
+  <!-- N2 right: Isolate -->
+  <rect x="415" y="240" width="170" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="500" y="267" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">2. Isolate</text>
+  <text x="500" y="284" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">narrow to the smallest</text>
+  <text x="500" y="299" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">code that still fails</text>
+
+  <!-- N3 lower right: Hypothesize -->
+  <rect x="338" y="475" width="170" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="423" y="502" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">3. Hypothesize</text>
+  <text x="423" y="519" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">form one concrete,</text>
+  <text x="423" y="534" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">testable explanation</text>
+
+  <!-- N4 lower left: Test -->
+  <rect x="92" y="475" width="170" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="177" y="502" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">4. Test it</text>
+  <text x="177" y="519" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">check the hypothesis</text>
+  <text x="177" y="534" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">against the evidence</text>
+
+  <!-- N5 left: Fix and verify -->
+  <rect x="15" y="240" width="170" height="70" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="100" y="267" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#14532d">5. Fix &amp; verify</text>
+  <text x="100" y="284" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#166534">apply the fix, confirm</text>
+  <text x="100" y="299" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#166534">the bug is gone</text>
+</svg>

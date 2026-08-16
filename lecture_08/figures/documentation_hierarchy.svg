@@ -1,0 +1,36 @@
+<svg viewBox="0 0 780 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Documentation hierarchy pyramid with six tiers: README at the wide base for first-time visitors, then installation guide, tutorials, API documentation, contributing guide, and citation guide at the narrow top for the most specialized audience.">
+  <rect x="1" y="1" width="778" height="438" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">The Documentation Hierarchy</text>
+
+  <polygon points="270,70 370,70 413,125 227,125" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="320" y="103" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#1e3a8a">Citation Guide</text>
+  <text x="320" y="117" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8.5" fill="#1e40af">BibTeX · DOI</text>
+
+  <polygon points="227,125 413,125 457,180 183,180" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="320" y="157" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">Contributing Guide</text>
+  <text x="320" y="171" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9" fill="#1e40af">for collaborators</text>
+
+  <polygon points="183,180 457,180 500,235 140,235" fill="#bfdbfe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="320" y="212" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">API Documentation</text>
+  <text x="320" y="226" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#1e40af">auto-generated from docstrings</text>
+
+  <polygon points="140,235 500,235 544,290 96,290" fill="#93c5fd" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="320" y="267" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1e3a8a">Tutorials</text>
+  <text x="320" y="281" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e3a8a">learning by doing, notebooks</text>
+
+  <polygon points="96,290 544,290 587,345 53,345" fill="#60a5fa" stroke="#1d4ed8" stroke-width="1.5"/>
+  <text x="320" y="322" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1e3a8a">Installation Guide</text>
+  <text x="320" y="336" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e3a8a">detailed setup steps</text>
+
+  <polygon points="53,345 587,345 630,400 10,400" fill="#2563eb" stroke="#1e40af" stroke-width="1.5"/>
+  <text x="320" y="377" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#ffffff">README</text>
+  <text x="320" y="392" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#dbeafe">first 5 minutes — convince someone to try it</text>
+
+  <line x1="413" y1="97" x2="650" y2="97" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="655" y="93" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#64748b">narrower,</text>
+  <text x="655" y="106" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#64748b">specialist audience</text>
+
+  <line x1="587" y1="372" x2="650" y2="372" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="655" y="368" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#64748b">broadest audience,</text>
+  <text x="655" y="381" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#64748b">first-time visitors</text>
+</svg>
