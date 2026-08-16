@@ -203,6 +203,8 @@ print(f"Average anomaly: {sum(anomalies) / len(anomalies):.2f}°C")
 # **Testing pyramid**: Most projects should have many unit tests (fast, easy to write), fewer
 # integration tests (slower, test interactions), and a few acceptance tests (slowest, test whole
 # system). Start with unit tests—they give you the most value for the least effort.
+#
+# <img src="figures/testing_pyramid.svg" alt="Testing pyramid: many fast unit tests at the base, fewer integration tests, and few slow acceptance tests at the top" width="600"/>
 
 # %% [markdown]
 # ## Part 3: Writing Your First Test

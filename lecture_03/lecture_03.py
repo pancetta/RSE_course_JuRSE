@@ -120,6 +120,8 @@
 # process and more of the result. Your review habits need to adjust accordingly—which is
 # exactly what Part 5 is about.
 #
+# <img src="figures/ai_tool_spectrum.svg" alt="Spectrum of AI coding tools from autocomplete-style through chat-style to agentic, with review effort increasing as autonomy increases" width="700"/>
+#
 # ### How These Tools Actually Work
 #
 # AI coding assistants are built on **Large Language Models (LLMs)** trained on huge amounts

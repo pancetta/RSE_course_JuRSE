@@ -170,6 +170,8 @@
 # **When does this happen?** This is common in collaborative projects. While you're working on your
 # feature branch, your colleague merges their changes into main. When you go to merge, Git needs to
 # reconcile both sets of changes.
+#
+# <img src="figures/fast_forward_vs_three_way_merge.svg" alt="Comparison of a fast-forward merge, where the main pointer just slides forward, and a three-way merge, where Git creates a new merge commit with two parents" width="700"/>
 
 # %% [markdown]
 # ### Handling Merge Conflicts

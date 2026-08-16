@@ -310,6 +310,8 @@
 # gives you fine control over what goes into each commit, allowing you to create logical,
 # focused commits even if you've changed multiple files.
 #
+# <img src="figures/git_three_stage_workflow.svg" alt="Diagram of the Git three-stage workflow: working directory, staging area, and repository" width="700"/>
+#
 # ```bash
 # # Configure Git (first time only)
 # git config --global user.name "Your Name"

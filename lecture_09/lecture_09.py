@@ -172,20 +172,6 @@
 # - Slower startup (minutes)
 # - Strong isolation
 #
-# ```
-# ┌─────────────────────────────────┐
-# │   App A   │   App B   │  App C  │
-# ├───────────┼───────────┼─────────┤
-# │  Guest OS │  Guest OS │ Guest OS│
-# ├───────────┴───────────┴─────────┤
-# │         Hypervisor              │
-# ├─────────────────────────────────┤
-# │         Host OS                 │
-# ├─────────────────────────────────┤
-# │         Hardware                │
-# └─────────────────────────────────┘
-# ```
-#
 # **Containers:**
 # - Process-level isolation
 # - Share host OS kernel
@@ -193,18 +179,7 @@
 # - Fast startup (seconds)
 # - Good isolation
 #
-# ```
-# ┌─────────────────────────────────┐
-# │   App A   │   App B   │  App C  │
-# │   + Libs  │   + Libs  │  + Libs │
-# ├───────────┴───────────┴─────────┤
-# │    Container Runtime (Docker)   │
-# ├─────────────────────────────────┤
-# │         Host OS                 │
-# ├─────────────────────────────────┤
-# │         Hardware                │
-# └─────────────────────────────────┘
-# ```
+# <img src="figures/vm_vs_container_architecture.svg" alt="Side-by-side architecture: VMs stack a full guest OS under every app on a hypervisor, while containers share one host kernel through a container runtime with no guest OS layer" width="760"/>
 #
 # ### Key Container Concepts
 #

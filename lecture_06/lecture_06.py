@@ -1232,6 +1232,8 @@ print("✅ Could NOT publish with broken code")
 # 6. Developer fixes bug before it causes harm
 #
 # **Result:** Crisis averted! ✅
+#
+# <img src="figures/without_ci_vs_with_ci.svg" alt="Branching flowchart: the same buggy commit without CI leads to a retracted paper, while with CI the bug is caught and fixed before it spreads" width="700"/>
 
 # %% [markdown]
 # ## Part 10: Setting Up CI for Your Research Project

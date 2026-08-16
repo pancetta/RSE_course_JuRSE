@@ -122,6 +122,8 @@
 # - Write a test to prevent regression
 # - Verify the bug is actually fixed
 #
+# <img src="figures/debugging_cycle.svg" alt="Cyclic flowchart of the debugging process: reproduce, isolate, hypothesize, test, fix and verify, then repeat" width="600"/>
+#
 # Let's see this process in action.
 
 # %% [markdown]

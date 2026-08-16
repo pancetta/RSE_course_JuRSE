@@ -185,6 +185,8 @@
 # 2. **Workflows (Lecture 12)**: Automate analysis pipelines
 # 3. **Reproducibility (Lecture 9)**: Enable others to verify your work
 #
+# <img src="figures/four_stacks_course_map.svg" alt="The 14 lectures grouped into three stacks: Foundation, Quality, and Research" width="700"/>
+#
 # ### Skills You've Gained
 #
 # By completing this course, you can now:

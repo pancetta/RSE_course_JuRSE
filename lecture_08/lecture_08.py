@@ -145,6 +145,8 @@
 # - How to cite your software
 # - BibTeX entry
 # - DOI for specific versions
+#
+# <img src="figures/documentation_hierarchy.svg" alt="Documentation hierarchy pyramid from README at the broad base to citation guide at the narrow, specialist top" width="700"/>
 
 # %% [markdown]
 # ## Part 3: Writing an Effective README

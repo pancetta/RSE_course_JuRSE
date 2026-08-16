@@ -106,6 +106,8 @@
 # - Associated with detailed provenance
 # - Meets domain-relevant community standards
 #
+# <img src="figures/fair_principles.svg" alt="The FAIR principles: Findable, Accessible, Interoperable, and Reusable, each shown with its defining criteria" width="700"/>
+#
 # **Reference**: Wilkinson et al. (2016), "The FAIR Guiding Principles for
 # scientific data management and stewardship", *Scientific Data*, 3:160018.
 # DOI: 10.1038/sdata.2016.18

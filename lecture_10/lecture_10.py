@@ -210,6 +210,8 @@
 # - Merge the PR (squash, rebase, or merge commit - team decision)
 # - Delete the feature branch
 #
+# <img src="figures/pull_request_lifecycle.svg" alt="The pull request lifecycle from syncing main through opening the PR, a review feedback loop, and merging after approval" width="700"/>
+#
 # ### Platform Comparison: GitHub vs GitLab
 #
 # **GitHub Pull Requests:**

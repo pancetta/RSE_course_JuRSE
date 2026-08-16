@@ -281,6 +281,8 @@
 # ```
 
 # %% [markdown]
+# <img src="figures/make_dependency_dag.svg" alt="Directed acyclic graph of the Make pipeline: raw temperature data flows through cleaning, then fans out in parallel to plots and statistics, which join into the final report" width="760"/>
+#
 # **Key Make features demonstrated:**
 #
 # - `$<`: First prerequisite (input file)
