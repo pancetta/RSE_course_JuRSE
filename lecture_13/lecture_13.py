@@ -14,7 +14,7 @@
 # ---
 
 # %% [markdown]
-# # Lecture 13: AI-Assisted Coding for Research Software
+# # Lecture 13: Software Architecture and Design for Research Software
 #
 #
 # ## Quick Access
@@ -33,1225 +33,1458 @@
 # </div>
 #
 # ## Overview
-# Artificial Intelligence coding assistants have rapidly become widespread tools in
-# software development, offering to help write, debug, and document code. For research
-# software engineers, these tools present both exciting opportunities and serious risks.
-# This lecture explores how to use AI coding assistants effectively and safely,
-# understanding their capabilities and limitations, and navigating the legal and ethical
-# considerations specific to research software.
+# This lecture is about the code-level design decisions that determine whether research software
+# stays maintainable as it grows — how you shape functions and modules, not the large-scale
+# architecture of distributed systems (that stays out of scope for this course, as ever). We'll
+# follow a single running example through four connected stages: the design principles that keep
+# code maintainable in the first place, the code smells that signal when those principles have
+# been violated, the decision framework for what to do once problems have accumulated into
+# technical debt, and the architectural code review habit that catches all of the above before it
+# ships. Treated separately, these would be four topics. Followed through one story, they're one
+# practice: designing, recognizing, fixing, and reviewing for maintainability.
 #
 # **Duration**: ~90 minutes
 #
 # ## Prerequisites
 #
 # Before starting this lecture, you should be familiar with:
-# - Python programming (covered in Lectures 2-4)
-# - Writing functions and classes
-# - Basic software development practices
-# - All previous RSE concepts (testing, documentation, version control)
+# - Python functions, classes, and modules (Lectures 2 and 4)
+# - Writing and running tests with pytest, and what makes code "testable" (Lecture 5)
+# - Reading a git diff and participating in pull request review (Lecture 10)
+# - AI-assisted coding basics, including reviewing AI suggestions like a diff (covered in
+#   Lecture 3)
 #
-# This lecture assumes you're comfortable writing code and introduces AI tools to enhance your workflow.
+# This lecture assumes you're comfortable writing Python functions and have written or reviewed
+# at least one pull request.
 #
 # ## Learning Objectives
-# - Understand what AI coding assistants are and how they work
-# - Compare different types of AI assistance (integrated vs chat-based)
-# - Use GitHub Copilot and ChatGPT effectively for research coding
-# - Recognize common pitfalls and security risks
-# - Navigate legal implications (licensing, copyright, data protection)
-# - Understand self-hosted options for sensitive research code
-# - Apply best practices for AI-assisted research software development
+# - Apply DRY, Single Responsibility, and Separation of Concerns to keep research code
+#   maintainable as it grows
+# - Recognize common code smells — god functions, duplicated code, magic numbers, tight
+#   coupling, global state — and explain why they make code hard to test
+# - Decide when to refactor versus rewrite using a practical, risk-based framework
+# - Refactor incrementally, using tests to keep each step safe
+# - Review a pull request for architectural quality, not just correctness, and give
+#   constructive design feedback
+# - Recognize when the same design problem is recurring across multiple pull requests
 
 # %% [markdown]
-# ## Part 1: The Copy-Paste Catastrophe - A Cautionary Tale
+# ## Part 1: A Cautionary Tale - The PR That Worked Perfectly
 #
 # ### The Story
 #
-# Dr. Sarah Chen was excited. A new AI coding assistant had just been released, and it
-# promised to "write code from comments." She was under pressure to analyze genomic data
-# for an upcoming paper deadline. The AI seemed perfect - she could describe what she
-# needed, and it would generate the code instantly.
+# Meet StationWatch: a weather-station network analysis pipeline maintained by a five-person
+# research group. It started, like most research software does, as a single script one PhD
+# student wrote to answer one question — are two given stations far enough apart to be treated
+# as independent in a spatial-correlation model? The script loaded a CSV of station coordinates,
+# looped over every pair, and printed the ones within range.
 #
-# ```python
-# # She typed: "Function to normalize gene expression data"
-# # The AI generated a complete function in seconds
-# ```
+# Over the next two years, the script grew. Other lab members added new analyses, and each
+# addition reused the pattern that already existed: reach directly into the raw station
+# dictionaries wherever a field was needed, and write a new function around whatever shape of
+# data that function happened to touch. It worked. Every pull request passed review, because
+# every pull request produced correct numbers on the test data. Nobody was writing bad code on
+# purpose — they were doing what people do under a deadline: making the smallest change that
+# made the current task work.
 #
-# Sarah was impressed. The function looked professional, had docstrings, and even included
-# error handling. She didn't fully understand the normalization algorithm it used, but it
-# ran without errors and produced reasonable-looking results. She copied it into her
-# analysis pipeline.
+# Then came the PR that broke things — except it didn't look like it should have. A new postdoc
+# needed to add a second instrument type to the network: soil-moisture sensors, which report
+# readings in a different structure than the weather stations. The PR "worked perfectly": CI was
+# green, the reviewer approved it, and it merged. Three months later, when the team tried to add
+# a *third* instrument type, they discovered that soil-moisture support had been bolted on by
+# copy-pasting the station-analysis function and hand-editing the parts that differed. Now there
+# were two nearly-identical, 80-line functions, each reaching directly into a different
+# dictionary shape, and neither could be tested without constructing a full, realistic dataset by
+# hand. Adding the third instrument type meant untangling both functions first — an estimated
+# three weeks of work for a feature that should have taken three days.
 #
-# **Three weeks later**, during peer review, a reviewer asked: "Why did you use
-# quantile normalization instead of the standard TPM normalization for this dataset?"
+# ### What Went Wrong?
 #
-# Sarah froze. She didn't know what the AI had generated. Looking back at the code:
-# - The normalization method was inappropriate for her data type
-# - The algorithm had a subtle bug that only appeared with certain data distributions
-# - The function was nearly identical to GPL-licensed code (licensing violation)
-# - Her results were scientifically incorrect
+# Nothing in the offending PR was *incorrect*. Every review before it checked correctness and
+# style, and every check passed. What nobody was checking was **whether the code's structure
+# would survive the next change** — whether functions were reusable, whether pieces could be
+# tested independently, whether the design would bend or break when requirements shifted. That's
+# what this lecture is about: the code-level design habits that keep the *next* PR cheap, and the
+# review habits that catch the drift before it costs three weeks instead of three days.
 #
-# **The paper was rejected.** Worse, Sarah had to retract a conference presentation
-# based on the flawed analysis. The AI had been fast, but she hadn't understood what
-# it generated or verified it was correct.
-#
-# ### The Lessons
-#
-# This story illustrates several critical points:
-#
-# 1. **AI generates plausible code, not necessarily correct code**
-# 2. **Understanding your code is non-negotiable in research**
-# 3. **AI suggestions may have hidden bugs or use inappropriate algorithms**
-# 4. **Legal issues (licensing) can arise from AI-generated code**
-# 5. **Speed without comprehension is dangerous in science**
-#
-# With these lessons in mind, let's learn how to use AI assistants effectively and safely.
+# We'll follow StationWatch through the rest of this lecture — starting with the principles that
+# would have prevented the mess, then the smells that would have flagged it in progress, then the
+# decision about what to do once it's already there, and finally the review practice that stops
+# it from happening again.
 
 # %% [markdown]
-# ## Part 2: What AI Means for Research Software Engineers
+# ## Part 2: Design Principles for Maintainable Code
 #
-# ### AI as Tool, Not Replacement
+# Good software design starts with three principles that make code maintainable, reusable, and
+# easy to understand — and that would have kept StationWatch out of trouble in Part 1. These
+# principles come from decades of software engineering experience and apply especially well to
+# research software, where code often lives for years and is modified by multiple people
+# (including future you!).
 #
-# The rise of AI coding assistants has sparked anxiety in the software development
-# community: "Will AI replace programmers?" For Research Software Engineers, this question
-# misses the fundamental nature of our work. **AI doesn't replace RSEs—it changes how we work.**
+# #### Principle 1: DRY - Don't Repeat Yourself
 #
-# Think of AI assistants like calculators for mathematicians:
-# - Calculators didn't replace mathematicians
-# - They freed mathematicians from tedious arithmetic
-# - Mathematical thinking, proof design, and insight remain uniquely human
-# - The best mathematicians use calculators as tools to amplify their capabilities
+# **The problem**: Copy-pasting code creates maintenance nightmares. When you find a bug or need to
+# change behavior, you must remember to update all copies. Miss one, and you have inconsistent
+# behavior that's hard to track down.
 #
-# Similarly, AI coding assistants are tools that amplify RSE capabilities, not replacements
-# for RSE expertise.
+# **The solution**: Write code once, reuse it everywhere. If you find yourself copying and pasting,
+# extract that code into a function or class. This is where a good project structure is helpful!
 #
-# ### How AI Helps Research Software Engineers
-#
-# AI assistants can genuinely improve RSE productivity when used appropriately:
-#
-# **1. Accelerating Routine Tasks**
-# - Generating boilerplate code (imports, class structures, test fixtures)
-# - Writing standard docstrings following established patterns
-# - Converting data between formats (JSON to CSV, MATLAB to Python)
-# - Implementing well-known algorithms (sorting, searching, basic statistics)
-#
-# **2. Learning New Tools and Libraries**
-# - Getting started with unfamiliar APIs (example: "How do I read NetCDF in Python?")
-# - Understanding error messages and stack traces
-# - Exploring alternative approaches to a problem
-# - Quickly prototyping to test ideas
-#
-# **3. Code Quality Improvements**
-# - Suggesting better variable names
-# - Identifying potential edge cases
-# - Proposing more efficient algorithms
-# - Generating comprehensive test cases
-#
-# **4. Documentation and Communication**
-# - Writing clear README files and user guides
-# - Creating code examples for documentation
-# - Explaining complex code to collaborators
-# - Drafting comments for code review
-#
-# **What AI does well**: Pattern recognition, synthesis from examples, generating
-# variations on known solutions.
-#
-# ### What Remains Uniquely Human (and Why)
-#
-# Despite AI's capabilities, Research Software Engineering expertise remains fundamentally
-# human. Here's what AI cannot do—and why RSEs remain essential:
-#
-# **1. Understanding the Research Question**
-# - **Why AI fails**: AI doesn't understand scientific goals, hypotheses, or domain constraints
-# - **RSE expertise**: Translating research questions into computational approaches
-# - **Example**: Choosing between Monte Carlo and analytical methods for a climate model
-#   requires understanding physics, not just coding patterns
-#
-# **2. Evaluating Scientific Correctness**
-# - **Why AI fails**: AI recognizes code patterns but not scientific validity
-# - **RSE expertise**: Knowing if an algorithm is appropriate for the data and question
-# - **Example**: Sarah's story—AI suggested quantile normalization, but TPM was needed.
-#   Only domain knowledge reveals this mismatch.
-#
-# **3. Designing Software Architecture**
-# - **Why AI fails**: Large-scale design requires understanding trade-offs, scalability,
-#   maintainability over years—not patterns in existing code
-# - **RSE expertise**: Architecting systems that grow with research needs
-# - **Example**: Deciding whether a workflow needs a database, flat files, or HDF5
-#   requires understanding data access patterns, collaboration needs, and future scale
-#
-# **4. Critical Evaluation and Debugging**
-# - **Why AI fails**: AI can suggest fixes but doesn't understand the *why* behind bugs
-# - **RSE expertise**: Diagnosing root causes, not just symptoms
-# - **Example**: A simulation produces unexpected results. AI might fix syntax errors,
-#   but understanding if the physics equations are correct requires domain expertise.
-#
-# **5. Research Ethics and Integrity**
-# - **Why AI fails**: Cannot make ethical judgments about data use, privacy, or research practices
-# - **RSE expertise**: Navigating GDPR, research ethics, data sovereignty, reproducibility
-# - **Example**: Deciding what medical research data can be sent to cloud AI services
-#   requires understanding regulations and institutional policies
-#
-# **6. Collaboration and Mentoring**
-# - **Why AI fails**: Can't build teams, resolve conflicts, or mentor junior researchers
-# - **RSE expertise**: Working with researchers, teaching best practices, building community
-# - **Example**: Helping a PhD student understand not just how to write a function,
-#   but why testing matters and how to think about software design
-#
-# **The irreplaceable RSE**: You bring scientific domain knowledge, critical thinking,
-# ethical judgment, and collaborative skills. AI brings pattern matching and code generation.
-# These are complementary, not competing capabilities.
-#
-# ### Skills RSEs Need to Thrive with AI
-#
-# To make the best use of AI assistants while maintaining your expertise, develop these skills:
-#
-# **1. Critical Evaluation**
-# - **Skill**: Quickly assess if AI-generated code is correct, efficient, and appropriate
-# - **Why essential**: AI generates plausible code, not always correct code
-# - **How to develop**: Practice reviewing AI suggestions with the same rigor as code review
-#   - Does it handle edge cases?
-#   - Is the algorithm appropriate for the data size?
-#   - Are there security implications?
-#
-# **2. Prompt Engineering**
-# - **Skill**: Crafting clear, specific requests that get useful AI responses
-# - **Why essential**: Better prompts → better suggestions → less time debugging
-# - **How to develop**:
-#   - Be specific: "Generate pytest test for temperature validation with edge cases"
-#     vs "write tests"
-#   - Provide context: "For climate data with possible sensor errors..."
-#   - Iterate: If first response misses the mark, refine your prompt
-#
-# **3. Deep Domain Knowledge**
-# - **Skill**: Understanding the science behind your code
-# - **Why essential**: Only you can judge if the algorithm matches the scientific question
-# - **How to develop**:
-#   - Collaborate closely with domain scientists
-#   - Read the papers describing methods you implement
-#   - Attend domain-specific conferences, not just software ones
-#
-# **4. Software Engineering Fundamentals**
-# - **Skill**: Testing, version control, design patterns, performance optimization
-# - **Why essential**: AI can write individual functions but can't architect systems
-# - **How to develop**:
-#   - Study classic software engineering (Clean Code, Design Patterns)
-#   - Practice test-driven development (write tests first, then use AI for implementation)
-#   - Learn to profile and optimize—AI suggestions often prioritize clarity over performance
-#
-# **5. Ethical and Legal Awareness**
-# - **Skill**: Understanding privacy, licensing, research integrity
-# - **Why essential**: AI doesn't understand these constraints
-# - **How to develop**:
-#   - Learn about research ethics and data protection (GDPR, HIPAA)
-#   - Understand open-source licenses
-#   - Follow institutional policies on data and code
-#
-# **6. Effective Communication**
-# - **Skill**: Explaining technical decisions to non-technical researchers
-# - **Why essential**: AI can't translate between research and software perspectives
-# - **How to develop**:
-#   - Practice explaining code in terms of scientific impact
-#   - Write documentation for your future self, not just today's you
-#   - Mentor others—teaching clarifies your own understanding
-#
-# ### The Future RSE: Human Expertise + AI Tools
-#
-# The most effective Research Software Engineers in the AI era will be those who:
-#
-# 1. **Use AI for acceleration**: Let AI handle boilerplate while you focus on hard problems
-# 2. **Maintain deep expertise**: Your domain knowledge and critical thinking can't be automated
-# 3. **Stay critical**: Never trust AI output without verification
-# 4. **Keep learning**: Software and AI tools evolve; continuous learning is essential
-# 5. **Collaborate effectively**: Work with both AI tools and human researchers
-#
-# **Bottom line**: AI assistants make good RSEs more productive. They don't make
-# inexperienced developers into RSEs. The expertise—understanding research, evaluating
-# correctness, designing systems, navigating ethics—remains uniquely human.
-#
-# As we explore specific AI tools in the following sections, remember: you're learning
-# to use powerful tools, not training your replacement. Your judgment, expertise, and
-# scientific understanding are what make you valuable. AI just helps you work faster.
-
-# %% [markdown]
-# ## Part 3: What Are AI Coding Assistants?
-#
-# ### The Technology
-#
-# AI coding assistants are built on **Large Language Models (LLMs)** trained on vast
-# amounts of code from public repositories, documentation, and sometimes private sources.
-# These models learn patterns in code and can generate new code based on context.
-#
-# **Key characteristics:**
-# - **Pattern-based**: They recognize common coding patterns and reproduce them
-# - **Statistical**: They predict the most likely next tokens, not "understand" logic
-# - **Context-aware**: They use your current code as context for suggestions
-# - **Non-deterministic**: The same prompt may produce different outputs
-#
-# **Important**: AI assistants don't "understand" code the way humans do. They recognize
-# statistical patterns in text. This is powerful but has fundamental limitations.
-#
-# ### The Landscape (Brief Overview)
-#
-# **Integrated coding assistants** work inside your IDE:
-# - GitHub Copilot (Microsoft/OpenAI) - widely used, commercial
-# - Amazon CodeWhisperer - free tier available
-# - Tabnine - partial free tier
-# - Continue.dev - open-source, supports local models
-#
-# **Chat-based assistants** work through conversation:
-# - ChatGPT (OpenAI) - general purpose, code-capable
-# - Claude (Anthropic) - strong at code explanation
-# - Gemini (Google) - multimodal capabilities
-#
-# **Self-hosted options** for data privacy:
-# - Ollama with Code Llama - run locally
-# - Continue.dev with local models - privacy-preserving
-# - Tabby - self-hosted coding assistant
-#
-# **Note**: This landscape changes rapidly. The principles in this lecture apply
-# regardless of which specific tools you use. Focus on understanding how to use any
-# AI assistant safely, not memorizing today's tool list.
-
-# %% [markdown]
-# ## Part 4: GitHub Copilot vs ChatGPT - Different Tools for Different Tasks
-#
-# ### Understanding the Difference
-#
-# While both use similar underlying technology (large language models), they're designed
-# for very different workflows:
-#
-# **GitHub Copilot** (Integrated Assistant):
-# - **Where**: Works inside your code editor (VS Code, JetBrains, etc.)
-# - **When**: Suggests code as you type
-# - **How**: Autocomplete-style, line-by-line or multi-line suggestions
-# - **Context**: Uses your current file and nearby files
-# - **Speed**: Instant, real-time suggestions
-# - **Best for**: Writing routine code, completing patterns, generating boilerplate
-#
-# **ChatGPT** (Conversational Assistant):
-# - **Where**: Web interface or API
-# - **When**: You explicitly ask questions
-# - **How**: Back-and-forth conversation, explain-and-iterate
-# - **Context**: Only what you provide in the conversation
-# - **Speed**: Deliberate, response-based interaction
-# - **Best for**: Learning concepts, debugging logic, designing algorithms, code review
-#
-# ### Comparison Through Example
-#
-# Let's see how each tool helps with a common research task: writing a function to
-# calculate rolling statistics for time series data.
-#
-# #### Copilot Workflow (Integrated)
-#
-# **You type a comment and function signature:**
-# ```python
-# # Calculate rolling mean and standard deviation for time series
-# def rolling_stats(data, window_size):
-# ```
-#
-# **Copilot immediately suggests** (as you type):
-# ```python
-#     """
-#     Calculate rolling statistics for time series data.
-#
-#     Parameters
-#     ----------
-#     data : list or np.ndarray
-#         Time series data
-#     window_size : int
-#         Size of the rolling window
-#
-#     Returns
-#     -------
-#     tuple
-#         (rolling_mean, rolling_std)
-#     """
-#     import numpy as np
-#     # Copilot generates implementation here...
-# ```
-#
-# **Strengths**: Fast, maintains code flow, good for experienced developers
-# **Weaknesses**: Less explanation, harder to understand complex logic, may distract
-#
-# #### ChatGPT Workflow (Conversational)
-#
-# **You ask:**
-# > "I need to calculate rolling statistics for climate time series data. What's the
-# > best approach in Python, and are there any edge cases I should handle?"
-#
-# **ChatGPT responds** with:
-# - Explanation of rolling window concepts
-# - Comparison of different approaches (NumPy, Pandas, custom)
-# - Discussion of edge cases (window size > data length, NaN handling)
-# - Example implementation with explanations
-# - Suggestions for testing
-#
-# **Then you can follow up:**
-# > "What if my data has missing values? How should I handle them?"
-#
-# **ChatGPT explains** different strategies (skip, interpolate, forward-fill) with
-# pros/cons for each.
-#
-# **Strengths**: Educational, exploratory, great for learning, handles complexity
-# **Weaknesses**: Slower, requires copy-paste, context switching
-#
-# ### When to Use Which?
-#
-# **Use Copilot when:**
-# - Writing routine, well-understood code
-# - Generating boilerplate (imports, docstrings, test fixtures)
-# - Completing patterns you've already established
-# - You know what you want and just need it typed faster
-# - You're experienced and can quickly evaluate suggestions
-#
-# **Use ChatGPT when:**
-# - Learning a new concept or library
-# - Designing an algorithm (need to think through options)
-# - Debugging complex logic (explain the problem, get insights)
-# - Understanding existing code (paste code, ask for explanation)
-# - Planning architecture or comparing approaches
-# - You're less familiar with the domain and need guidance
-#
-# **Use both in sequence:**
-# 1. ChatGPT: Design the approach, understand the algorithm
-# 2. Copilot: Implement it efficiently in your editor
-# 3. ChatGPT: Review for issues you might have missed
-#
-# ### Live Demonstration: Writing a Data Validation Function
-#
-# Let's demonstrate both tools with a realistic research task: validating experimental
-# data before analysis.
-#
-# **Task**: Write a function that validates temperature measurements, checking for:
-# - Physically impossible values (e.g., below absolute zero)
-# - Statistical outliers
-# - Missing data
-# - Temporal consistency
+# **Bad example - Repetitive code:** this is the shape StationWatch's readings started in—one
+# near-identical analysis function per sensor type, before anyone noticed the pattern.
 
 
 # %%
-def validate_temperature_data(temperatures, timestamps=None, min_valid=-273.15, max_valid=100, std_threshold=3.0):
-    """
-    Validate temperature measurement data for physical and statistical correctness.
-
-    This function checks experimental temperature data for common issues that could
-    indicate sensor errors, data corruption, or measurement problems. It's designed
-    for quality control in research data pipelines.
-
-    Parameters
-    ----------
-    temperatures : list or np.ndarray
-        Temperature measurements in Celsius
-    timestamps : list or np.ndarray, optional
-        Timestamps for each measurement (for temporal checks)
-    min_valid : float, optional
-        Minimum physically valid temperature (default: -273.15°C, absolute zero)
-    max_valid : float, optional
-        Maximum expected temperature for the application (default: 100°C)
-    std_threshold : float, optional
-        Number of standard deviations for outlier detection (default: 3.0)
-
-    Returns
-    -------
-    dict
-        Validation results containing:
-        - 'valid': bool, whether all checks passed
-        - 'errors': list of error messages
-        - 'warnings': list of warning messages
-        - 'statistics': dict of data statistics
-
-    Examples
-    --------
-    >>> temps = [20.5, 21.0, 20.8, 22.1, 21.5]
-    >>> result = validate_temperature_data(temps)
-    >>> result['valid']
-    True
-
-    Notes
-    -----
-    This function is conservative - it will flag potential issues for human review
-    rather than automatically removing data. In research, it's better to manually
-    investigate outliers than to automatically discard potentially valid measurements.
-    """
-    import numpy as np
-
-    # Convert to numpy array for easier manipulation
-    temps = np.array(temperatures)
-
-    # Initialize results
-    errors = []
-    warnings = []
-    statistics = {}
-
-    # Check for missing data
-    if np.any(np.isnan(temps)):
-        n_missing = np.sum(np.isnan(temps))
-        warnings.append(f"Found {n_missing} missing values ({n_missing/len(temps)*100:.1f}%)")
-
-    # Work with non-NaN values for remaining checks
-    valid_temps = temps[~np.isnan(temps)]
-
-    if len(valid_temps) == 0:
-        errors.append("All temperature values are missing")
-        return {"valid": False, "errors": errors, "warnings": warnings, "statistics": {}}
-
-    # Check for physically impossible values
-    if np.any(valid_temps < min_valid):
-        impossible_count = np.sum(valid_temps < min_valid)
-        min_value = np.min(valid_temps)
-        errors.append(
-            f"Found {impossible_count} physically impossible values " f"(minimum: {min_value:.2f}°C, below {min_valid}°C)"
-        )
-
-    if np.any(valid_temps > max_valid):
-        extreme_count = np.sum(valid_temps > max_valid)
-        max_value = np.max(valid_temps)
-        warnings.append(
-            f"Found {extreme_count} values above expected maximum " f"(maximum: {max_value:.2f}°C, threshold: {max_valid}°C)"
-        )
-
-    # Calculate statistics
-    mean_temp = np.mean(valid_temps)
-    std_temp = np.std(valid_temps)
-    statistics = {
-        "count": len(valid_temps),
-        "mean": mean_temp,
-        "std": std_temp,
-        "min": np.min(valid_temps),
-        "max": np.max(valid_temps),
-        "median": np.median(valid_temps),
-    }
-
-    # Check for statistical outliers using z-score
-    if std_temp > 0:  # Avoid division by zero
-        z_scores = np.abs((valid_temps - mean_temp) / std_temp)
-        outliers = z_scores > std_threshold
-        if np.any(outliers):
-            outlier_count = np.sum(outliers)
-            outlier_values = valid_temps[outliers]
-            warnings.append(
-                f"Found {outlier_count} statistical outliers "
-                f"(>{std_threshold} std devs from mean): "
-                f"[{', '.join(f'{v:.2f}' for v in outlier_values[:5])}...]"
-            )
-
-    # Temporal consistency check (if timestamps provided)
-    if timestamps is not None and len(timestamps) == len(temps):
-        # Check for rapid temperature changes that might indicate sensor errors
-        # This is a simplified check - real implementation would be more sophisticated
-        temp_diffs = np.diff(valid_temps)
-        if len(temp_diffs) > 0:
-            max_change = np.max(np.abs(temp_diffs))
-            if max_change > 10:  # More than 10°C change between consecutive readings
-                warnings.append(
-                    f"Large temperature jump detected: {max_change:.2f}°C "
-                    "between consecutive measurements (possible sensor error)"
-                )
-
-    # Determine overall validity
-    valid = len(errors) == 0
-
-    return {"valid": valid, "errors": errors, "warnings": warnings, "statistics": statistics}
+# DON'T DO THIS: Repeated calculation logic
+def analyze_temperature_data(temps):
+    """Analyze temperature dataset."""
+    mean = sum(temps) / len(temps)
+    variance = sum((x - mean) ** 2 for x in temps) / len(temps)
+    std_dev = variance**0.5
+    return {"mean": mean, "std": std_dev}
 
 
-# Test with sample data
-print("Example 1: Clean data")
-clean_temps = [20.5, 21.0, 20.8, 22.1, 21.5, 20.9, 21.3]
-result1 = validate_temperature_data(clean_temps)
-print(f"Valid: {result1['valid']}")
-print(f"Errors: {result1['errors']}")
-print(f"Warnings: {result1['warnings']}")
-print(f"Mean: {result1['statistics']['mean']:.2f}°C\n")
+def analyze_pressure_data(pressures):
+    """Analyze pressure dataset."""
+    mean = sum(pressures) / len(pressures)
+    variance = sum((x - mean) ** 2 for x in pressures) / len(pressures)
+    std_dev = variance**0.5
+    return {"mean": mean, "std": std_dev}
 
-print("Example 2: Data with outliers")
-outlier_temps = [20.5, 21.0, 45.0, 22.1, 21.5, 20.9, 21.3]  # 45°C is unusual
-result2 = validate_temperature_data(outlier_temps, max_valid=30)
-print(f"Valid: {result2['valid']}")
-print(f"Errors: {result2['errors']}")
-print(f"Warnings: {result2['warnings']}")
 
-print("\nExample 3: Physically impossible data")
-impossible_temps = [20.5, -500.0, 22.1]  # -500°C is below absolute zero
-result3 = validate_temperature_data(impossible_temps)
-print(f"Valid: {result3['valid']}")
-print(f"Errors: {result3['errors']}")
+def analyze_humidity_data(humidity):
+    """Analyze humidity dataset."""
+    mean = sum(humidity) / len(humidity)
+    variance = sum((x - mean) ** 2 for x in humidity) / len(humidity)
+    std_dev = variance**0.5
+    return {"mean": mean, "std": std_dev}
+
+
+# Same calculation logic repeated three times! ❌
 
 # %% [markdown]
-# ### How This Example Demonstrates Both Tools
-#
-# **How Copilot might help** with this function:
-# - Suggesting the function structure and docstring format
-# - Auto-completing common NumPy operations
-# - Generating the boilerplate for the return dictionary
-# - Completing parameter validation patterns
-#
-# **How ChatGPT would help** with this function:
-# - Discussing what validation checks are appropriate for temperature data
-# - Explaining the z-score method for outlier detection
-# - Suggesting edge cases to handle (NaN values, empty arrays)
-# - Reviewing the implementation for bugs or improvements
-# - Explaining when to use errors vs warnings
-#
-# **The key insight**: Copilot helps you *write* code faster. ChatGPT helps you
-# *understand* what to write. Both are valuable, for different reasons.
+# **Good example - DRY principle applied:**
+
+
+# %%
+# DO THIS: Extract common logic
+def calculate_statistics(data):
+    """Calculate mean and standard deviation for any dataset."""
+    if not data:
+        raise ValueError("Cannot calculate statistics for empty dataset")
+
+    mean = sum(data) / len(data)
+    variance = sum((x - mean) ** 2 for x in data) / len(data)
+    std_dev = variance**0.5
+    return {"mean": mean, "std": std_dev}
+
+
+# Now reuse it for any type of data
+temp_stats = calculate_statistics([15.2, 16.8, 14.5, 17.3])
+pressure_stats = calculate_statistics([1013, 1015, 1012, 1014])
+humidity_stats = calculate_statistics([65, 68, 72, 70])
+
+print(f"Temperature: {temp_stats}")
+print(f"Pressure: {pressure_stats}")
+print(f"Humidity: {humidity_stats}")
+
+# One function, reused three times! ✓
+# Bug fixes or improvements only need to be made in ONE place.
 
 # %% [markdown]
-# ## Part 5: Pitfalls, Risks, and Common Failures
+# **Why DRY matters in research**:
+# - **Fix bugs once**: When you find a calculation error, fix it in one place
+# - **Update algorithms easily**: Improve your method without hunting for all copies
+# - **Consistency**: The same input always produces the same output
+# - **Testing**: Test the logic once instead of testing every copy
 #
-# ### Technical Pitfalls
+# **Warning**: Don't take DRY to extremes. If code *looks* similar but has different *purposes*,
+# it's okay to keep it separate. DRY applies to logic and behavior, not just appearance.
 #
-# AI coding assistants are powerful but flawed. Here are the most common technical
-# problems you'll encounter:
+# #### Principle 2: Single Responsibility Principle (SRP)
 #
-# #### 1. Hallucinated APIs (Functions That Don't Exist)
+# **The idea**: Each function or module should do **one thing** and do it well. If you can't explain
+# what a function does in one simple sentence, it's probably doing too much.
 #
-# **The Problem**: AI models sometimes invent functions or methods that sound plausible
-# but don't actually exist.
+# **The benefit**: When each component has one job, it's easier to:
+# - Understand what the code does
+# - Find where bugs are
+# - Test each piece independently
+# - Reuse code in different contexts
+# - Modify behavior without breaking unrelated functionality
 #
-# **Example**:
-# ```python
-# # AI might suggest (Python 3.10):
-# import numpy as np
-# result = np.ndarray.remove_outliers(data, threshold=3.0)  # Doesn't exist!
+# **Bad example - Too many responsibilities:** this is close to what StationWatch's original
+# single-question script grew into, one "just add it here" commit at a time.
+
+
+# %%
+# DON'T DO THIS: Function doing too many things
+def process_climate_data_badly(filename):
+    """Process climate data... but what does it actually do?"""
+    # Responsibility 1: Read file
+    with open(filename) as f:
+        lines = f.readlines()
+
+    # Responsibility 2: Parse data
+    temps = []
+    for line in lines[1:]:  # Skip header
+        parts = line.split(",")
+        temps.append(float(parts[2]))
+
+    # Responsibility 3: Calculate statistics
+    mean_temp = sum(temps) / len(temps)
+
+    # Responsibility 4: Format output
+    output = f"Average temperature: {mean_temp:.1f}°C"
+
+    # Responsibility 5: Write result
+    with open("results.txt", "w") as f:
+        f.write(output)
+
+    # Responsibility 6: Generate plot
+    # (imagine plotting code here)
+
+    return mean_temp
+
+
+# This function does EVERYTHING. Hard to test, hard to reuse, hard to modify. ❌
+
+# %% [markdown]
+# **Good example - Single Responsibility:**
+
+# %%
+# DO THIS: Separate concerns into focused functions
+
+
+def read_csv_file(filename):
+    """Read lines from a CSV file."""
+    with open(filename) as f:
+        return f.readlines()
+
+
+def parse_temperature_column(lines, column_index=2):
+    """Extract temperature values from CSV lines."""
+    temps = []
+    for line in lines[1:]:  # Skip header
+        parts = line.split(",")
+        temps.append(float(parts[column_index]))
+    return temps
+
+
+def calculate_mean(values):
+    """Calculate arithmetic mean of values."""
+    return sum(values) / len(values)
+
+
+def format_temperature_result(mean_temp):
+    """Format temperature result as a string."""
+    return f"Average temperature: {mean_temp:.1f}°C"
+
+
+def write_text_file(filename, content):
+    """Write content to a text file."""
+    with open(filename, "w") as f:
+        f.write(content)
+
+
+# Now compose them for the full workflow:
+# lines = read_csv_file('climate_data.csv')
+# temps = parse_temperature_column(lines)
+# mean_temp = calculate_mean(temps)
+# result_text = format_temperature_result(mean_temp)
+# write_text_file('results.txt', result_text)
+
+print("Each function has ONE clear job! ✓")
+
+# %% [markdown]
+# **Benefits of this approach**:
+# - Each function is easy to test independently
+# - Functions are reusable in different contexts (e.g., `calculate_mean` works for any data)
+# - Easy to swap implementations (e.g., use pandas instead of manual parsing)
+# - Clear what each function does just from its name
+# - Bugs are easier to locate (if parsing fails, check `parse_temperature_column`)
+#
+# #### Principle 3: Separation of Concerns
+#
+# **The idea**: Different aspects of your program should be in different places. Don't mix data
+# loading with analysis logic, don't mix visualization with calculations, don't mix business logic
+# with file I/O.
+#
+# **Why it matters**: Research projects often evolve from a single analysis script to a complex
+# pipeline. If concerns are separated from the start, you can easily:
+# - Switch data sources (file → database → API)
+# - Change output format (console → file → web)
+# - Reuse analysis logic in different projects
+# - Test each layer independently
+#
+# **Project structure enforces separation:**
+#
+# ```
+# src/
+# ├── data_loading.py      # Concern: Getting data into memory
+# ├── preprocessing.py     # Concern: Cleaning and transforming data
+# ├── analysis.py          # Concern: Scientific calculations
+# ├── visualization.py     # Concern: Creating plots
+# └── export.py            # Concern: Saving results
 # ```
 #
-# **Why it happens**: The model learns patterns like "remove_outliers" from comments
-# and documentation, and generates a plausible-looking API that doesn't exist.
-#
-# **How to avoid**:
-# - Always check documentation for unfamiliar methods
-# - Test AI-generated code before trusting it
-# - Use type checkers and linters (they'll catch non-existent attributes)
+# **Example in practice:** exactly the separation StationWatch was missing—if data access,
+# validation, and analysis had been kept apart, adding soil-moisture sensors would have meant
+# writing one new loader function, not copy-pasting the whole pipeline.
 
 # %%
-# Demonstration: What happens with a hallucinated function?
-import numpy as np
+# GOOD: Clear separation of concerns
 
-# This is what AI might suggest, but it doesn't exist:
-# result = np.ndarray.remove_outliers(data)  # Would raise AttributeError
 
-# What actually exists - you must know your libraries:
-data = np.array([1, 2, 3, 100, 4, 5])
-mean = np.mean(data)
-std = np.std(data)
-# Manual outlier detection using z-score
-z_scores = np.abs((data - mean) / std)
-data_clean = data[z_scores < 3]
-print(f"Original data: {data}")
-print(f"After removing outliers (|z| < 3): {data_clean}")
+# Concern 1: Data access (could switch from files to database)
+def load_experiment_data(source):
+    """Load data from source (file, database, API)."""
+    # In real code, handle different source types
+    return [15.2, 16.8, 14.5, 17.3, 15.9]
+
+
+# Concern 2: Data validation (ensures quality)
+def validate_temperature_data(temps):
+    """Check that temperature data is physically reasonable."""
+    return [t for t in temps if -100 < t < 100]
+
+
+# Concern 3: Analysis (pure calculation, no I/O)
+def compute_anomaly(temps, baseline):
+    """Calculate temperature anomalies from baseline."""
+    return [t - baseline for t in temps]
+
+
+# Concern 4: Presentation (formatting for output)
+def format_anomaly_report(anomalies):
+    """Create human-readable report of anomalies."""
+    return f"Anomalies: {[f'{a:.1f}' for a in anomalies]}"
+
+
+# Workflow: compose the concerns
+data = load_experiment_data("experiment.csv")
+valid_data = validate_temperature_data(data)
+anomalies = compute_anomaly(valid_data, baseline=16.0)
+report = format_anomaly_report(anomalies)
+print(report)
+
+# Each layer can be tested and modified independently! ✓
 
 # %% [markdown]
-# #### 2. Outdated or Deprecated Code
+# **Real research example**: Imagine you wrote a paper analyzing temperature data from CSV files.
+# Later, you get a grant to analyze 10 years of satellite data from a NASA non-CSV database. If your analysis
+# logic is mixed with CSV parsing, you'll have to rewrite everything. If concerns are separated, you
+# just write a new `load_experiment_data()` function and reuse all the analysis code!
 #
-# **The Problem**: AI models are trained on historical code, which may use deprecated
-# APIs or outdated practices.
+# #### Key Takeaways: Applying Design Principles
 #
-# **Example**:
-# ```python
-# # AI trained on old code might suggest:
-# import numpy as np
-# matrix = np.matrix([[1, 2], [3, 4]])  # Deprecated since NumPy 1.25!
+# These principles work together:
 #
-# # Modern NumPy uses:
-# matrix = np.array([[1, 2], [3, 4]])
-# ```
+# 1. **DRY** prevents code duplication → easier maintenance
+# 2. **Single Responsibility** keeps functions focused → easier testing and reuse
+# 3. **Separation of Concerns** organizes code by purpose → easier evolution
 #
-# **How to avoid**:
-# - Check the latest documentation
-# - Use linters that warn about deprecated code
-# - Review changelogs when updating libraries
+# **Research software benefits**:
+# - **Reproduce results reliably**: Well-designed code has fewer bugs
+# - **Collaborate effectively**: Team members understand clear, focused code
+# - **Publish with confidence**: Reviewers can verify well-structured code
+# - **Reuse in future projects**: Good design makes code portable
+# - **Evolve as requirements change**: Separated concerns adapt easily
+#
+# **Start simple**: You don't need perfect design on day one. But as your research code grows beyond
+# a few hundred lines, applying these principles will save you countless hours of debugging and
+# refactoring. Start as early as possible with a good file/folder structure AND basic software engineering practices. Future you will thank present you!
+#
+#
+# **Further reading** on design principles:
+# - Robert C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship* (2008)
+# - Martin Fowler, *Refactoring: Improving the Design of Existing Code* (2018)
+# - John Ousterhout, *A Philosophy of Software Design* (2018)
+
+# %% [markdown]
+# ## Part 3: Code Smells - Warning Signs of Design Problems
+#
+# Part 2 told you what good design looks like. **Code smells** tell you when it's missing. The
+# term was coined by Kent Beck and popularized by Martin Fowler in his book *Refactoring*. A code
+# smell isn't a bug — the code might work perfectly, exactly like the StationWatch PR in Part 1 —
+# but it indicates that the code will be hard to maintain, test, or understand.
+#
+# **Why this matters for testing**: Code that smells bad is often hard or impossible to test. If
+# you find yourself struggling to write tests, the problem might not be with your testing
+# approach — it might be that your code has design problems (Lecture 5 covers the testing
+# techniques that would surface this). Learning to recognize code smells helps you write more
+# testable, maintainable code from the start.
+#
+# **The connection**: Well-designed code is testable code. If your code is hard to test, it's
+# probably poorly designed. Code smells are your early warning system.
+#
+# #### Common Code Smells in Research Software
+#
+# Let's examine the most common smells in research code, with examples:
+#
+# **1. God Function (or "Long Function")**
+#
+# A function that does everything—hundreds of lines, multiple responsibilities, impossible to
+# understand or test. It's what StationWatch's SRP violation in Part 2 becomes if nobody ever
+# splits it back up.
+
 
 # %%
-# Modern NumPy practices
-import numpy as np
+# CODE SMELL: God Function ❌
+def analyze_experiment(data_file, config_file, output_dir):
+    """Analyze experimental data... but what does this really do?"""
+    # Read configuration (50 lines)
+    # Load data from file (40 lines)
+    # Clean and validate data (60 lines)
+    # Apply multiple transformations (80 lines)
+    # Calculate statistics (50 lines)
+    # Generate plots (70 lines)
+    # Save results (40 lines)
+    # Email notification (30 lines)
+    # Total: 420 lines in ONE function!
 
-# Correct modern approach
-modern_array = np.array([[1, 2], [3, 4]])
-print("Modern numpy array:")
-print(modern_array)
-print(f"Type: {type(modern_array)}")
+    # How do you test this? Where do bugs hide?
+    # Can you reuse any part of this?
+    # Can you understand what it does 6 months from now?
+    pass  # Imagine 420 lines here...
 
-# Old approach (still works but discouraged)
-# np.matrix is deprecated - don't use it in new code!
 
 # %% [markdown]
-# #### 3. Subtle Logic Errors
+# **Why it smells**:
+# - Hard to test (must set up files, configs, email server...)
+# - Hard to debug (bug could be anywhere in 420 lines)
+# - Hard to reuse (all or nothing)
+# - Hard to understand (what's the main logic vs details?)
 #
-# **The Problem**: AI-generated code may have subtle bugs that only appear with certain
-# inputs or edge cases. These are the most dangerous because the code *looks* correct.
+# **The fix**: Break into smaller, focused functions (like we saw in Part 2's Single
+# Responsibility Principle).
 #
-# **Example - Off-by-One Error**:
+# **2. Duplicated Code**
+#
+# Copy-pasted code that appears in multiple places. We saw this in Part 2 with the DRY principle
+# — and it's exactly what happened to StationWatch's soil-moisture PR in Part 1.
 
 
 # %%
-def calculate_differences_buggy(values):
-    """Calculate differences between consecutive values (BUGGY VERSION)."""
-    differences = []
-    # BUG: This misses the last difference
-    for i in range(len(values) - 1):
-        diff = values[i + 1] - values[i]
-        differences.append(diff)
-    return differences
+# CODE SMELL: Duplicated code ❌
+def analyze_temperature_2019(temps):
+    total = 0
+    for t in temps:
+        total += t
+    mean = total / len(temps)
+
+    squared_diffs = 0
+    for t in temps:
+        squared_diffs += (t - mean) ** 2
+    variance = squared_diffs / len(temps)
+    return {"mean": mean, "variance": variance}
 
 
-def calculate_differences_correct(values):
-    """Calculate differences between consecutive values (CORRECT VERSION)."""
-    if len(values) < 2:
-        return []
-    return [values[i + 1] - values[i] for i in range(len(values) - 1)]
+def analyze_temperature_2020(temps):
+    total = 0
+    for t in temps:
+        total += t
+    mean = total / len(temps)
+
+    squared_diffs = 0
+    for t in temps:
+        squared_diffs += (t - mean) ** 2
+    variance = squared_diffs / len(temps)
+    return {"mean": mean, "variance": variance}
 
 
-# Test both versions
-test_data = [10, 15, 12, 18, 20]
-print(f"Input: {test_data}")
-print(f"Buggy result: {calculate_differences_buggy(test_data)}")
-print(f"Correct result: {calculate_differences_correct(test_data)}")
-print(f"Expected: [5, -3, 6, 2]")
-
-# Actually, both are correct! The subtle bug is harder to spot.
-# Let's try with edge cases:
-edge_case = [5]
-print(f"\nEdge case - single value: {edge_case}")
-print(f"Buggy result: {calculate_differences_buggy(edge_case)}")
-print(f"Correct result: {calculate_differences_correct(edge_case)}")
-print("Buggy version doesn't handle single-element arrays explicitly")
+# Same logic, copied and pasted! Bug in one = bug in both (probably)
 
 # %% [markdown]
-# #### 4. Security Vulnerabilities
+# **Why it smells**:
+# - Bug fixes must be applied multiple times
+# - Easy to miss one copy when updating
+# - More code to test and maintain
 #
-# **The Problem**: AI may suggest code with security vulnerabilities, especially for
-# file handling, database queries, or user input.
+# **The fix**: Extract common logic into a shared function (DRY principle).
 #
-# **Example - Path Traversal Vulnerability**:
+# **3. Magic Numbers and Unclear Names**
+#
+# Numbers or strings that appear without explanation, or variables named `x`, `tmp`, `data2`.
+# Keep an eye out—Part 4's StationWatch case study hides an unexplained `0.5` of exactly this
+# kind in a real distance calculation.
+
 
 # %%
-import os
-import tempfile
+# CODE SMELL: Magic numbers and unclear names ❌
+def process(x, y):
+    """Process... what? How?"""
+    if x > 273.15:  # What is 273.15?
+        z = x * 1.8 + 32  # What is this calculating?
+        if z > 200:  # Why 200?
+            return z * 0.5  # Why multiply by 0.5?
+    return y
 
 
-def load_user_file_insecure(filename):
-    """
-    Load a file from user directory (INSECURE - for demonstration only).
+# What does this function do? Impossible to tell without detective work!
 
-    VULNERABILITY: Path traversal attack possible!
-    User could provide: "../../../etc/passwd"
-    """
-    # DANGEROUS: Directly concatenating user input to file path
-    base_dir = tempfile.gettempdir()
-    filepath = os.path.join(base_dir, filename)
-    # This check can be bypassed with "../" in filename
-    return filepath
+# BETTER: Self-documenting code ✓
+ABSOLUTE_ZERO_KELVIN = 273.15
+EXTREME_TEMP_FAHRENHEIT = 200
+ADJUSTMENT_FACTOR = 0.5
 
 
-def load_user_file_secure(filename):
-    """
-    Load a file from user directory (SECURE VERSION).
+def convert_temperature_with_bounds(temp_kelvin, fallback_value):
+    """Convert Kelvin to Fahrenheit with bounds checking."""
+    if temp_kelvin > ABSOLUTE_ZERO_KELVIN:
+        temp_fahrenheit = temp_kelvin * 1.8 + 32
 
-    Protection: Validates filename has no path components.
-    """
-    # Only allow simple filenames, no directory traversal
-    if os.path.sep in filename or filename.startswith("."):
-        raise ValueError(f"Invalid filename: {filename}")
+        if temp_fahrenheit > EXTREME_TEMP_FAHRENHEIT:
+            return temp_fahrenheit * ADJUSTMENT_FACTOR
 
-    base_dir = tempfile.gettempdir()
-    filepath = os.path.join(base_dir, filename)
-
-    # Additional check: ensure final path is still within base_dir
-    real_base = os.path.realpath(base_dir)
-    real_path = os.path.realpath(filepath)
-    if not real_path.startswith(real_base):
-        raise ValueError("Path traversal detected")
-
-    return filepath
+    return fallback_value
 
 
-# Demonstration
-print("Insecure version allows path traversal:")
-try:
-    dangerous_path = load_user_file_insecure("../../../etc/passwd")
-    print(f"  Would attempt to access: {dangerous_path}")
-except Exception as e:
-    print(f"  Error: {e}")
-
-print("\nSecure version prevents path traversal:")
-try:
-    safe_path = load_user_file_secure("data.txt")
-    print(f"  Safe path: {safe_path}")
-except Exception as e:
-    print(f"  Error: {e}")
-
-try:
-    attack_path = load_user_file_secure("../../../etc/passwd")
-    print(f"  Would access: {attack_path}")
-except ValueError as e:
-    print(f"  Blocked: {e}")
+# Now it's clear what the function does and why!
 
 # %% [markdown]
-# ### Cognitive Risks
+# **Why it smells**:
+# - Hard to understand intent
+# - Easy to misuse or misunderstand
+# - Harder to modify (what was 273.15 again?)
 #
-# Beyond technical issues, AI assistants pose risks to your development and learning:
+# **The fix**: Use named constants and descriptive variable names.
 #
-# **1. Over-Reliance and Skill Atrophy**
-# - Using AI as a crutch instead of learning fundamentals
-# - Forgetting how to solve problems without AI
-# - Becoming unable to code in environments without AI access
+# **4. Tight Coupling (or "Feature Envy")**
 #
-# **2. False Confidence**
-# - Code that "looks professional" but you don't understand
-# - Feeling productive while actually accumulating technical debt
-# - Inability to debug or maintain AI-generated code
+# Functions that reach deep into other objects or modules, creating dependencies that make testing
+# difficult. This is precisely the shape of the StationWatch problem from Part 1: both
+# instrument-type functions reached directly into a specific dictionary structure.
+
+
+# %%
+# CODE SMELL: Tight coupling ❌
+class ExperimentData:
+    def __init__(self):
+        self.temps = [15.2, 16.8, 14.5]
+        self.pressures = [1013, 1015, 1012]
+
+
+def analyze_data_badly(experiment):
+    """This function knows too much about ExperimentData's internals."""
+    # Directly accessing internal data structures
+    mean_temp = sum(experiment.temps) / len(experiment.temps)
+    mean_pressure = sum(experiment.pressures) / len(experiment.pressures)
+
+    # What if ExperimentData changes how it stores data?
+    # This function breaks! Testing requires creating full ExperimentData objects.
+    return mean_temp, mean_pressure
+
+
+# BETTER: Loose coupling ✓
+# Part 2 already gave us a generic calculate_mean(values) - reuse it instead of writing a
+# new function that reaches into ExperimentData's internals.
+print(calculate_mean([15.2, 16.8, 14.5]))
+print(calculate_mean([1013, 1015, 1012]))
+
+# ExperimentData can change internals without breaking this function.
+
+# %% [markdown]
+# **Why it smells**:
+# - Hard to test (need to create complex objects)
+# - Fragile (breaks when other code changes)
+# - Hard to reuse (tied to specific data structures)
 #
-# **3. Reduced Problem-Solving**
-# - Accepting the first AI solution instead of thinking deeply
-# - Missing better approaches because AI gave "an answer"
-# - Not developing algorithmic thinking skills
+# **The fix**: Depend on abstractions, not implementations. Accept simple parameters.
 #
-# **4. Research-Specific Risks**
-# - Using algorithms you don't understand (like Sarah's quantile normalization)
-# - Inability to explain your methods in papers or to reviewers
-# - Difficulty defending your implementation choices
-# - Results you can't reproduce or debug when issues arise
+# **5. Global State and Hidden Dependencies**
 #
-# **Best practice**: Always understand what the AI suggests before using it. In research,
-# you're responsible for every line of code, whether you wrote it or AI did.
+# Functions that read or modify global variables, making behavior unpredictable and testing
+# difficult. If StationWatch had computed anomalies against one hardcoded global baseline,
+# supporting a second region with a different baseline climate would have meant hunting through
+# the whole codebase for every place that baseline was assumed.
+
+# %%
+# CODE SMELL: Global state ❌
+BASELINE_TEMPERATURE = 15.0  # Global variable
+
+
+def calculate_anomaly_bad(temp):
+    """Uses global state - hard to test and reason about."""
+    return temp - BASELINE_TEMPERATURE
+
+
+# What happens when multiple analyses need different baselines?
+# How do you test this with different baselines?
+# Whoever changes BASELINE_TEMPERATURE affects all code!
+
+
+# BETTER: Explicit dependencies ✓
+def calculate_anomaly_good(temp, baseline):
+    """Baseline is explicit parameter - easy to test and reuse."""
+    return temp - baseline
+
+
+# Test with any baseline you want!
+assert calculate_anomaly_good(20, 15) == 5
+assert calculate_anomaly_good(20, 18) == 2
+
+# %% [markdown]
+# **Why it smells**:
+# - Unpredictable behavior (depends on hidden state)
+# - Hard to test (must set up global state)
+# - Causes action-at-a-distance bugs (changing one place breaks another)
+#
+# **The fix**: Make dependencies explicit through parameters.
+#
+# #### Code Smell Quick Reference
+#
+# | Smell | Red Flag | Impact on Testing | Fix |
+# |-------|----------|------------------|-----|
+# | **God Function** | Function > 50 lines, multiple tasks | Setup complex, many tests needed | Split into focused functions |
+# | **Duplicated Code** | Copy-pasted logic | Must test same logic multiple times | Extract to shared function (DRY) |
+# | **Magic Numbers** | Unexplained constants like `273.15` | Tests unclear without context | Named constants |
+# | **Tight Coupling** | Function accesses deep internals | Requires complex object setup | Accept simple parameters |
+# | **Global State** | Reads/writes global variables | Tests interfere with each other | Explicit parameters |
+# | **Poor Naming** | Variables like `x`, `tmp`, `data2` | Hard to write meaningful test names | Descriptive names |
+#
+# #### Spotting Code Smells in Practice
+#
+# Let's put this into practice on a small function from a StationWatch-style pipeline — one that
+# converts sensor readings from Fahrenheit to Celsius before combining them with the rest of the
+# network's data. Can you spot the smells?
+
+
+# %%
+# Can you spot the code smells?
+def fahrenheit_to_celsius_smelly(fahrenheit):
+    """Convert temperature from Fahrenheit to Celsius."""
+    return (fahrenheit - 32) * 9 / 5  # Bug: should be 5/9
+
+
+def calculate_temperature_anomaly_smelly(temperatures_f, baseline_f):
+    """Calculate temperature anomaly relative to baseline."""
+    anomalies = []
+    for temp in temperatures_f:
+        temp_c = fahrenheit_to_celsius_smelly(temp)
+        baseline_c = fahrenheit_to_celsius_smelly(baseline_f)  # SMELL: Duplicated calculation!
+        anomaly = temp_c - baseline_c
+        anomalies.append(anomaly)
+    return anomalies
+
+
+# %% [markdown]
+# **Smells identified**:
+#
+# 1. **Duplicated calculation**: `fahrenheit_to_celsius(baseline_f)` is called in every loop
+#    iteration, but the result never changes! This is wasteful and obscures intent.
+#
+# 2. **Magic number**: The `32` and fractions aren't explained. A comment would help, or better
+#    yet, named constants like `FAHRENHEIT_OFFSET = 32`.
+#
+# 3. **Not obvious that conversion is wrong**: Without tests, the formula error went unnoticed.
+#    The function "smells okay" at first glance but has a subtle bug.
+#
+# **Better version**:
+
+# %%
+# Cleaned up - smells removed ✓
+FAHRENHEIT_OFFSET = 32
+FAHRENHEIT_TO_CELSIUS_RATIO = 5 / 9
+
+
+def fahrenheit_to_celsius_clean(fahrenheit):
+    """Convert temperature from Fahrenheit to Celsius using standard formula."""
+    return (fahrenheit - FAHRENHEIT_OFFSET) * FAHRENHEIT_TO_CELSIUS_RATIO
+
+
+def calculate_temperature_anomaly_clean(temperatures_f, baseline_f):
+    """Calculate temperature anomalies relative to baseline, all in Celsius."""
+    # Calculate baseline once, not in loop!
+    baseline_c = fahrenheit_to_celsius_clean(baseline_f)
+
+    anomalies = []
+    for temp_f in temperatures_f:
+        temp_c = fahrenheit_to_celsius_clean(temp_f)
+        anomaly = temp_c - baseline_c
+        anomalies.append(anomaly)
+
+    return anomalies
+
+
+# Now the code is clearer and more testable!
 
 # %% [markdown]
 # <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
 #     <h4 style="color: #7b1fa2; margin-top: 0;">💡 Try It Yourself</h4>
-#     <p>Want to become better at working with AI? Practice these critical thinking exercises:</p>
+#     <p>Refactoring smelly code is incredibly satisfying—transform bad into beautiful!</p>
 #     <ul>
-#         <li><strong>Test AI's knowledge boundaries</strong>: Ask your AI assistant about a niche library from your field. How
-#         accurate is it? Try asking about recent releases (post-2023) - does it hallucinate features?</li>
-#         <li><strong>Practice prompt engineering</strong>: Try asking the same question 3
-#         different ways (vague, specific, with context). How does output quality change?
-#         Good prompts are a skill!</li>
-#         <li><strong>Verify everything</strong>: Take an AI code suggestion and check
-#         every claim: Does the function exist? Are parameters correct? Does the example
-#         run? Build verification habits early.</li>
+#         <li><strong>Refactor the code smells:</strong> Take the example functions above
+#         and refactor them to eliminate all code smells—extract functions, remove
+#         duplication, add clear names, and compare before/after readability.</li>
+#         <li><strong>Audit your own code:</strong> Review your current research code for the
+#         5 common smells—make a list of issues found, prioritize by impact, and refactor
+#         the worst offenders first.</li>
+#         <li><strong>Practice continuous refactoring:</strong> Next time you write new code, pause every 30 minutes to
+#         refactor—experience how incremental cleanup prevents technical debt from accumulating.</li>
 #     </ul>
 # </div>
 
 # %% [markdown]
-# ## Part 6: Legal, Ethical, and Data Protection Concerns
+# #### The Testing Connection: Smelly Code is Hard to Test
 #
-# ### Copyright and Licensing
+# Here's the key insight: **If your code is hard to test, it probably has design problems.**
 #
-# **The fundamental problem**: AI models are trained on code from the internet, including
-# open-source code with specific licenses. When AI generates code similar to its training
-# data, who owns the copyright?
+# **Signs that code smells are making testing hard**:
+# - "I need to create 5 objects just to test this one function"
+#   → Probably tight coupling
+# - "I can't test this without reading/writing files"
+#   → Probably mixing I/O with logic (separation of concerns)
+# - "My test breaks when I change unrelated code"
+#   → Probably global state or tight coupling
+# - "I need to mock 10 different things to test this"
+#   → Probably god function doing too much
+# - "I don't know what to name this test"
+#   → Probably unclear what the function does (poor naming)
 #
-# **Current legal uncertainty** (as of 2026):
-# - Ongoing lawsuits against GitHub Copilot and Microsoft
-# - Questions about whether AI output is derivative work
-# - Unclear if AI-generated code inherits source licenses
-# - Different jurisdictions may rule differently
+# **Good news**: Testable code is well-designed code. When you write tests, you naturally improve
+# your design because:
+# - You need simple interfaces (avoid coupling)
+# - You need predictable behavior (avoid global state)
+# - You need focused functionality (avoid god functions)
+# - You need clear contracts (good naming and documentation)
 #
-# **GitHub Copilot lawsuit** (filed 2022):
-# - Claims Copilot violates GPL and other open-source licenses
-# - Argues Copilot reproduces licensed code without attribution
-# - Not yet resolved as of 2026
+# **Further reading on code smells**:
+# - Martin Fowler, *Refactoring: Improving the Design of Existing Code* (2018) - The definitive guide
+# - Robert C. Martin, *Clean Code* (2008) - Chapters 3, 6, 10 on functions, objects, and classes
+# - Steve McConnell, *Code Complete* (2004) - Chapter 7 on defensive programming
+
+# %% [markdown]
+# ## Part 4: Technical Debt and Refactoring Decisions
 #
-# **Practical implications for researchers**:
+# Sooner or later, code smells accumulate into something bigger: **technical debt**. Remember
+# StationWatch from Part 1 — two nearly-identical, tightly-coupled analysis functions that took
+# three weeks to untangle instead of three days? That's technical debt in its most common
+# research-software form. When Lecture 7's profiling tools reveal that code is slow, it's
+# frequently technical debt you're seeing — inefficient algorithms and duplicated work
+# accumulated the same way. This section asks the question that follows: **when should you
+# refactor code, and when should you rewrite it?**
 #
-# 1. **Assume risk**: AI-generated code may have licensing issues
-# 2. **Check suggestions**: If code looks like it's from a library, verify the source
-# 3. **Document AI use**: Note which parts were AI-assisted
-# 4. **Be conservative**: For published research code, favor code you write yourself
-# 5. **Institutional policies**: Check if your university has AI usage guidelines
+# #### What is Technical Debt?
 #
-# **Safe practices**:
-# - Use AI for inspiration, then write your own implementation
-# - Always check if AI suggestions match existing library code
-# - Include license headers in your files
-# - When in doubt, write it yourself
+# **Technical debt** is a metaphor coined by Ward Cunningham. It's the cost of choosing a quick
+# solution now that will require more work later. Like financial debt, it accumulates "interest" -
+# the longer you wait to address it, the harder and more expensive it becomes.
+#
+# **Examples in research code:**
+# - Copy-pasting code instead of creating functions (violates DRY)
+# - Hardcoding values instead of using configuration
+# - Skipping tests "just this once"
+# - Writing unclear code because "I'll clean it up later"
+# - Using inefficient algorithms because "it works for now"
+#
+# **Why debt accumulates**: Research projects evolve. What started as a 100-line script for one
+# experiment becomes a 10,000-line analysis pipeline used by your whole lab. The quick hacks you
+# made in week 1 now slow down everyone in year 2.
+#
+# **Profiling reveals debt**: When profiling shows that your code is slow, it's often because of
+# technical debt—inefficient algorithms, duplicated work, poor data structures. The question is:
+# fix the debt (refactor) or start over (rewrite)?
+#
+# #### Refactor or Rewrite? A Decision Framework
+#
+# **Refactoring**: Improving code structure without changing behavior. Small, incremental changes.
+#
+# **Rewriting**: Throwing away code and starting fresh. Big, risky changes.
+#
+# **When to REFACTOR** (most cases):
+#
+# ✅ Code works but is hard to understand or maintain
+# ✅ You have tests that verify correctness
+# ✅ Problems are localized to specific functions/modules
+# ✅ You want to preserve git history and attribution
+# ✅ Team is actively using the code
+# ✅ Changes can be made incrementally
+#
+# **When to REWRITE** (rare):
+#
+# ⚠️ Fundamental architectural problems throughout
+# ⚠️ Technology stack is obsolete (Python 2 → Python 3)
+# ⚠️ Requirements changed completely
+# ⚠️ Code is a prototype, never meant for production
+# ⚠️ No tests exist and code is too complex to test
+# ⚠️ Rewrite would be faster than fixing
+#
+# **Default choice: REFACTOR**. Rewrites are risky, often fail, and lose accumulated knowledge.
+#
+# #### Decision Matrix: Size × Risk × Time
+#
+# | Code Size | Test Coverage | Risk | Recommendation |
+# |-----------|---------------|------|----------------|
+# | < 100 lines | None | Low | Rewrite OK if you want |
+# | < 1000 lines | Good tests | Low | Refactor incrementally |
+# | > 1000 lines | Good tests | Medium | Definitely refactor |
+# | > 1000 lines | No tests | High | Write tests first, then refactor |
+# | > 10000 lines | Any | Very High | Never rewrite everything at once |
+#
+# **The "Strangler Fig" pattern**: For large rewrites, create new code alongside old code,
+# gradually replacing pieces until nothing of the old remains. Named after the fig tree that
+# grows around and eventually replaces its host tree.
+#
+# #### Profiling-Driven Refactoring: A Case Study
+#
+# Let's make this concrete with a different piece of the StationWatch pipeline, further down the
+# line: profiling revealed a bottleneck in the code that finds nearby station pairs.
+
+
+# %%
+# BEFORE: Slow code with technical debt
+def analyze_all_stations_slow(stations):
+    """Analyze all station pairs - SLOW due to O(n²) algorithm."""
+    results = []
+    n = len(stations)
+
+    # Technical debt #1: Nested loop (quadratic complexity)
+    for i in range(n):
+        for j in range(i + 1, n):
+            # Technical debt #2: Duplicated distance calculation
+            dx = stations[i]["lon"] - stations[j]["lon"]
+            dy = stations[i]["lat"] - stations[j]["lat"]
+            distance = (dx**2 + dy**2) ** 0.5
+
+            # Technical debt #3: Magic number (what is 0.5?)
+            if distance < 0.5:
+                results.append((i, j))
+
+    return results
+
+
+# Decision: Refactor or rewrite?
+# - Size: ~15 lines - small
+# - Tests: Have tests from earlier
+# - Problem: Algorithm complexity, magic numbers
+# - Decision: REFACTOR (incremental improvements)
+
+# %% [markdown]
+# **Refactoring approach - Step by step:**
+
+# %%
+# Step 1: Extract magic number (immediate improvement)
+MAX_DISTANCE_DEGREES = 0.5  # Stations within ~50km
+
+
+def analyze_all_stations_v2(stations):
+    """Version 2: Extracted constant."""
+    results = []
+    n = len(stations)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            dx = stations[i]["lon"] - stations[j]["lon"]
+            dy = stations[i]["lat"] - stations[j]["lat"]
+            distance = (dx**2 + dy**2) ** 0.5
+
+            if distance < MAX_DISTANCE_DEGREES:
+                results.append((i, j))
+
+    return results
+
+
+# Test: Still works? ✓
+
+# %% [markdown]
+# Step 2: Extract distance calculation (apply DRY):
+
+
+# %%
+def calculate_distance(station_a, station_b):
+    """Calculate approximate distance between two stations."""
+    dx = station_a["lon"] - station_b["lon"]
+    dy = station_a["lat"] - station_b["lat"]
+    return (dx**2 + dy**2) ** 0.5
+
+
+def analyze_all_stations_v3(stations):
+    """Version 3: Extracted distance calculation."""
+    results = []
+    n = len(stations)
+
+    for i in range(n):
+        for j in range(i + 1, n):
+            distance = calculate_distance(stations[i], stations[j])
+
+            if distance < MAX_DISTANCE_DEGREES:
+                results.append((i, j))
+
+    return results
+
+
+# Test: Still works? ✓
+# Bonus: Can now test calculate_distance() separately!
+
+# %% [markdown]
+# Step 3: Improve algorithm (the real performance fix):
+
+
+# %%
+def analyze_nearby_stations_only(stations):
+    """Version 4: Smarter algorithm - only check nearby stations."""
+    results = []
+
+    # Sort by longitude for spatial indexing
+    sorted_stations = sorted(enumerate(stations), key=lambda x: x[1]["lon"])
+
+    for idx, (i, station_i) in enumerate(sorted_stations):
+        # Only check stations within MAX_DISTANCE in longitude
+        for j, station_j in sorted_stations[idx + 1 :]:
+            if abs(station_i["lon"] - station_j["lon"]) > MAX_DISTANCE_DEGREES:
+                break  # No need to check further
+
+            distance = calculate_distance(station_i, station_j)
+            if distance < MAX_DISTANCE_DEGREES:
+                results.append((i, j))
+
+    return results
+
+
+# Test: Still works? ✓
+# Performance: Much faster! (early termination)
+
+# %% [markdown]
+# **What we accomplished through refactoring:**
+#
+# 1. ✅ **Improved clarity** (named constant instead of magic number)
+# 2. ✅ **Improved testability** (extracted distance function)
+# 3. ✅ **Improved performance** (better algorithm)
+# 4. ✅ **Preserved correctness** (tests passed at each step)
+# 5. ✅ **Kept git history** (incremental commits show evolution)
+#
+# **Why refactoring worked here:**
+# - Small, focused changes
+# - Tests verified each step
+# - Each version was an improvement
+# - Never broke working code
+#
+# **Compare to rewriting**: If we'd thrown away the code and started over, we might have:
+# - Introduced new bugs
+# - Lost edge case handling
+# - Broken dependent code
+# - Wasted time reimplementing working parts
+#
+# #### Incremental Refactoring Strategy
+#
+# **The boy scout rule**: "Leave code cleaner than you found it."
+#
+# When you touch code (for any reason), make it slightly better:
+#
+# 1. **Adding a feature?** → Clean up surrounding code first
+# 2. **Fixing a bug?** → Refactor to prevent similar bugs
+# 3. **Profiling reveals slowness?** → Extract the slow part, optimize it
+# 4. **Code review feedback?** → Apply the lesson throughout the codebase
+#
+# **Small refactorings compound**: Five minutes of cleanup per day = cleaner codebase in weeks.
+#
+# **Safe refactoring practices:**
+# - Always have tests before refactoring
+# - Make one change at a time
+# - Run tests after each change
+# - Commit working changes frequently
+# - Use version control (easy to revert if needed)
+# - Don't change behavior and refactor simultaneously
+#
+# #### When Technical Debt is Acceptable
+#
+# **Controversial opinion**: Some technical debt is okay, even good!
+#
+# **Accept debt when:**
+# - Prototyping to test research ideas
+# - Rapid iteration is more important than quality
+# - Code will be thrown away after the experiment
+# - You're learning and will rewrite with knowledge gained
+# - Deadline is critical (conference submission!)
+#
+# **But**: Make it intentional. Write a comment: `# TODO: This is hacky, clean up later`
+#
+# **Pay debt before:**
+# - Publishing the code
+# - Sharing with collaborators
+# - Using in production analysis
+# - Building upon it for future work
+#
+# **Research reality**: Your "quick prototype" often becomes the production code your entire
+# paper depends on. Plan accordingly!
+#
+# #### Key Takeaways: Refactoring Mindset
+#
+# 1. **Technical debt is inevitable** - research code evolves, requirements change
+# 2. **Default to refactoring** - rewrites are risky and often fail
+# 3. **Profiling guides refactoring** - focus on actual bottlenecks, not guesses
+# 4. **Small steps, tested** - incremental changes with tests are safe
+# 5. **Don't rewrite working code** - unless you have a really good reason
+# 6. **Tests enable refactoring** - you can't refactor safely without tests
+#
+# **Connections:**
+# - **Part 2 of this lecture**: Good design principles prevent technical debt from accumulating
+#   in the first place
+# - **Lecture 5**: Tests make refactoring safe
+# - **Lecture 7**: Profiling reveals where to refactor for performance
+#
+# **Further reading**:
+# - Martin Fowler, *Refactoring: Improving the Design of Existing Code* (2018)
+# - Michael Feathers, *Working Effectively with Legacy Code* (2004)
+# - Joel Spolsky, "Things You Should Never Do, Part I" (on why rewrites fail)
+
+# %% [markdown]
+# ## Part 5: Reviewing Pull Requests for Architecture
+#
+# Beyond checking for correctness and style, effective code reviews also evaluate **software
+# architecture and design quality**. This is especially important in research software, where
+# code often evolves from a quick prototype to a critical analysis pipeline used by many people.
+#
+# Reviewing architecture helps prevent technical debt and ensures code remains maintainable as
+# projects grow. Let's learn how to review code for design quality, not just bugs.
+#
+# ### Why Architectural Review Matters
+#
+# You've already seen this story — it's the StationWatch PR from Part 1. It "worked perfectly":
+# tests passed, the reviewer approved it, and it merged. Three months later, adding a third
+# instrument type meant untangling two tightly-coupled, duplicated functions — three weeks of
+# work for what should have taken three days. **A five-minute architectural review during that PR
+# would have caught the design issue early.**
+#
+# **Architectural problems compound**: A poorly designed function becomes a poorly designed module,
+# then a poorly designed system. Catching design issues in review prevents expensive refactoring later.
+#
+# **What architectural review catches**:
+# - Code smells (Part 3): god functions, tight coupling, duplication
+# - Violation of design principles (Part 2): DRY, single responsibility
+# - Technical debt accumulation (Part 4): quick hacks that should be refactored
+# - Missing abstractions or poor API design
+# - Inconsistent patterns across the codebase
+#
+# ### Architectural Review Checklist
+#
+# When reviewing a PR, ask these design-focused questions:
+#
+# #### 1. Design Principles (Part 2)
+#
+# **DRY - Don't Repeat Yourself**
+# ```python
+# # ❌ Code smell in PR:
+# def analyze_temp_2019(data):
+#     mean = sum(data) / len(data)
+#     variance = sum((x - mean)**2 for x in data) / len(data)
+#     return mean, variance
+#
+# def analyze_temp_2020(data):
+#     mean = sum(data) / len(data)
+#     variance = sum((x - mean)**2 for x in data) / len(data)
+#     return mean, variance
+#
+# # Review comment:
+# # "These functions duplicate the statistics calculation. Could we extract
+# #  a shared calculate_statistics(data) function and call it from both?"
+# ```
+#
+# **Single Responsibility Principle**
+# ```python
+# # ❌ Violates SRP:
+# def process_experiment(filename):
+#     # Loads data
+#     # Cleans data
+#     # Analyzes data
+#     # Generates plots
+#     # Saves results
+#     # Sends email notification
+#     pass  # 300 lines of mixed concerns
+#
+# # Review comment:
+# # "This function has too many responsibilities. Consider splitting into:
+# #  - load_data(filename)
+# #  - clean_data(raw_data)
+# #  - analyze_data(clean_data)
+# #  - save_results(results, output_path)
+# # This would make testing easier and allow reuse of individual steps."
+# ```
+#
+# **Separation of Concerns**
+# ```python
+# # ❌ Mixes calculation with I/O:
+# def calculate_correlation(file1, file2):
+#     with open(file1) as f:
+#         data1 = [float(line) for line in f]
+#     with open(file2) as f:
+#         data2 = [float(line) for line in f]
+#     # correlation calculation...
+#
+# # Review comment:
+# # "This function mixes file I/O with calculation logic. Suggest:
+# #  def calculate_correlation(data1, data2):  # Pure calculation
+# #      ...
+# # This makes it testable without creating files and reusable with
+# # data from databases, APIs, or other sources."
+# ```
+#
+# #### 2. Code Smells (Part 3)
+#
+# **Watch for these red flags in PRs:**
+#
+# | Smell | What to Look For | Review Comment Example |
+# |-------|------------------|------------------------|
+# | **God Function** | Function > 50 lines, multiple tasks | "Could we split this into smaller functions?" |
+# | **Magic Numbers** | Unexplained constants like `273.15` | "Consider extracting this as KELVIN_OFFSET" |
+# | **Tight Coupling** | Function depends on internals of other classes | "Accept simple parameters instead of whole object" |
+# | **Global State** | Uses/modifies global variables | "Pass this as a parameter for testability" |
+# | **Poor Naming** | Variables like `tmp`, `x2`, `calc` | "More descriptive names would help readability" |
+# | **Duplication** | Same logic in multiple places | "Extract shared logic to avoid duplication" |
+#
+# **Example review comment addressing smell:**
+# ```
+# The new process_climate_data() function looks like it's doing a lot.
+# I count at least 6 different responsibilities (loading, validation,
+# transformation, analysis, visualization, export). This makes it hard
+# to test and reuse.
+#
+# Suggestion: Could we split this into a pipeline of smaller functions?
+# That would also make it easier to profile performance bottlenecks later.
+#
+# See Part 3's "God Function" anti-pattern above.
+# ```
+#
+# #### 3. API Design and Consistency
+#
+# **Check for consistent patterns across the codebase:**
+#
+# ```python
+# # ❌ Inconsistent API in PR:
+# # Existing code:
+# def load_temperature_data(filename, units='celsius'):
+#     """Load data with configurable units."""
+#     pass
+#
+# # New code in PR:
+# def load_pressure_data(filename):
+#     """Load pressure data in pascals only."""
+#     pass
+#
+# # Review comment:
+# # "For consistency with load_temperature_data(), should we add a units
+# #  parameter here too? Future users might need different pressure units
+# #  (Pa, hPa, bar, etc.). API consistency makes the library easier to learn."
+# ```
+#
+# **Look for good abstractions:**
+# ```python
+# # ✅ Good abstraction in PR:
+# def load_scientific_data(filename, data_type, units=None):
+#     """Generic loader for any scientific data type."""
+#     # Handles temperature, pressure, humidity, etc.
+#     pass
+#
+# # Review comment:
+# # "Nice abstraction! This unifies our data loading interface and will
+# #  make adding new data types easier. One suggestion: document the
+# #  supported data_type values in the docstring."
+# ```
+#
+# #### 4. Testability
+#
+# **Hard-to-test code is often poorly designed code (the Testing Connection from Part 3):**
+#
+# ```python
+# # ❌ Hard to test (no tests in PR):
+# def analyze_experiment():
+#     data = load_from_database(DB_CONNECTION_STRING)  # Global!
+#     results = complex_analysis(data)
+#     save_to_file('results.csv', results)
+#     return results
+#
+# # Review comment:
+# # "This function is hard to test because it depends on a database and
+# #  writes to files. Could we refactor to:
+# #
+# #  def analyze_experiment(data):
+# #      return complex_analysis(data)
+# #
+# #  Then the caller handles I/O, and we can easily test the analysis
+# #  logic with simple test data. This follows separation of concerns."
+# ```
+#
+# #### 5. Future Maintainability
+#
+# **Think about code evolution:**
+#
+# ```python
+# # Review question:
+# # "If we need to support a new instrument type in 6 months, would this
+# #  design make that easy or would we need major refactoring?"
+#
+# # Review question:
+# # "If we need to parallelize this computation, is the design amenable
+# #  to that? (No global state, pure functions, etc.)"
+#
+# # Review question:
+# # "When we publish this code, will external users find the API clear
+# #  and intuitive?"
+# ```
+#
+# ### When to Suggest Refactoring in Review
+#
+# **The refactoring judgment call:**
+#
+# ✅ **Do suggest refactoring when:**
+# - Design issue makes code hard to test (blocks quality)
+# - Pattern violates established project standards (consistency)
+# - Change will prevent future bugs (safety)
+# - Refactoring is localized and low-risk (small change)
+# - PR is already touching that code (no extra churn)
+#
+# ⚠️ **Don't insist on refactoring when:**
+# - Change is purely aesthetic (nitpicking)
+# - Refactoring would expand PR scope significantly (scope creep)
+# - Code is temporary/experimental (premature optimization)
+# - Team has more urgent priorities (time constraints)
+# - Author is new contributor (overwhelming)
+#
+# **Balance is key**: Focus on architectural issues that matter, not perfection.
+#
+# ### How to Give Architectural Feedback Constructively
+#
+# **Bad review comment** (sounds like criticism):
+# ```
+# This design is wrong. You should use the strategy pattern here.
+# ```
+#
+# **Good review comment** (collaborative and educational):
+# ```
+# This function is doing a lot! I wonder if we could simplify by extracting
+# the file I/O from the calculation logic? That would make it easier to test
+# and reuse. What do you think?
+#
+# For reference, see Part 2's section on Separation of Concerns above. Happy
+# to discuss alternatives if you have thoughts on this!
+# ```
+#
+# **Components of good architectural feedback:**
+#
+# 1. **Explain the problem**: "This makes testing hard because..."
+# 2. **Suggest a solution**: "Could we extract this into..."
+# 3. **Explain the benefit**: "This would make it easier to..."
+# 4. **Ask, don't demand**: "What do you think?"
+# 5. **Provide references**: "See Part 3 on code smells"
+# 6. **Offer to discuss**: "Happy to chat if you want to explore options"
+#
+# ### Balancing Nitpicking vs. Structural Issues
+#
+# **Not all review comments are equally important. Prioritize:**
+#
+# **🔴 Critical (must fix before merge):**
+# - Correctness bugs
+# - Security vulnerabilities
+# - Breaking changes to public APIs
+# - Major architectural flaws (god functions, tight coupling)
+# - Missing tests for critical functionality
+#
+# **🟡 Important (should fix, but negotiable):**
+# - Minor design improvements
+# - Inconsistencies with project patterns
+# - Missing documentation
+# - Performance concerns
+# - Code smells that hinder maintenance
+#
+# **🟢 Nice-to-have (optional suggestions):**
+# - Style preferences
+# - Variable naming improvements
+# - Additional test cases for rare edge cases
+# - Refactoring opportunities
+#
+# **Mark priority in reviews:**
+# ```
+# [Critical] This function modifies global state, which will cause race
+# conditions in our parallel processing pipeline. We must fix this.
+#
+# [Important] The duplicated logic here violates DRY. Suggest extracting
+# to a shared function for maintainability.
+#
+# [Nit] Consider renaming 'tmp' to 'temporary_values' for clarity.
+# ```
+#
+# ### Spotting Architectural Smells Across PRs
+#
+# **Watch for patterns across multiple PRs:**
+#
+# - **All PRs adding similar code** → Missing abstraction
+# - **Many PRs touching same file** → God file/class
+# - **PRs constantly fixing bugs in same area** → Design issue
+# - **PRs blocked on merge conflicts** → Tight coupling
+# - **Hard to review large PRs** → Functions doing too much
+#
+# **Team-level action:**
+# ```
+# "I've noticed 3 recent PRs all duplicate the same statistics calculation.
+#  Should we refactor to extract a shared stats module? This would prevent
+#  future duplication and make testing centralized."
+# ```
+#
+# ### Code Review: A Learning Opportunity
+#
+# **Reviews teach design skills both ways:**
+#
+# **For reviewers:**
+# - See how others solve similar problems
+# - Learn new patterns and idioms
+# - Practice articulating design principles
+#
+# **For authors:**
+# - Get feedback on design choices
+# - Learn team standards and expectations
+# - Improve design skills through iteration
+#
+# **Research software insight**: Many researchers haven't had formal software engineering
+# training. Code review is how we collectively learn good design. Be patient, be educational,
+# and remember: we're all learning together.
+#
+# ### Key Takeaways: Architectural Code Review
+#
+# 1. **Look beyond correctness** - review for maintainability and design quality
+# 2. **Apply the principles from Parts 2-3** - DRY, SRP, code smells
+# 3. **Think about future evolution** - will this design adapt well?
+# 4. **Balance perfectionism and pragmatism** - not every issue needs fixing now
+# 5. **Be constructive and educational** - reviews are learning opportunities
+# 6. **Prioritize feedback** - critical vs. important vs. nice-to-have
+# 7. **Catch patterns early** - prevent architectural debt from accumulating
+#
+# **Connections:**
+# - **Part 2**: Apply design principles in review
+# - **Part 3**: Spot code smells in PRs
+# - **Part 4**: Suggest refactoring when technical debt has accumulated
+#
+# **Remember**: The goal is not perfect code—it's code that works correctly, is maintainable,
+# and enables the team to do great science together!
+#
+# **Further reading**:
+# - Karl E. Wiegers, *Peer Reviews in Software: A Practical Guide* (2002)
+# - Jeff Atwood, "Code Reviews: Just Do It" (blog post)
+# - Thoughtbot's "Code Review Guide" (freely available online)
 
 # %% [markdown]
 # <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
 #     <h4 style="color: #7b1fa2; margin-top: 0;">💡 Try It Yourself</h4>
-#     <p>Concerned about legal risks? Explore these validation approaches:</p>
+#     <p>Interested in architectural thinking? Explore these design-focused activities:</p>
 #     <ul>
-#         <li><strong>Validate AI-generated code</strong>: Take a substantial code snippet
-#         from AI. Search GitHub for similar code - does exact or near-identical code
-#         exist? What license does it have?</li>
-#         <li><strong>Compare licenses</strong>: Read the MIT, Apache 2.0, and GPL licenses
-#         (15 minutes each). Which allows what? What obligations do they create?
-#         Understanding licenses protects you.</li>
-#         <li><strong>Audit your dependencies</strong>: Run <code>pip-licenses</code> or
-#         similar on your project. What licenses do you depend on? Are they compatible with
-#         your project's license? Any surprises?</li>
+#         <li><strong>Map your project's architecture</strong>: Draw a diagram of how
+#         your main code modules relate. Where does data flow? Which parts depend on
+#         others? Seeing structure helps you review it.</li>
+#         <li><strong>Review for future change</strong>: Look at a PR and ask: "If
+#         requirements changed, which parts would need to be rewritten?" Good architecture
+#         makes change easy - is this flexible or brittle?</li>
+#         <li><strong>Spot coupling in the wild</strong>: Find a large function in your
+#         codebase that does multiple things. How would you split it? What would make it
+#         more testable and maintainable?</li>
 #     </ul>
 # </div>
-
-# %% [markdown]
-# ### Data Protection and Privacy
-#
-# **Critical question**: Where does your code go when you use an AI assistant?
-#
-# **Cloud-based AI (Copilot, ChatGPT, etc.)**:
-# - Your code is sent to external servers
-# - May be used to improve the model (check settings!)
-# - Stored on commercial infrastructure
-# - Subject to the provider's privacy policy
-# - Potential access by company employees or governments
-#
-# **GDPR implications** (European researchers):
-# - Sending code containing personal data to AI services may violate GDPR
-# - Need data processing agreements with providers
-# - May require anonymization before using AI assistance
-#
-# **Research-specific concerns**:
-#
-# **Unpublished research code**:
-# - Pre-publication data and methods might be confidential
-# - Grant-funded research may have data sharing restrictions
-# - Patent considerations if research has commercial potential
-#
-# **Sensitive data domains**:
-# - **Medical research**: Patient data, even in code comments, is protected
-# - **Genomics**: Genetic sequences may be identifiable
-# - **Security research**: Vulnerability code should not be shared
-# - **Industry partnerships**: Proprietary algorithms or data
-#
-# **Best practice**: Never paste confidential research code into public AI services.
-# Use self-hosted alternatives for sensitive work.
-
-# %% [markdown]
-# ### Research Integrity
-#
-# **Attribution and transparency**:
-#
-# Some journals now ask: "Was AI used in writing this paper?"
-# Should you disclose AI assistance in code?
-#
-# **Current practices** (evolving):
-# - Some journals require AI disclosure in methods
-# - Code repositories may include AI usage notes
-# - No universal standard yet (as of 2026)
-#
-# **Reproducibility concerns**:
-# - AI suggestions are non-deterministic
-# - Same prompt → different code on different days
-# - Hard to reproduce AI-assisted development process
-#
-# **Recommendation**: In research software, prioritize reproducibility and understanding
-# over development speed. AI is a tool, not a substitute for expertise.
-
-# %% [markdown]
-# <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
-#     <h4 style="color: #7b1fa2; margin-top: 0;">💡 Try It Yourself</h4>
-#     <p>Thinking about legal and ethical implications? Explore these deeper questions:</p>
-#     <ul>
-#         <li><strong>Read the terms of service</strong>: Actually read GitHub Copilot's
-#         or ChatGPT's terms (10-15 minutes). What rights do you retain? What do they
-#         claim? Are you comfortable with this?</li>
-#         <li><strong>Understand your institution's policy</strong>: Does your university
-#         or research center have guidelines on AI tools? On data protection? Find and read
-#         them - they exist to protect you.</li>
-#         <li><strong>Consider self-hosted options</strong>: Research tools like Ollama or
-#         local LLMs. What would it take to run AI assistance on your institution's
-#         infrastructure? Worth exploring for sensitive projects!</li>
-#     </ul>
-# </div>
-
-# %% [markdown]
-# ## Part 7: Self-Hosted Solutions for Privacy-Sensitive Research
-#
-# ### Why Self-Host?
-#
-# For privacy-sensitive research (medical data, unpublished results, proprietary
-# algorithms), you may need AI assistance that doesn't send your code to external
-# servers.
-#
-# **Use cases for self-hosted AI**:
-# - Medical or genomic research code
-# - Unpublished methods in competitive fields
-# - Industry-partnered research with NDAs
-# - Government or defense research
-# - Any code containing sensitive data
-#
-# ### How Self-Hosting Works
-#
-# **Conceptual overview**:
-#
-# 1. **Download a pre-trained code model** (e.g., Code Llama, StarCoder)
-# 2. **Run the model on your local machine** or department server
-# 3. **Use a coding assistant client** that connects to your local model
-# 4. **Your code never leaves your infrastructure**
-#
-# **Key components**:
-# - **Model**: Open-source LLM trained on code (Code Llama 7B/13B/34B, StarCoder, etc.)
-# - **Runtime**: Ollama, llama.cpp, or similar to run the model efficiently
-# - **Client**: Continue.dev, Tabby, or custom integration
-# - **Hardware**: GPU recommended but CPU works (slower)
-#
-# ### Popular Self-Hosted Options
-#
-# **Option 1: Ollama + Continue.dev**
-#
-# Ollama (https://ollama.ai) makes running local LLMs easy:
-# ```bash
-# # Install Ollama (macOS, Linux, Windows)
-# curl -fsSL https://ollama.ai/install.sh | sh
-#
-# # Download Code Llama model
-# ollama pull codellama:7b
-#
-# # Run the model
-# ollama run codellama:7b
-# ```
-#
-# Continue.dev is an open-source Copilot alternative that works with local models.
-# Install as VS Code or JetBrains extension, configure to use Ollama.
-#
-# **Reference**: https://ollama.ai and https://continue.dev/docs
-#
-# **Option 2: Tabby (Self-Hosted)**
-#
-# Tabby (https://tabby.tabbyml.com) is designed specifically for self-hosted code
-# completion. It's optimized for code and has lower hardware requirements than
-# general-purpose LLMs.
-#
-# ```bash
-# # Run with Docker
-# docker run -it \
-#   --gpus all -p 8080:8080 -v $HOME/.tabby:/data \
-#   tabbyml/tabby \
-#   serve --model StarCoder-1B --device cuda
-# ```
-#
-# **Reference**: https://tabby.tabbyml.com
-#
-# ### Trade-offs of Self-Hosting
-#
-# **Advantages**:
-# - ✅ Complete data privacy - code never leaves your infrastructure
-# - ✅ No usage limits or costs (after setup)
-# - ✅ Compliance with institutional policies
-# - ✅ Works offline
-# - ✅ Customizable and transparent
-#
-# **Disadvantages**:
-# - ❌ Requires technical setup
-# - ❌ Lower code quality than state-of-the-art cloud models
-# - ❌ Hardware requirements (GPU ideal, CPU works but slower)
-# - ❌ Models need updates (you manage this)
-# - ❌ No support team (community-based)
-#
-# ### Practical Recommendations
-#
-# **For most research code**:
-# - Public, non-sensitive: Cloud AI (Copilot, ChatGPT) is fine
-# - Always review and understand suggestions
-#
-# **For sensitive research**:
-# - Medical/genomic data: Use self-hosted only
-# - Unpublished methods: Self-hosted or no AI
-# - Industry partnerships: Check NDA, likely self-hosted
-#
-# **Getting started with self-hosting**:
-# 1. Start with Ollama (easiest setup)
-# 2. Try Code Llama 7B (good balance of quality and speed)
-# 3. Use Continue.dev in VS Code (familiar interface)
-# 4. Test with non-sensitive code first
-# 5. Evaluate quality before committing to workflow
-#
-# **References for self-hosted AI**:
-# - Ollama documentation: https://ollama.ai
-# - Continue.dev documentation: https://continue.dev/docs
-# - Tabby documentation: https://tabby.tabbyml.com
-# - Code Llama paper: Rozière et al. (2023), "Code Llama: Open Foundation Models for Code"
-#   https://arxiv.org/abs/2308.12950
-
-# %% [markdown]
-# ## Part 8: Best Practices for AI-Assisted Research Software Development
-#
-# ### The Golden Rules
-#
-# **1. Understand before accepting**
-# - Never use code you don't understand
-# - If AI suggests something complex, learn what it does
-# - In research, you own every line - whether AI wrote it or not
-#
-# **2. AI suggests, you decide**
-# - Treat suggestions as proposals, not commands
-# - Consider alternatives the AI didn't suggest
-# - Sometimes the best choice is to write it yourself
-#
-# **3. Test rigorously**
-# - AI-generated code needs MORE testing, not less
-# - Write tests before accepting AI suggestions
-# - Check edge cases AI might miss
-#
-# **4. Verify licensing**
-# - Check if suggestions match existing libraries
-# - Search for similar code online
-# - When in doubt, rewrite in your own words
-#
-# **5. Protect sensitive data**
-# - Never paste confidential code into cloud AI
-# - Use self-hosted solutions for sensitive research
-# - Remove data examples before asking AI for help
-#
-# ### Effective Prompting Strategies
-#
-# **For Copilot (integrated)**:
-# - Write clear comments explaining what you want
-# - Use descriptive variable names
-# - Start with function signatures and docstrings
-# - Let Copilot fill in implementation details
-# - Review each suggestion before accepting (Tab key)
-#
-# **For ChatGPT (conversational)**:
-# - Provide context: "I'm analyzing climate model output..."
-# - Be specific: "Using NumPy, not Pandas"
-# - Ask for explanations: "Explain why this approach..."
-# - Iterate: "What about edge case X?"
-# - Request alternatives: "What other approaches exist?"
-#
-# ### When NOT to Use AI
-#
-# **Situations where AI hinders more than helps**:
-#
-# 1. **Learning new concepts** (first time)
-#    - Write it yourself to learn deeply
-#    - Use AI for review/comparison afterward
-#
-# 2. **Critical algorithms** (core research methods)
-#    - You must understand these completely
-#    - AI might suggest inappropriate methods
-#
-# 3. **Debugging complex logic**
-#    - Understanding the bug teaches you
-#    - AI might suggest band-aids instead of fixes
-#
-# 4. **High-security code**
-#    - Security requires expert review, not AI
-#    - AI may introduce subtle vulnerabilities
-#
-# 5. **Performance-critical code**
-#    - AI optimizes for readability, not speed
-#    - Profiling-guided optimization is better
-#
-# ### Success Stories (When AI Helps)
-#
-# **Positive use cases from research**:
-#
-# **1. Accelerated test writing**
-# - Researcher writes core algorithm
-# - AI generates test fixtures and edge cases
-# - 30% faster test coverage, same quality
-#
-# **2. Documentation improvement**
-# - AI helps write clear docstrings
-# - Generates examples from function signatures
-# - More consistent documentation style
-#
-# **3. Code migration**
-# - Converting MATLAB code to Python
-# - AI provides starting point, researcher refines
-# - Faster migration, researcher stays in control
-#
-# **4. Learning new libraries**
-# - Researcher unfamiliar with library API
-# - ChatGPT explains concepts and examples
-# - Researcher understands before implementing
-#
-# ### Final Recommendations
-#
-# **Developing your AI-assisted workflow**:
-#
-# 1. **Start conservatively**: Use AI for low-risk tasks first
-# 2. **Build expertise**: Learn to quickly evaluate suggestions
-# 3. **Establish boundaries**: Know what you will/won't use AI for
-# 4. **Stay informed**: AI tools and policies evolve rapidly
-# 5. **Share experiences**: Discuss with colleagues what works
-#
-# **For research software specifically**:
-#
-# - Prioritize understanding over speed
-# - Document which code was AI-assisted
-# - Test more thoroughly when using AI
-# - Use self-hosted AI for sensitive work
-# - Keep learning fundamentals - don't let skills atrophy
-#
-# **Remember Sarah's story**: AI can help you code faster, but only you can ensure
-# your code is correct, appropriate for your research question, and scientifically
-# sound. Use AI as a tool to augment your expertise, not replace it.
 
 # %% [markdown]
 # ## Summary
 #
-# In this lecture, we explored AI-assisted coding for research software:
+# ### Following StationWatch Through This Lecture
 #
-# **Key Takeaways**:
+# Across this lecture, one project illustrated the whole arc:
 #
-# 1. **AI assistants are tools that amplify RSE capabilities, not replacements**
-#    - RSEs bring irreplaceable expertise: domain knowledge, critical thinking, ethics
-#    - AI helps with routine tasks, learning new tools, and documentation
-#    - What remains human: research understanding, scientific correctness, architecture design
+# 1. **The PR that worked perfectly** (Part 1) — correct code, tightly coupled design, no review
+#    caught it
+# 2. **The principles that would have prevented it** (Part 2) — DRY, Single Responsibility,
+#    Separation of Concerns
+# 3. **The smells that would have flagged it** (Part 3) — god functions, duplication, magic
+#    numbers, tight coupling, global state
+# 4. **The decision once it's already there** (Part 4) — refactor incrementally, guided by tests
+#    and profiling, rather than rewriting from scratch
+# 5. **The review practice that stops it recurring** (Part 5) — a design-focused checklist,
+#    applied for five minutes on every PR
 #
-# 2. **AI assistants are powerful but imperfect tools**
-#    - Generate plausible code, not always correct code
-#    - Built on pattern matching, not true understanding
-#    - Require critical evaluation of all suggestions
+# ### Key Takeaways
 #
-# 3. **Different tools for different tasks**
-#    - Copilot: Integrated, real-time, good for experienced developers
-#    - ChatGPT: Conversational, educational, good for learning
-#    - Use both strategically based on your needs
+# ✅ Good design principles (DRY, SRP, Separation of Concerns) are cheap when applied early and
+# expensive to retrofit later
 #
-# 4. **Significant risks exist**
-#    - Technical: hallucinated APIs, subtle bugs, security issues
-#    - Cognitive: over-reliance, skill atrophy, false confidence
-#    - Legal: licensing uncertainty, copyright questions
-#    - Privacy: data protection, GDPR compliance
+# ✅ Code smells are not bugs — code can smell bad and still produce correct output — but they
+# predict where the next bug or the next expensive rewrite will come from
 #
-# 5. **Self-hosted solutions for sensitive research**
-#    - Ollama + Code Llama for local AI
-#    - Continue.dev or Tabby for privacy-preserving assistance
-#    - Trade-off: privacy vs quality
+# ✅ Hard-to-test code is usually a symptom of a design problem, not a testing problem
 #
-# 6. **Best practices for research software**
-#    - Understand every line of code
-#    - Test AI suggestions rigorously
-#    - Protect sensitive research data
-#    - Document AI usage appropriately
-#    - Keep developing your own expertise
+# ✅ Default to refactoring, not rewriting; small tested steps beat a risky rewrite almost every
+# time
 #
-# 7. **Skills RSEs need to thrive with AI**
-#    - Critical evaluation of AI outputs
-#    - Prompt engineering for better results
-#    - Deep domain knowledge
-#    - Software engineering fundamentals
-#    - Ethical and legal awareness
+# ✅ Some technical debt is a reasonable trade-off — taken on intentionally, and paid off before
+# the code is shared or published
 #
-# **The bottom line**: AI coding assistants are valuable tools that can accelerate
-# development, but they're not substitutes for understanding, testing, or critical
-# thinking. In research software, where correctness and reproducibility are paramount,
-# use AI to augment your capabilities while maintaining full responsibility for your code.
-# Your expertise as an RSE—combining scientific knowledge with software skills—remains
-# uniquely valuable and irreplaceable.
+# ✅ Architectural review is a five-minute habit added to your existing review process, not a
+# separate one
 #
-# ### What's Next?
+# ### A Note on Scope
 #
-# In **Lecture 14**, the final lecture, we'll wrap up the course by:
-# - Reviewing and integrating knowledge from all 13 lectures
-# - Exploring advanced topics we didn't cover and where to learn them
-# - Connecting you with the international and German RSE communities
-# - Providing resources for ongoing learning and support
-# - Celebrating your journey from RSE novice to practitioner
+# This lecture stayed at the level of functions, modules, and pull requests — the code-level
+# design decisions research software engineers make every week. Large-scale system architecture
+# (microservices, distributed systems, formal methods) is out of scope for this course. But the
+# habits covered here — naming the responsibility of a function, keeping I/O separate from
+# computation, reviewing structure alongside correctness — are the same habits that scale up to
+# those bigger questions, if and when your research software grows into that territory.
+
+# %% [markdown]
+# ## Acknowledgements and References
 #
-# You've learned an enormous amount—from basic shell commands to AI-assisted development.
-# Lecture 14 will help you see how it all fits together and chart your path forward.
+# This lecture consolidates and builds on established software design literature:
 #
-# **Ready to conclude? Move on to Lecture 14: Course Summary and the RSE Community!**
+# ### Primary Sources
 #
-# **Further Learning**:
-# - Try both integrated and chat-based AI tools
-# - Practice evaluating AI suggestions critically
-# - Experiment with self-hosted options
-# - Develop your own guidelines for when to use AI
-# - Stay informed about legal and policy developments
+# - **Research Software Engineering with Python** by The Alan Turing Institute
+#   <https://alan-turing-institute.github.io/rse-course/html/>
+#   General framing on code quality and maintainability in a research context.
 #
-# **Discussion question**: How will you integrate AI assistants into your research
-# workflow while maintaining scientific rigor and code quality?
+# ### Classic References on Design and Refactoring
+#
+# - Martin Fowler, *Refactoring: Improving the Design of Existing Code* (2018)
+#   The definitive reference for code smells and refactoring technique, cited throughout Parts 3
+#   and 4.
+#
+# - Robert C. Martin, *Clean Code: A Handbook of Agile Software Craftsmanship* (2008)
+#   Informs the design-principles discussion in Part 2 and the code-smell catalogue in Part 3.
+#
+# - John Ousterhout, *A Philosophy of Software Design* (2018)
+#   Informs Part 2's discussion of Separation of Concerns.
+#
+# - Steve McConnell, *Code Complete* (2004), Chapter 7
+#   Informs Part 3's discussion of defensive, self-documenting code.
+#
+# - Michael Feathers, *Working Effectively with Legacy Code* (2004)
+#   Informs Part 4's refactor-vs-rewrite framework.
+#
+# - Joel Spolsky, "Things You Should Never Do, Part I" (blog post)
+#   Informs Part 4's caution against full rewrites.
+#
+# - Ward Cunningham's technical debt metaphor, as popularized in the software engineering
+#   literature. Informs Part 4.
+#
+# - Kent Beck's coinage of "code smell," as popularized by Martin Fowler. Informs Part 3.
+#
+# - Karl E. Wiegers, *Peer Reviews in Software: A Practical Guide* (2002)
+#   Informs Part 5's review practices.
+#
+# - Jeff Atwood, "Code Reviews: Just Do It" (blog post)
+#   Informs Part 5.
+#
+# - Thoughtbot's "Code Review Guide" (freely available online)
+#   Informs Part 5.
+#
+# ### Notes
+#
+# This lecture consolidates content that, in an earlier structure of the course, was distributed
+# across separate lectures on project structure, testing, debugging, and collaboration into a
+# single, dedicated treatment, connected by a running example developed for this course. The
+# StationWatch scenario and its code examples are illustrative and were developed specifically
+# for this course.
+
+# %% [markdown]
+# ### Next Steps
+#
+# Design and architecture aren't a one-time lesson — they're a habit you apply on every PR from
+# here on, alongside the testing, debugging, and collaboration practices from Lectures 5, 7, and
+# 10. Lecture 14 closes out the course with a summary of everything you've learned and a look at
+# the RSE community and career paths ahead.
+#
+# **Ready to continue? Move on to Lecture 14: Course Summary and the RSE Community!**

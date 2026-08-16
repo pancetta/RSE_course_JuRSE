@@ -58,10 +58,10 @@ This lecture series covers 14 lectures (~90 minutes each) on Research Software E
 - **Lecture 10**: Collaboration and Code Review in Research Software
 - **Lecture 11**: Working with Research Data - File Formats and Databases
 - **Lecture 12**: Scientific Workflows and Automation
-- **Lecture 13**: AI-Assisted Coding for Research Software
+- **Lecture 13**: Software Architecture and Design for Research Software
 - **Lecture 14**: Course Summary and the RSE Community
 
-**Integrated Topics:** Throughout the course, we cover software architecture and design principles including DRY, Single Responsibility, code smells, refactoring strategies, and architectural code review. AI-assisted coding is introduced in Lecture 3 and revisited in context throughout the course — testing (Lecture 5), CI (Lecture 6), debugging (Lecture 7), documentation (Lecture 8), and code review (Lecture 10).
+**Integrated Topics:** Lecture 13 gives software architecture and design principles — DRY, Single Responsibility, code smells, refactoring strategies, and architectural code review — a dedicated treatment. AI-assisted coding is introduced in Lecture 3 and revisited in context throughout the course — testing (Lecture 5), CI (Lecture 6), debugging (Lecture 7), documentation (Lecture 8), and code review (Lecture 10).
 
 ## Getting Started
 

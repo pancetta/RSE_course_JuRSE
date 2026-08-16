@@ -46,7 +46,7 @@ project:
     - file: lecture_12/lecture_12.ipynb
       title: 'Lecture 12: Scientific Workflows and Automation'
     - file: lecture_13/lecture_13.ipynb
-      title: 'Lecture 13: AI-Assisted Coding'
+      title: 'Lecture 13: Software Architecture and Design'
     - file: lecture_14/lecture_14.ipynb
       title: 'Lecture 14: Course Summary and RSE Community'
 site:

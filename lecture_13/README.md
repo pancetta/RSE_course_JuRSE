@@ -1,46 +1,52 @@
-# Lecture 13: AI-Assisted Coding for Research Software
+# Lecture 13: Software Architecture and Design for Research Software
 
 ## Overview
-Artificial Intelligence coding assistants have rapidly become widespread tools in software development, offering to help write, debug, and document code. For research software engineers, these tools present both exciting opportunities and serious risks. This lecture explores how to use AI coding assistants effectively and safely, understanding their capabilities and limitations, and navigating the legal and ethical considerations specific to research software.
+This lecture is about the code-level design decisions that determine whether research software
+stays maintainable as it grows — how you shape functions and modules, not the large-scale
+architecture of distributed systems. It follows a single running example, the StationWatch
+weather-station pipeline, through a cautionary tale, the design principles that would have
+prevented it, the code smells that would have flagged it, the refactor-vs-rewrite decision once
+technical debt has accumulated, and the architectural code review practice that stops it from
+recurring.
 
 **Duration**: ~90 minutes
 
 ## Topics Covered
-- What AI coding assistants are and how they work
-- Comparing different types of AI assistance (integrated vs chat-based)
-- Using GitHub Copilot and ChatGPT effectively for research coding
-- Recognizing common pitfalls and security risks
-- Navigating legal implications (licensing, copyright, data protection)
-- Understanding self-hosted options for sensitive research code
-- Applying best practices for AI-assisted research software development
+- Design principles for maintainable code: DRY, Single Responsibility, Separation of Concerns
+- Code smells: god functions, duplicated code, magic numbers, tight coupling, global state
+- Why hard-to-test code is usually a symptom of a design problem
+- Deciding when to refactor versus rewrite, using a practical risk-based framework
+- Refactoring incrementally and safely, guided by tests
+- Technical debt as a deliberate, sometimes-acceptable trade-off
+- Reviewing pull requests for architectural quality, not just correctness
+- Giving constructive, prioritized design feedback in code review
 
 ## Key Concepts
-- **AI coding assistants**: Tools that suggest or generate code using machine learning
-- **GitHub Copilot**: Integrated AI assistant in code editors
-- **ChatGPT/Claude**: Chat-based AI for code generation and debugging
-- **Licensing concerns**: AI-generated code may have unclear copyright
-- **Security risks**: AI suggestions may contain vulnerabilities or bugs
-- **Self-hosted models**: Running AI assistants on your own infrastructure
-- **Verification**: Always understanding and testing AI-generated code
+- **DRY (Don't Repeat Yourself)**: Write logic once, reuse it everywhere
+- **Single Responsibility Principle**: Each function or module should do one thing well
+- **Separation of Concerns**: Keep data access, computation, and presentation apart
+- **Code smell**: A sign of a design problem, not necessarily a bug
+- **Technical debt**: The cost of a quick solution now that requires more work later
+- **Refactoring**: Improving code structure without changing behavior, in small, tested steps
+- **Architectural code review**: Reviewing a PR for maintainability and design, not just
+  correctness
 
 ## Prerequisites
 
 Before starting this lecture, you should be familiar with:
-- Python programming (covered in Lectures 2-4)
-- Writing functions and classes
-- Basic software development practices
-- All previous RSE concepts (testing, documentation, version control)
-
-This lecture assumes you're comfortable writing code and introduces AI tools to enhance your workflow.
+- Python functions, classes, and modules (Lectures 2 and 4)
+- Writing and running tests with pytest, and what makes code "testable" (Lecture 5)
+- Reading a git diff and participating in pull request review (Lecture 10)
+- AI-assisted coding basics, including reviewing AI suggestions like a diff (Lecture 3)
 
 ## Learning Objectives
-- Understand what AI coding assistants are and how they work
-- Compare different types of AI assistance (integrated vs chat-based)
-- Use GitHub Copilot and ChatGPT effectively for research coding
-- Recognize common pitfalls and security risks
-- Navigate legal implications (licensing, copyright, data protection)
-- Understand self-hosted options for sensitive research code
-- Apply best practices for AI-assisted research software development
+- Apply DRY, Single Responsibility, and Separation of Concerns to keep research code
+  maintainable as it grows
+- Recognize common code smells and explain why they make code hard to test
+- Decide when to refactor versus rewrite using a practical, risk-based framework
+- Refactor incrementally, using tests to keep each step safe
+- Review a pull request for architectural quality and give constructive design feedback
+- Recognize when the same design problem is recurring across multiple pull requests
 
 ## Files
 - `lecture_13.py` - Main lecture content in Jupytext format
@@ -73,14 +79,16 @@ make convert
 jupyter notebook
 ```
 
-## The Copy-Paste Catastrophe
-The lecture opens with a cautionary tale about a researcher who blindly trusted AI-generated code, leading to incorrect scientific results. This demonstrates the critical importance of understanding and verifying AI suggestions.
+## The StationWatch Story
+The lecture opens with a cautionary tale about a weather-station analysis pipeline whose pull
+requests all "worked perfectly"—correct, reviewed, and merged—until tightly coupled, duplicated
+code turned a three-day feature into a three-week untangling. The rest of the lecture follows
+that same project through the principles, smells, decisions, and review practices that would
+have kept it maintainable.
 
 ## Practical Guidance
 The lecture provides:
-- Hands-on examples of effective AI assistant use
-- Common failure modes and how to avoid them
-- Legal and ethical frameworks for AI in research
-- Evaluation criteria for AI-generated code
-- Self-hosted alternatives for sensitive projects
-- Integration with existing RSE practices (testing, review)
+- Runnable code examples for each design principle and code smell
+- A profiling-driven refactoring case study, taken step by step
+- An architectural code review checklist you can apply to your own pull requests
+- Try It Yourself exercises for refactoring, spotting smells, and reviewing for design

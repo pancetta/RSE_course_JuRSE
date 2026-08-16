@@ -106,7 +106,7 @@
 # - **Lecture 10**: Collaboration and Code Reviews
 # - **Lecture 11**: Working with Research Data
 # - **Lecture 12**: Scientific Workflows and Automation
-# - **Lecture 13**: AI-assisted Coding
+# - **Lecture 13**: Software Architecture and Design for Research Software
 # - **Lecture 14**: Wrap-up and the RSE Community
 #
 # Each lecture is designed to give you an overview of the topic, with examples and things you can try yourself, building on concepts from previous sessions.

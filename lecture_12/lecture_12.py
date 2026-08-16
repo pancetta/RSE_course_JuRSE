@@ -1450,17 +1450,20 @@ workflow_def, metadata = simulate_workflow_execution()
 # %% [markdown]
 # ### What's Next?
 #
-# In **Lecture 13**, we'll explore AI-assisted coding for research software. You'll learn:
-# - What AI coding assistants are and how they work
-# - Using tools like GitHub Copilot and ChatGPT effectively
-# - Understanding the risks and limitations of AI-generated code
-# - Navigating legal and ethical considerations
-# - Best practices for AI-assisted research software development
+# In **Lecture 13**, we'll bring together the software architecture and design threads that have
+# been running through this course. You'll learn:
+# - Applying DRY, Single Responsibility, and Separation of Concerns to keep research code
+#   maintainable
+# - Recognizing code smells that signal design problems before they become bugs
+# - Deciding when to refactor versus rewrite, and how to refactor safely
+# - Reviewing pull requests for architectural quality, not just correctness
 #
-# AI tools can help you write workflows faster, but as you'll learn, they require careful
-# oversight and critical evaluation—especially in research contexts.
+# The workflows you just built are exactly the kind of code that benefits most from good
+# design—pipelines grow, get reused, and get modified by other people. Clean design keeps
+# them maintainable as they do.
 #
-# **Ready to continue? Move on to Lecture 13: AI-Assisted Coding for Research Software!**
+# **Ready to continue? Move on to Lecture 13: Software Architecture and Design for Research
+# Software!**
 
 # %% [markdown]
 # ## Additional Resources

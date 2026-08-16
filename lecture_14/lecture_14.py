@@ -49,7 +49,8 @@
 # - Completed Lectures 1-13
 # - Hands-on experience with the RSE tools and practices covered
 # - A basic understanding of all major topics: version control, Python, testing, CI/CD,
-#   documentation, containers, collaboration, data management, workflows, and AI tools
+#   documentation, containers, collaboration, data management, workflows, software architecture
+#   and design, and AI tools
 #
 # This final lecture synthesizes everything you've learned into a cohesive whole.
 #
@@ -155,12 +156,12 @@
 # - Scaling computational research
 # - **Key takeaway**: Workflows make research reproducible and scalable
 #
-# **Lecture 13: AI-Assisted Coding**
-# - Using GitHub Copilot and ChatGPT effectively
-# - Understanding AI limitations and risks
-# - Legal and ethical considerations
-# - Self-hosted options for sensitive code
-# - **Key takeaway**: AI assists but doesn't replace understanding
+# **Lecture 13: Software Architecture and Design for Research Software**
+# - DRY, Single Responsibility, and Separation of Concerns
+# - Code smells: god functions, duplication, magic numbers, tight coupling, global state
+# - Refactoring versus rewriting, and how to refactor safely
+# - Architectural code review
+# - **Key takeaway**: Good design habits keep code cheap to change as it grows
 #
 # ### How It All Fits Together
 #
@@ -177,14 +178,12 @@
 # 1. **Debugging (Lecture 7)**: Fix problems systematically
 # 2. **Documentation (Lecture 8)**: Make code understandable
 # 3. **Code Review (Lecture 10)**: Learn from others, improve together
+# 4. **Architecture and Design (Lecture 13)**: Keep code maintainable as it grows
 #
 # **The Research Stack**:
 # 1. **Data Management (Lecture 11)**: Handle research data properly
 # 2. **Workflows (Lecture 12)**: Automate analysis pipelines
 # 3. **Reproducibility (Lecture 9)**: Enable others to verify your work
-#
-# **The Modern Stack**:
-# 1. **AI Tools (Lecture 13)**: Augment your capabilities responsibly
 #
 # ### Skills You've Gained
 #
