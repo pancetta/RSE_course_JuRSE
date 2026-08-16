@@ -1,22 +1,23 @@
-# Lecture 3: Python Fundamentals and Advanced Concepts
+# Lecture 3: AI-Assisted Coding Foundations
 
 ## Overview
-This lecture deepens your Python knowledge by covering advanced function concepts,
-error handling, file I/O, and functional programming techniques. These skills are
-essential for writing robust, maintainable research software.
+This lecture is a foundations-only introduction to AI-assisted coding: what these tools
+actually do, the one habit that keeps you safe while using them, and the most common ways
+they go wrong. It deliberately stays narrow—deeper AI topics return in context throughout the
+rest of the course (testing in Lecture 5, debugging in Lecture 7, code review in Lecture 10,
+and legal/ethical/data-protection questions in Lecture 14).
 
 **Duration**: ~90 minutes
 
 ## Topics Covered
-- Advanced function concepts (default parameters, keyword arguments, lambda functions)
-- Comprehensive function documentation (NumPy docstring style)
-- Error handling with try/except blocks
-- Raising and catching different exception types
-- File input/output (text files, CSV data)
-- List comprehensions and dictionary comprehensions
-- Command-line scripts with argparse
-- Functional programming concepts (map, filter, lambda)
-- Practical examples for research software
+- A cautionary tale: AI generates plausible code, not necessarily correct code
+- Three categories of AI coding tools: autocomplete-style, chat-style, agentic
+- How these tools actually work (and why they don't "understand" your code)
+- Effective prompting: turning silent assumptions into visible, checkable decisions
+- The core habit: review every AI suggestion like a diff, verified against a case you can
+  check by hand
+- Common pitfalls: hallucinated APIs, outdated/insecure patterns, automation bias
+- Where AI-assisted workflows come up again later in the course
 
 ## Files
 - `lecture_03.py` - Main lecture content in Jupytext format
@@ -48,3 +49,8 @@ Or from the main repository directory:
 make convert
 jupyter notebook
 ```
+
+## A Note on Tool Names
+This lecture deliberately avoids anchoring its teaching to specific AI products—the
+"Tools Landscape" box in Part 2 lists current examples, but the categories (not the brands)
+are what matter, since this landscape changes faster than any other topic in the course.

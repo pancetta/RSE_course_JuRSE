@@ -1,9 +1,11 @@
-# Lecture 2: Advanced Git, GitHub, and Python Basics
+# Lecture 2: Advanced Git, GitHub, GitLab, and Python Concepts for RSE
 
 ## Overview
-This lecture builds on Git fundamentals from Lecture 1, introduces collaboration with GitHub,
-and begins our journey into Python programming. We'll learn advanced version control workflows
-and start writing our first Python code.
+This lecture builds on Git fundamentals from Lecture 1 and introduces collaboration with GitHub
+and GitLab. It then reviews the Python concepts—error handling, the `with` statement,
+comprehensions, and classes—that you'll need to follow the rest of this course. This is not a
+Python introduction: the course assumes you can already read Python and have written at least a
+little of it before (see the [course prerequisites](../README.md)).
 
 **Duration**: ~90 minutes
 
@@ -11,11 +13,11 @@ and start writing our first Python code.
 - Advanced Git: branching, merging, and conflict resolution
 - .gitignore patterns and file management
 - GitHub collaboration: forking, pull requests, and remotes
-- Python fundamentals (variables, data types, strings)
-- Python collections (lists, dictionaries)
-- Control flow (if statements, for loops, while loops)
-- Basic functions and documentation
-- Practical examples combining Git and Python
+- GitLab collaboration: forking, merge requests, and GitHub/GitLab comparison
+- Error handling: exception types, try/except, raising exceptions
+- The `with` statement and context managers
+- List and dictionary comprehensions
+- Classes and object-oriented programming basics
 
 ## Files
 - `lecture_02.py` - Main lecture content in Jupytext format

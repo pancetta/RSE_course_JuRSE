@@ -72,8 +72,8 @@ jupyter notebook
 
 ## Course Synthesis
 This lecture provides a comprehensive review of:
-- Foundational tools (Lectures 1-2): Shell, Git, Python basics
-- Python programming (Lectures 3-4): Language features and project structure
+- Foundational tools (Lectures 1-2): Shell, Git, Python concepts
+- AI foundations and project structure (Lectures 3-4): AI-assisted coding practices and Python project organization
 - Code quality (Lectures 5-7): Testing, CI/CD, debugging
 - Professional practices (Lectures 8-10): Documentation, containers, collaboration
 - Advanced topics (Lectures 11-13): Data management, workflows, AI tools

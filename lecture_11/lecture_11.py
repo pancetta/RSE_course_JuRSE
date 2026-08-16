@@ -45,7 +45,7 @@
 # ## Prerequisites
 #
 # Before starting this lecture, you should be familiar with:
-# - Python file I/O operations (covered in Lecture 3)
+# - Python file I/O operations (covered in Lecture 2)
 # - NumPy for numerical data (covered in Lecture 4)
 # - Basic understanding of data analysis workflows
 # - Pandas basics (helpful but not required)

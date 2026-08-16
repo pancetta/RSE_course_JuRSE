@@ -43,9 +43,9 @@
 # ## Prerequisites
 #
 # Before starting this lecture, you should be familiar with:
-# - Python fundamentals: functions, classes, and modules (covered in Lectures 2-3)
-# - Error handling with try/except blocks
-# - File I/O operations
+# - Python fundamentals: functions, classes, and modules (covered in Lecture 2)
+# - Error handling with try/except blocks (covered in Lecture 2)
+# - File I/O and the `with` statement (covered in Lecture 2)
 # - Basic understanding of package imports
 #
 # This lecture assumes you're comfortable writing Python functions and organizing code into files.

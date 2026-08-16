@@ -14,6 +14,14 @@ This course is:
 
 The course uses Python as an example implementation language, but the principles generalize to other research computing environments.
 
+### Prerequisites
+
+- **Basic Python skills**: you should be able to *read* Python code and understand fundamental
+  concepts (variables, loops, functions, control flow). This course does not teach Python from
+  scratch — Lecture 2 reviews the specific patterns (error handling, comprehensions, classes) used
+  throughout the rest of the course, but assumes you can already follow along.
+- No prior software engineering training required
+
 ## Learning Outcomes
 
 After completing this course, students will be able to:
@@ -39,8 +47,8 @@ The focus is not on large-scale system architecture or formal methods, but on pr
 This lecture series covers 14 lectures (~90 minutes each) on Research Software Engineering fundamentals:
 
 - **Lecture 1**: Introduction to RSE, Shell Basics, and Git Fundamentals
-- **Lecture 2**: Advanced Git, GitHub & GitLab Collaboration, and Python Basics
-- **Lecture 3**: Python Fundamentals and Advanced Concepts
+- **Lecture 2**: Advanced Git, GitHub & GitLab Collaboration, and Python Concepts for RSE
+- **Lecture 3**: AI-Assisted Coding Foundations
 - **Lecture 4**: Python Project Structure and Scientific Libraries (NumPy, Matplotlib)
 - **Lecture 5**: Testing Research Software
 - **Lecture 6**: Automation and Continuous Integration

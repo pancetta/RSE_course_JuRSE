@@ -77,19 +77,19 @@
 # - Git basics: commits, repositories, version control workflow
 # - **Key takeaway**: Version control is the foundation of professional software development
 #
-# **Lecture 2: Advanced Git, GitHub & GitLab Collaboration, and Python Basics**
+# **Lecture 2: Advanced Git, GitHub & GitLab Collaboration, and Python Concepts for RSE**
 # - Branching, merging, and collaborative workflows
 # - GitHub and GitLab platforms for code sharing
-# - Python fundamentals: syntax, data types, control flow
+# - Python concepts for RSE: error handling, context managers, comprehensions, classes
 # - **Key takeaway**: Collaboration requires both technical tools and communication
 #
-# #### Lectures 3-4: Python Programming
+# #### Lectures 3-4: From AI Assistance to Project Structure
 #
-# **Lecture 3: Python Fundamentals and Advanced Concepts**
-# - Functions, modules, and code organization
-# - Error handling and exception management
-# - File I/O and data processing
-# - **Key takeaway**: Python's standard library is powerful—learn it before adding dependencies
+# **Lecture 3: AI-Assisted Coding Foundations**
+# - Three categories of AI tools: autocomplete-style, chat-style, agentic
+# - The core habit: review every AI suggestion like a diff, verified against a case you can check by hand
+# - Common pitfalls: hallucinated APIs, outdated/insecure patterns, automation bias
+# - **Key takeaway**: AI generates plausible code, not necessarily correct code—verify before you trust it
 #
 # **Lecture 4: Python Project Structure and Scientific Libraries**
 # - Project organization and package structure

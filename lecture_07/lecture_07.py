@@ -42,7 +42,7 @@
 # ## Prerequisites
 #
 # Before starting this lecture, you should be familiar with:
-# - Python functions and error handling (covered in Lectures 2-3)
+# - Python functions and error handling (covered in Lecture 2)
 # - Writing and running tests with pytest (covered in Lecture 5)
 # - Basic command-line usage
 # - Scientific computing with NumPy (covered in Lecture 4)
@@ -1789,7 +1789,7 @@ def analyze_nearby_stations_only(stations):
 # Congratulations! You now have a comprehensive toolkit for research software engineering:
 #
 # - **Lectures 1-2**: Version control, collaboration, Python basics
-# - **Lecture 3**: Advanced Python programming
+# - **Lecture 3**: AI-assisted coding foundations
 # - **Lecture 4**: Project structure and scientific libraries
 # - **Lecture 5**: Testing and quality assurance
 # - **Lecture 6**: Continuous integration and automation

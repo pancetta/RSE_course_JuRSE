@@ -52,6 +52,7 @@
 # ## Learning Objectives
 # - Understand why testing is critical for research software
 # - Write unit tests using pytest
+# - Organize related tests using pytest test classes
 # - Use assertions for defensive programming
 # - Measure test coverage
 # - Apply test-driven development (TDD) principles
@@ -818,9 +819,59 @@ for name, test_func in tests_fixed:
 # pytest automatically discovers tests following these patterns.
 
 # %% [markdown]
+# ### Organizing Tests with Classes
+#
+# So far, every test has been a standalone function. Once a test file grows, it helps to group
+# related tests together—pytest supports this with test classes. You already know the syntax
+# from Lecture 2 (`class`, `__init__`, `self`); pytest test classes use the same mechanics, just
+# with methods named `test_*` instead of a meaningful `__init__`.
+#
+# **Why group tests into a class?**
+# - **Organization**: all tests for `celsius_to_fahrenheit` live in one place, separate from tests
+#   for `fahrenheit_to_celsius`
+# - **Discovery**: pytest finds classes named `Test*` automatically, just like it finds functions
+#   named `test_*`
+# - **Shared setup**: a class can define `setup_method()`, which runs before every test in
+#   it—useful when several tests need the same starting data (more on this with fixtures, later)
+
+
+# %%
+class TestCelsiusToFahrenheit:
+    """Group all tests related to celsius_to_fahrenheit together."""
+
+    def test_freezing_point(self):
+        """Water freezes at 0°C = 32°F."""
+        assert celsius_to_fahrenheit(0) == 32
+
+    def test_boiling_point(self):
+        """Water boils at 100°C = 212°F."""
+        assert celsius_to_fahrenheit(100) == 212
+
+    def test_negative_temperature(self):
+        """Test with negative temperature."""
+        assert celsius_to_fahrenheit(-40) == -40
+
+
+# Run the class-based tests manually, the same way we ran the function-based tests above
+print("Running TestCelsiusToFahrenheit:")
+test_instance = TestCelsiusToFahrenheit()
+for method_name in ["test_freezing_point", "test_boiling_point", "test_negative_temperature"]:
+    try:
+        getattr(test_instance, method_name)()
+        print(f"✓ {method_name} passed")
+    except AssertionError as e:
+        print(f"✗ {method_name} FAILED: {e}")
+
+# %% [markdown]
+# **Note**: pytest instantiates the test class and calls each `test_*` method for you
+# automatically—the manual loop above just shows what pytest does behind the scenes, the same way
+# we manually ran function-based tests earlier in this lecture.
+
+# %% [markdown]
 # ### Creating a Test File
 #
-# Let's create a proper test file for our temperature module:
+# Let's create a proper test file for our temperature module. Notice that the
+# `TestCelsiusToFahrenheit` class below follows exactly the pattern you just ran above:
 
 # %%
 # This represents the content of: tests/test_temperature.py

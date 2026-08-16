@@ -43,9 +43,9 @@
 # ## Prerequisites
 #
 # Before starting this lecture, you should be familiar with:
-# - Python programming and project structure (covered in Lectures 2-4)
+# - Python programming and project structure (covered in Lectures 2 and 4)
 # - Git and GitHub basics (covered in Lectures 1-2)
-# - Writing functions and docstrings (covered in Lecture 3)
+# - Writing functions and docstrings (covered in Lecture 2)
 # - Organizing code into packages and modules
 #
 # This lecture builds on your programming knowledge by teaching how to document and share it effectively.

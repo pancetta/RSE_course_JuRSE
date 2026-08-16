@@ -14,7 +14,7 @@
 # ---
 
 # %% [markdown]
-# # Lecture 2: Advanced Git, GitHub, GitLab, and Python Basics
+# # Lecture 2: Advanced Git, GitHub, GitLab, and Python Concepts for RSE
 #
 #
 # ## Quick Access
@@ -33,9 +33,10 @@
 # </div>
 #
 # ## Overview
-# This lecture builds on Git fundamentals from Lecture 1, introduces collaboration with GitHub and GitLab,
-# and begins our journey into Python programming. We'll learn advanced version control workflows
-# and start writing our first Python code.
+# This lecture builds on Git fundamentals from Lecture 1 and introduces collaboration with GitHub
+# and GitLab. It then reviews the Python concepts—error handling, the `with` statement,
+# comprehensions, and classes—that you'll need to follow the rest of this course, whether you're
+# writing code yourself or reading code a teammate or an AI assistant generated for you.
 #
 # **Duration**: ~90 minutes
 #
@@ -45,6 +46,9 @@
 # - Basic command-line operations (covered in Lecture 1)
 # - Git fundamentals: `git init`, `git add`, `git commit`, `git status`, `git log`
 # - Basic understanding of version control concepts
+# - **Basic Python skills**: you should be comfortable *reading* Python code and have written at
+#   least a little of it yourself. This course does not teach Python from scratch—see Lecture 1
+#   for the full list of course prerequisites if you're unsure whether that's you.
 #
 # If you haven't completed Lecture 1, please review it first as we build directly on those concepts.
 #
@@ -53,8 +57,8 @@
 # - Understand .gitignore patterns and file management
 # - Collaborate effectively using GitHub and GitLab
 # - Understand differences between GitHub and GitLab workflows
-# - Learn fundamental Python syntax and concepts
-# - Write basic Python programs
+# - Read and write Python error handling, comprehensions, and simple classes confidently
+# - Recognize the `with` statement / context-manager pattern wherever it appears
 
 # %% [markdown]
 # ## Part 1: Advanced Git Concepts
@@ -529,9 +533,15 @@
 # </div>
 
 # %% [markdown]
-# ## Part 3: Getting started with code
+# ## Part 3: Python Concepts You Need to Know
 #
-# We now need to talk about actual code. There are many programming languages out there, but Python is a versatile, beginner-friendly programming language widely used in research. Now that we've covered version control, it's time to start writing code! This section introduces Python fundamentals that you'll build on in later lectures.
+# This course assumes you can already read Python and have written at least a little of it
+# before—it does not teach Python from scratch. What follows is a fast tour of the handful of
+# Python patterns that show up repeatedly in the rest of this course: error handling, the `with`
+# statement, comprehensions, and classes. The goal isn't to make you fluent in writing all of
+# these from a blank page—it's so that when you see them later, whether you wrote them, a
+# teammate did, or an AI assistant generated them, you can read them confidently and judge
+# whether they're doing the right thing.
 #
 # ### Why Python for Research?
 #
@@ -557,391 +567,444 @@
 # designed to be fun to use, and you'll often see Monty Python references in Python documentation.
 
 # %% [markdown]
-# ### Python Basics: Variables and Data Types
+# ### Reading and Handling Errors
 #
-# Variables store data. Unlike some languages (like C++ or Java), Python is dynamically typed—
-# you don't need to declare what type of data a variable holds. Python figures it out automatically
-# based on the value you assign. This makes Python code shorter and easier to read, though you need
-# to be careful about what types you're working with.
+# Errors are inevitable in programming—even experienced developers encounter them daily. The
+# difference between beginner and professional code is how errors are handled. Good programs
+# anticipate what can go wrong and handle errors gracefully, providing useful feedback instead
+# of crashing. This is especially important in research software, where a crash during a long
+# experiment can waste hours or days of computation time. It also matters when reading
+# AI-generated code: an assistant will happily hand you a function with no error handling at
+# all, and it's your job to notice and decide whether that's acceptable.
+#
+# Python has many built-in exception types. Understanding the most common ones helps you read
+# error-handling code and debug problems faster.
 
 # %%
-# Basic data types
-project_name = "RNA Analysis"  # String
-sample_count = 42  # Integer
-temperature = 37.5  # Float
-is_complete = True  # Boolean
-nothing = None  # None type
+# Examples of common errors (commented to prevent execution)
 
-print(f"Project: {project_name}")
-print(f"Samples: {sample_count}")
-print(f"Temperature: {temperature}°C")
-print(f"Complete: {is_complete}")
-print(f"Placeholder: {nothing}")
+# TypeError: wrong type
+# result = "10" + 5
 
-# %%
-# Type checking
-print(f"Type of project_name: {type(project_name)}")
-print(f"Type of sample_count: {type(sample_count)}")
-print(f"Type of temperature: {type(temperature)}")
-print(f"Type of is_complete: {type(is_complete)}")
+# ValueError: invalid value
+# number = int("not a number")
+
+# KeyError: missing dictionary key
+# data = {'name': 'test'}
+# value = data['missing_key']
+
+# IndexError: list index out of range
+# items = [1, 2, 3]
+# value = items[10]
+
+# FileNotFoundError: file doesn't exist
+# with open('nonexistent.txt', 'r') as f:
+#     content = f.read()
+
+print("Error examples shown as comments to prevent execution")
 
 # %% [markdown]
-# **Understanding types**: Even though you don't declare types, Python still keeps track of them
-# internally. This matters when you try to combine values—you can't add a string to a number
-# directly. Use the `type()` function when debugging to check what type a variable actually is.
+# **Understanding these errors**:
+# - **TypeError**: You tried to perform an operation on incompatible types (like adding a string to a number)
+# - **ValueError**: The type is correct but the value is wrong (like converting "hello" to an integer)
+# - **KeyError**: You tried to access a dictionary key that doesn't exist
+# - **IndexError**: You tried to access a list element that doesn't exist
+# - **FileNotFoundError**: You tried to open a file that doesn't exist
 #
-# **Duck typing**: "If it walks like a duck and it quacks like a duck, then it must be a duck". For Python objects: If it behaves like the expected object (for example, implements the same methods), it can be used interchangeably regardless of its class.
-
-# %% [markdown]
-# ### Working with Strings
+# ### Try-Except Blocks
 #
-# Strings are sequences of characters—perfect for text data, DNA sequences, file paths, and more.
-# Python provides powerful string operations that you'll use constantly in research software.
-
-# %%
-# String operations
-sequence = "ATCGATCG"
-print(f"Sequence: {sequence}")
-print(f"Length: {len(sequence)}")
-print(f"First base: {sequence[0]}")
-print(f"Last base: {sequence[-1]}")
-print(f"First three: {sequence[0:3]}")
-print(f"Reversed: {sequence[::-1]}")
-
-# String methods
-print(f"Lowercase: {sequence.lower()}")
-print(f"Count of A: {sequence.count('A')}")
-print(f"Replace A with N: {sequence.replace('A', 'N')}")
-
-# %% [markdown]
-# **String indexing**: Python uses zero-based indexing, meaning the first character is at position
-# 0, not 1. Negative indices count from the end: -1 is the last character, -2 is second-to-last,
-# etc. The slicing notation `[start:end]` gives you characters from `start` up to (but not including)
-# `end`. The special slice `[::-1]` reverses a string—useful for getting the reverse complement of
-# DNA sequences!
-
-# %% [markdown]
-# ### Lists: Ordered Collections
+# Use try-except to catch and handle errors. The basic pattern is: try to do something that might
+# fail, and if it fails, handle the error gracefully instead of crashing.
 #
-# Lists store multiple values in order. They are mutable (can be changed after creation), making
-# them perfect for collecting measurements, storing sequences of results, or building up data as
-# your program runs. Lists are one of Python's most versatile and commonly-used data structures.
-
-# %%
-# Creating and using lists
-measurements = [23.5, 24.1, 23.8, 24.3, 23.9]
-print(f"Measurements: {measurements}")
-print(f"First measurement: {measurements[0]}")
-print(f"Last measurement: {measurements[-1]}")
-print(f"Number of measurements: {len(measurements)}")
-
-# Modifying lists
-measurements.append(24.0)
-print(f"After appending: {measurements}")
-
-measurements[0] = 23.6
-print(f"After modification: {measurements}")
-
-# %% [markdown]
-# **Lists are mutable**: Unlike strings, which can't be changed after creation (immutable), lists
-# can be modified. You can add items with `.append()`, remove items with `.remove()`, or change
-# individual elements by index. This mutability is powerful but requires care—if you pass a list
-# to a function and the function modifies it, the original list changes too!
-
-# %%
-# List operations
-genes = ["BRCA1", "TP53", "EGFR"]
-print(f"Genes: {genes}")
-
-# Adding elements
-genes.append("MYC")
-genes.insert(1, "KRAS")
-print(f"After adding: {genes}")
-
-# Removing elements
-genes.remove("TP53")
-print(f"After removing TP53: {genes}")
-
-last_gene = genes.pop()
-print(f"Popped: {last_gene}, Remaining: {genes}")
-
-# %%
-# List slicing
-data = [10, 20, 30, 40, 50, 60, 70, 80, 90]
-print(f"Original: {data}")
-print(f"First three: {data[0:3]}")
-print(f"Middle elements: {data[3:7]}")
-print(f"Every other element: {data[::2]}")
-print(f"Reversed: {data[::-1]}")
-
-# %% [markdown]
-# ### Dictionaries: Key-Value Pairs
-#
-# Dictionaries store data as key-value pairs. Keys must be unique.
-
-# %%
-# Creating dictionaries
-experiment = {"name": "Temperature Study", "duration_days": 30, "sample_size": 150, "temperature": 25.0, "completed": True}
-
-print("Experiment details:")
-for key, value in experiment.items():
-    print(f"  {key}: {value}")
-
-# %%
-# Accessing dictionary values
-print(f"\nExperiment name: {experiment['name']}")
-print(f"Duration: {experiment['duration_days']} days")
-
-# Adding new keys
-experiment["location"] = "Lab A"
-experiment["researcher"] = "Dr. Smith"
-
-# Modifying values
-experiment["completed"] = False
-
-print(f"\nUpdated experiment: {experiment}")
-
-# %%
-# Dictionary methods
-print(f"Keys: {list(experiment.keys())}")
-print(f"Values: {list(experiment.values())}")
-
-# Safe access with get()
-funding = experiment.get("funding", "Not specified")
-print(f"Funding: {funding}")
-
-# Check if key exists
-if "location" in experiment:
-    print(f"Location found: {experiment['location']}")
-
-# %% [markdown]
-# ### Control Flow: Making Decisions
-#
-# Control structures let programs make decisions and repeat actions.
-
-# %%
-# If statements
-temperature = 26.5
-threshold = 25.0
-
-if temperature > threshold:
-    print(f"{temperature}°C is above threshold")
-elif temperature < threshold:
-    print(f"{temperature}°C is below threshold")
-else:
-    print(f"{temperature}°C equals threshold")
-
-# %%
-# Combining conditions
-temp = 24.5
-humidity = 65
-
-if temp >= 20 and temp <= 30:
-    print("Temperature in optimal range")
-
-if humidity < 70 or temp < 22:
-    print("At least one parameter is outside ideal range")
-
-# %% [markdown]
-# ### Loops: Repeating Actions
-#
-# #### For Loops
-#
-# Iterate over sequences (lists, strings, ranges).
-
-# %%
-# For loop with list
-samples = ["S1", "S2", "S3", "S4"]
-
-print("Processing samples:")
-for sample in samples:
-    print(f"  Analyzing {sample}")
-
-# %%
-# For loop with range
-print("\nCounting:")
-for i in range(5):
-    print(f"  Count: {i}")
-
-print("\nCounting from 10 to 15:")
-for i in range(10, 16):
-    print(f"  Count: {i}")
-
-# %%
-# Enumerate for index and value
-data_files = ["exp1.csv", "exp2.csv", "exp3.csv"]
-
-for index, filename in enumerate(data_files):
-    print(f"File {index + 1}: {filename}")
-
-# %% [markdown]
-# #### While Loops
-#
-# Repeat while a condition is true.
-
-# %%
-# While loop example
-count = 0
-total = 0
-measurements = [23.5, 24.1, 23.8, 24.3, 23.9]
-
-while count < len(measurements):
-    total += measurements[count]
-    count += 1
-
-average = total / len(measurements)
-print(f"Average of {len(measurements)} measurements: {average:.2f}")
-
-# %% [markdown]
-# ### Basic Functions
-#
-# Functions organize code into reusable blocks.
+# **When to use try-except**: Use it whenever you're doing something that might fail for reasons
+# outside your control—reading files, network requests, parsing user input, etc. Don't use it for
+# logic errors in your own code (like accessing the wrong list index)—those should be fixed, not
+# caught.
 
 
 # %%
-def greet(name):
-    """Greet a person by name."""
-    return f"Hello, {name}!"
-
-
-# Call the function
-message = greet("Researcher")
-print(message)
-
-
-# %%
-def calculate_mean(values):
+def safe_divide(a, b):
     """
-    Calculate the arithmetic mean of a list of values.
+    Safely divide two numbers.
 
     Parameters
     ----------
-    values : list
-        A list of numeric values
+    a : float
+        Numerator
+    b : float
+        Denominator
 
     Returns
     -------
-    float
-        The mean of the values
+    float or None
+        Result of division, or None if division by zero
     """
-    if len(values) == 0:
-        return 0
-    return sum(values) / len(values)
+    try:
+        result = a / b
+        return result
+    except ZeroDivisionError:
+        print(f"Error: Cannot divide {a} by zero")
+        return None
 
 
 # Test the function
-data = [10.2, 10.5, 10.3, 10.4, 10.6]
-mean = calculate_mean(data)
-print(f"Mean: {mean:.2f}")
-
-
-# %%
-def analyze_sequence(sequence):
-    """
-    Analyze a DNA sequence.
-
-    Parameters
-    ----------
-    sequence : str
-        DNA sequence string
-
-    Returns
-    -------
-    dict
-        Dictionary with sequence statistics
-    """
-    return {
-        "length": len(sequence),
-        "gc_content": (sequence.count("G") + sequence.count("C")) / len(sequence) * 100,
-        "a_count": sequence.count("A"),
-        "t_count": sequence.count("T"),
-        "g_count": sequence.count("G"),
-        "c_count": sequence.count("C"),
-    }
-
-
-# Analyze a sequence
-dna = "ATCGATCGTAGCTAGC"
-stats = analyze_sequence(dna)
-print(f"Sequence analysis for {dna}:")
-for key, value in stats.items():
-    if key == "gc_content":
-        print(f"  {key}: {value:.1f}%")
-    else:
-        print(f"  {key}: {value}")
+print(f"10 / 2 = {safe_divide(10, 2)}")
+print(f"10 / 0 = {safe_divide(10, 0)}")
+print(f"15 / 3 = {safe_divide(15, 3)}")
 
 # %% [markdown]
-# ## Putting It Together: A Small Project
+# **Design choice**: Notice that `safe_divide` returns `None` when division by zero occurs instead
+# of crashing. This allows the program to continue running. However, the caller needs to check for
+# `None` before using the result. An alternative design would be to let the exception propagate up
+# or raise a different exception—choose based on how you want errors to be handled in your
+# application.
 #
-# Here is a small project bringing (nearly) all of this together.
+# ### Raising Exceptions
+#
+# You can raise your own exceptions for error conditions. This is how you enforce rules in your
+# functions and provide clear error messages when something goes wrong. Raising exceptions is
+# better than returning error codes or special values (like -1 or None) because it forces the
+# caller to handle the error, provides a clear message, and stops execution if not handled.
+#
+# **When to raise exceptions**: Raise exceptions when the caller made a mistake (wrong arguments)
+# or when a precondition isn't met (file doesn't exist, network is down). Use meaningful exception
+# types (`ValueError` for bad values, `FileNotFoundError` for missing files) so callers can handle
+# different errors differently.
 
 
 # %%
-def process_experimental_data(data_points, threshold=25.0, name=""):
+def validate_temperature(temp, min_temp=-273.15, max_temp=100):
     """
-    Process experimental data and filter by threshold.
+    Validate a temperature reading.
 
     Parameters
     ----------
-    data_points : list
-        List of measurements
-    threshold : float
-        Minimum value to include
-    name : string
-        Descriptive name for the data
+    temp : float
+        Temperature in Celsius
+    min_temp : float
+        Minimum valid temperature (default: -273.15, absolute zero)
+    max_temp : float
+        Maximum valid temperature (default: 100)
 
     Returns
     -------
-    dict
-        Processing results
+    bool
+        True if temperature is valid
+
+    Raises
+    ------
+    ValueError
+        If temperature is outside valid range
     """
-    # Filter data
-    filtered = [x for x in data_points if x >= threshold]
-
-    # Calculate statistics
-    if len(filtered) > 0:
-        mean = sum(filtered) / len(filtered)
-        min_val = min(filtered)
-        max_val = max(filtered)
-    else:
-        mean = min_val = max_val = 0
-
-    return {
-        "name": name,
-        "original_count": len(data_points),
-        "filtered_count": len(filtered),
-        "mean": mean,
-        "min": min_val,
-        "max": max_val,
-        "filtered_data": filtered,
-    }
+    if temp < min_temp:
+        raise ValueError(f"Temperature {temp}°C is below absolute zero!")
+    if temp > max_temp:
+        raise ValueError(f"Temperature {temp}°C exceeds maximum of {max_temp}°C")
+    return True
 
 
-# Example usage
-experimental_data = [23.5, 24.1, 26.8, 24.3, 27.1, 23.9, 25.5]
-results = process_experimental_data(experimental_data, threshold=25.0, name="my_experiment")
+# Test with valid and invalid temperatures
+try:
+    validate_temperature(25)
+    print("25°C is valid")
 
-print("Processing Results:")
-print(f"  Data name: {results['name']}")
-print(f"  Original samples: {results['original_count']}")
-print(f"  Samples above threshold: {results['filtered_count']}")
-print(f"  Mean of filtered data: {results['mean']:.2f}")
-print(f"  Range: {results['min']:.2f} - {results['max']:.2f}")
+    validate_temperature(150)
+    print("150°C is valid")  # Won't reach here
+
+except ValueError as e:
+    print(f"Validation error: {e}")
+
+# %% [markdown]
+# **Common pitfall**: Don't use bare `except:` without specifying the exception type—it will catch
+# EVERYTHING, including KeyboardInterrupt (Ctrl+C), making your program hard to stop. Always specify
+# the exception types you're catching, or at minimum use `except Exception:`. When you see an AI
+# assistant hand you a bare `except:`, that's worth pushing back on.
+
+# %% [markdown]
+# ### The `with` Statement and File Handling
+#
+# Python reads and writes files using the built-in `open()` function. The recommended pattern is
+# the `with` statement, which automatically closes the file when the block ends—even if an error
+# occurs inside it. `open()` is Python's most common example of a **context manager**: an object
+# that defines setup and teardown behavior around a `with` block. You'll meet the same idiom
+# again in Lecture 11 when working with HDF5 files (`with h5py.File(...) as f:`)—same pattern,
+# different resource being managed.
+
+# %%
+from io import StringIO
+
+# StringIO behaves like a file object, so it supports the same `with` pattern as
+# open()—useful here so this cell doesn't touch your filesystem. Try removing the
+# `with` and calling buffer.read() afterwards: it raises ValueError, because the
+# `with` block already closed the buffer for you.
+with StringIO("23.5\n24.1\n23.8\n") as buffer:
+    for line in buffer:
+        print(f"Read: {line.strip()}")
+
+# %% [markdown]
+# That's the mechanics of `with`. Real research data is rarely this clean, though—here's a more
+# complete example that also skips comment lines and blank lines, and handles values that don't
+# parse as numbers.
+
+# %%
+# Writing data to demonstrate reading
+sample_data = """# Sample Data File
+# Temperature measurements in Celsius
+23.5
+24.1
+23.8
+24.3
+23.9
+24.0
+"""
+
+# In real code, you would write to a file:
+# with open('temperatures.txt', 'w') as f:
+#     f.write(sample_data)
+
+
+# Simulate reading
+def read_temperature_file(content):
+    """Read temperatures from file content."""
+    temperatures = []
+
+    for line in content.split("\n"):
+        line = line.strip()
+
+        # Skip empty lines and comments
+        if not line or line.startswith("#"):
+            continue
+
+        try:
+            temp = float(line)
+            temperatures.append(temp)
+        except ValueError:
+            print(f"Warning: Skipping invalid line: {line}")
+
+    return temperatures
+
+
+# Process the data
+temps = read_temperature_file(sample_data)
+print(f"Read {len(temps)} temperature values")
+print(f"Temperatures: {temps}")
+print(f"Average: {sum(temps) / len(temps):.2f}°C")
+
+# %% [markdown]
+# **Why this matters beyond files**: any resource that needs cleanup—a file, a database
+# connection, a network socket, a temporary test environment—tends to show up behind a `with`
+# statement in Python. Recognizing the pattern (`with <get a resource> as <name>:`) matters more
+# than memorizing file-specific syntax.
 
 # %% [markdown]
 # <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
 #     <h4 style="color: #7b1fa2; margin-top: 0;">💡 Try It Yourself</h4>
-#     <p>Deepen your Python skills through experimentation:</p>
+#     <p>Practice reading and handling errors:</p>
 #     <ul>
-#         <li><strong>Explore slicing:</strong> Try different slice patterns on strings and lists
-#         (<code>[::2]</code>, <code>[::-1]</code>, negative indexing) to build intuition for how
-#         Python handles sequences</li>
-#         <li><strong>Create a data processor:</strong> Write a function that takes a list of
-#         measurements, filters out outliers, and returns a dictionary with mean, median, min, and max
-#         values</li>
-#         <li><strong>Practice with real data:</strong> Find a small CSV file (or create one), read it
-#         line by line, parse the values, and generate summary statistics using loops and
-#         conditionals</li>
+#         <li><strong>Trigger real errors:</strong> Uncomment one of the examples above (e.g.
+#         <code>int("not a number")</code>) and run it to see the actual traceback Python
+#         produces—then wrap it in a <code>try</code>/<code>except</code> that handles it
+#         gracefully.</li>
+#         <li><strong>Add validation:</strong> Extend <code>validate_temperature</code> with a check
+#         for a new precondition (e.g. temperature must be a number, not a string) and raise an
+#         appropriate exception.</li>
+#         <li><strong>Read someone else's <code>with</code> block:</strong> Find any Python code
+#         online (or ask an AI assistant to generate one) that uses <code>with open(...) as f:</code>,
+#         and explain in your own words what happens if an error occurs partway through the
+#         block.</li>
+#     </ul>
+# </div>
+
+# %% [markdown]
+# ### List and Dictionary Comprehensions
+#
+# List comprehensions provide elegant, concise ways to create and transform lists. They're not just
+# syntactic sugar—they're often faster than traditional loops and make your code's intent clearer.
+# In research contexts, you'll see them constantly for data filtering, transformation, and
+# processing, including in code an AI assistant generates for you.
+#
+# The basic syntax is: `[expression for item in iterable]`. You read this as "for each item in the
+# iterable, compute the expression and collect the results into a list". Compare the traditional
+# loop approach with the comprehension below to see how much more compact the syntax is.
+
+# %%
+# Traditional approach
+squares = []
+for i in range(10):
+    squares.append(i**2)
+print(f"Traditional: {squares}")
+
+# List comprehension
+squares_comp = [i**2 for i in range(10)]
+print(f"Comprehension: {squares_comp}")
+
+# %% [markdown]
+# ### Filtering with List Comprehensions
+#
+# You can add an `if` clause to a list comprehension to keep only the items that satisfy a
+# condition. The extended syntax is: `[expression for item in iterable if condition]`. This
+# replaces the pattern of looping and conditionally appending—all in one readable line.
+
+# %%
+# Filtering with list comprehensions
+temperatures = [23.5, 24.1, 26.8, 24.3, 27.1, 23.9, 25.5]
+
+# Only temperatures above 25°C
+high_temps = [t for t in temperatures if t > 25]
+print(f"High temperatures: {high_temps}")
+
+# Convert to Fahrenheit
+temps_f = [t * 9 / 5 + 32 for t in temperatures]
+print(f"Fahrenheit: {temps_f}")
+
+# Combined: convert high temps to Fahrenheit
+high_temps_f = [t * 9 / 5 + 32 for t in temperatures if t > 25]
+print(f"High temps in Fahrenheit: {high_temps_f}")
+
+# %% [markdown]
+# ### Dictionary Comprehensions
+#
+# Just like list comprehensions build lists, **dictionary comprehensions** build dictionaries.
+# The syntax is `{key: value for item in iterable}`. They're especially convenient when you want
+# to pair up two lists into a mapping.
+#
+# The `zip()` function is used below to pair two lists together element by element:
+# `zip(["A", "B"], [1, 2])` produces `[("A", 1), ("B", 2)]`. You can then unpack each pair
+# in the comprehension using `for key, value in zip(...)`.
+
+# %%
+# Dictionary comprehensions
+samples = ["A", "B", "C", "D", "E"]
+sample_temperatures = [23.5, 24.1, 23.8, 24.3, 23.9]
+
+# Create dictionary
+temp_dict = {sample: temp for sample, temp in zip(samples, sample_temperatures)}
+print(f"Temperature dictionary: {temp_dict}")
+
+# Filter dictionary
+high_temp_dict = {s: t for s, t in temp_dict.items() if t > 24.0}
+print(f"High temperatures: {high_temp_dict}")
+
+# %% [markdown]
+# ### Classes and Object-Oriented Programming
+#
+# Classes allow you to bundle data and functionality together. They're essential for organizing
+# complex research code and are heavily used in testing frameworks like pytest, which is where
+# you'll put this to direct use in Lecture 5.
+#
+# **Why use classes?**
+# - **Organization**: Group related data and functions together
+# - **Reusability**: Create multiple instances with the same behavior
+# - **Clarity**: Model real-world entities (experiments, datasets, instruments)
+# - **Testing**: Organize test cases (test classes in pytest)
+
+
+# %%
+class TemperatureData:
+    """Store and analyze temperature measurements."""
+
+    def __init__(self, location, unit="celsius"):
+        """
+        Initialize temperature data.
+
+        Parameters
+        ----------
+        location : str
+            Measurement location
+        unit : str, optional
+            Temperature unit ('celsius' or 'fahrenheit')
+        """
+        self.location = location
+        self.unit = unit
+        self.measurements = []
+
+    def add_measurement(self, temperature):
+        """Add a temperature reading."""
+        self.measurements.append(temperature)
+
+    def get_average(self):
+        """Calculate average temperature."""
+        if not self.measurements:
+            return None
+        return sum(self.measurements) / len(self.measurements)
+
+    def get_summary(self):
+        """Return a summary string."""
+        avg = self.get_average()
+        if avg is None:
+            return f"{self.location}: No measurements"
+        return f"{self.location}: {len(self.measurements)} measurements, avg={avg:.1f}°{self.unit[0].upper()}"
+
+
+# Create an instance of the class
+lab_temps = TemperatureData("Lab A", unit="celsius")
+
+# Add measurements
+lab_temps.add_measurement(23.5)
+lab_temps.add_measurement(24.1)
+lab_temps.add_measurement(23.8)
+
+# Use methods
+print(lab_temps.get_summary())
+print(f"Average: {lab_temps.get_average():.2f}°C")
+
+# %% [markdown]
+# **Understanding `self` and `__init__`**:
+# - **`__init__`**: Special method called when creating a new instance (constructor)
+# - **`self`**: Refers to the instance itself (like "this" in other languages)
+# - **Instance variables**: `self.location`, `self.measurements` belong to each instance
+# - **Methods**: Functions defined inside a class that operate on instance data
+
+# %%
+# Create multiple independent instances
+lab_a = TemperatureData("Lab A")
+lab_b = TemperatureData("Lab B")
+outdoor = TemperatureData("Outdoor")
+
+# Each has its own data
+lab_a.add_measurement(23.5)
+lab_a.add_measurement(24.1)
+
+lab_b.add_measurement(22.1)
+lab_b.add_measurement(22.3)
+lab_b.add_measurement(22.0)
+
+outdoor.add_measurement(15.2)
+outdoor.add_measurement(16.8)
+
+# Display summaries
+for location in [lab_a, lab_b, outdoor]:
+    print(location.get_summary())
+
+# %% [markdown]
+# ### When to Use Classes vs Functions
+#
+# **Use classes when you need to:**
+# - Store state (data) and behavior (methods) together
+# - Create multiple instances of similar objects
+# - Organize complex code into logical units
+# - Build test suites (test classes)
+#
+# **Use functions when you:**
+# - Have a simple operation that doesn't need state
+# - Want to transform inputs to outputs
+# - Need something quick and straightforward
+#
+# **Research example**: A function is good for calculating mean temperature. A class is better
+# for representing an entire experiment with settings, data, and multiple analysis methods.
+
+# %% [markdown]
+# <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
+#     <h4 style="color: #7b1fa2; margin-top: 0;">💡 Try It Yourself</h4>
+#     <p>Practice reading comprehensions and classes:</p>
+#     <ul>
+#         <li><strong>Refactor a loop:</strong> Take a traditional for-loop with an <code>if</code>
+#         check and rewrite it as a list comprehension—compare readability.</li>
+#         <li><strong>Extend <code>TemperatureData</code>:</strong> Add a method
+#         <code>get_range()</code> that returns the minimum and maximum recorded temperature.</li>
+#         <li><strong>Read AI-generated code:</strong> Ask an AI assistant to write a small class for
+#         a research object you care about (an experiment, a sample, a dataset), and identify the
+#         <code>__init__</code>, instance variables, and methods before running it.</li>
 #     </ul>
 # </div>
 
@@ -967,11 +1030,12 @@ print(f"  Range: {results['min']:.2f} - {results['max']:.2f}")
 # - **Remote management**: Syncing with upstream repositories
 # - **Platform comparison**: Understanding GitHub vs GitLab differences
 #
-# ### Python Basics
-# - **Variables and types**: Strings, numbers, booleans
-# - **Collections**: Lists and dictionaries
-# - **Control flow**: If statements and loops
-# - **Functions**: Creating reusable code
+# ### Python Concepts for RSE
+# - **Error handling**: Reading and writing `try`/`except`/`raise`, recognizing common exception types
+# - **Context managers**: The `with` statement pattern for managing resources like files
+# - **Comprehensions**: List and dictionary comprehensions for concise data transformations
+# - **Classes**: Basic object-oriented syntax—`__init__`, `self`, instance methods—used throughout
+#   the rest of the course, especially in testing (Lecture 5)
 
 # %% [markdown]
 # ## Acknowledgements and References
@@ -982,7 +1046,7 @@ print(f"  Range: {results['min']:.2f} - {results['max']:.2f}")
 #
 # - **Research Software Engineering with Python** by The Alan Turing Institute
 #   <https://alan-turing-institute.github.io/rse-course/html/>
-#   Git branching workflows, collaboration patterns, and Python introduction content adapted from this course.
+#   Git branching workflows, collaboration patterns, and Python concepts content adapted from this course.
 #
 # - **Research Software Engineering with Python** by Damien Irving, Kate Hertweck,
 #   Luke Johnston, Joel Ostblom, Charlotte Wickham, and Greg Wilson (2022)
@@ -1029,10 +1093,9 @@ print(f"  Range: {results['min']:.2f} - {results['max']:.2f}")
 # %% [markdown]
 # ### Next Steps
 #
-# In Lecture 3, we'll dive deeper into Python with:
-# - Advanced function concepts
-# - Error handling with try/except
-# - File input/output
-# - List comprehensions and functional programming
+# With Git, GitHub/GitLab, and the core Python patterns behind us, Lecture 3 turns to a topic
+# that shapes how you'll write code for the rest of this course and beyond: AI-assisted and
+# agentic coding tools. We'll look at what these tools actually do, where they go wrong, and how
+# the fundamentals from this course help you use them responsibly.
 #
-# **Ready to continue? Move on to Lecture 3: Python Fundamentals and Advanced Concepts!**
+# **Ready to continue? Move on to Lecture 3!**

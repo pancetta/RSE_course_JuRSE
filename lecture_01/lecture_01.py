@@ -95,8 +95,8 @@
 # tested, professional-quality research software.
 #
 # - **Lecture 1**:  Introduction to RSE, Shell Basics, and Git Fundamentals
-# - **Lecture 2**: Advanced Git, GitHub Collaboration, and Python Basics
-# - **Lecture 3**: Python Fundamentals and Advanced Concepts
+# - **Lecture 2**: Advanced Git, GitHub Collaboration, and Python Concepts for RSE
+# - **Lecture 3**: AI-Assisted Coding Foundations
 # - **Lecture 4**: Python Project Structure and Working with Libraries
 # - **Lecture 5**: Testing Research Software
 # - **Lecture 6**: Automation and Continuous Integration
@@ -128,8 +128,13 @@
 # ### Prerequisites
 #
 # - Basic computer literacy
-# - Willingness to learn programming (just a bit of Python, nothing to worry about)
-# - No prior programming experience required for this course
+# - **Basic Python skills**: you should be able to *read* Python code and understand what it's
+#   doing (variables, loops, functions, basic control flow). You don't need to be a fluent Python
+#   author—Lecture 2 reviews the specific patterns (error handling, comprehensions, classes) you'll
+#   need for the rest of the course, and AI coding assistants can help you write code from here on.
+#   But if a short Python script is unreadable to you right now, take a beginner Python course
+#   first.
+# - No prior software-engineering training required for this course
 
 # %% [markdown]
 # ## Part 3: Accessing and Installing Course Materials
@@ -565,6 +570,6 @@
 # learn about GitHub collaboration, and begin our journey into Python programming
 # with fundamental concepts and syntax.
 #
-# **Ready to continue? Move on to Lecture 2: Advanced Git, GitHub, and Python Basics!**
+# **Ready to continue? Move on to Lecture 2: Advanced Git, GitHub, and Python Concepts for RSE!**
 
 # %%
