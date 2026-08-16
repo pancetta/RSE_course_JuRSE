@@ -47,6 +47,8 @@
 # - Git and GitHub basics (covered in Lectures 1-2)
 # - Writing functions and docstrings (covered in Lecture 2)
 # - Organizing code into packages and modules
+# - AI-assisted coding basics, including reviewing AI suggestions like a diff (covered in
+#   Lecture 3)
 #
 # This lecture builds on your programming knowledge by teaching how to document and share it effectively.
 #
@@ -58,6 +60,8 @@
 # - Publish Python packages to PyPI
 # - Make research software citable with DOIs
 # - Learn documentation tools for other programming languages
+# - Verify AI-drafted documentation against actual code behavior, not just against what the
+#   function name suggests
 
 # %% [markdown]
 # ## Part 1: Why Documentation Matters - A Real Research Story
@@ -510,6 +514,49 @@ print(f"Anomalies: {anomalies}")
 #         up-to-date as code evolves.</li>
 #     </ul>
 # </div>
+
+# %% [markdown]
+# ### AI and Documentation
+#
+# AI assistants are genuinely good at drafting documentation—a first-pass README section or
+# docstring is one of the safer, higher-value things to ask for, usually lower-risk than asking
+# for the logic itself. What they're not automatically good at is checking the draft against
+# reality: an AI assistant tends to describe what a function's name and structure *suggest* it
+# does, not necessarily what the code *actually* does. If there's a mismatch, the AI won't spot
+# it—it has no way to know your code has a bug.
+#
+# Consider a function that filters out invalid sensor readings:
+
+
+# %%
+def get_valid_readings(readings):
+    """Return all valid (non-negative) sensor readings."""
+    return [r for r in readings if r > 0]
+
+
+# %% [markdown]
+# That docstring is exactly the kind of plausible, well-formatted summary an AI assistant might
+# generate from the function's name and code—"non-negative" is a reasonable reading of
+# `if r > 0`. Let's check it against a case that includes a boundary value:
+
+# %%
+readings = [0.0, -1.5, 5.2, 10.0]
+print(f"Input:  {readings}")
+print(f"Output: {get_valid_readings(readings)}")
+
+# %% [markdown]
+# `0.0` is non-negative, but it's missing from the output—the code checks `r > 0`, not
+# `r >= 0`, so it silently excludes exactly the boundary case the docstring claims to include.
+# The docstring isn't lying, exactly; it's describing the *intent* the name suggests, not the
+# *behavior* the code delivers. The same review habit from Lecture 3 applies to documentation
+# just as much as to code: check what's claimed against what actually happens, especially at
+# the boundaries.
+#
+# **How prompting helps (but doesn't replace review)**: giving the AI a boundary case
+# explicitly—"write a docstring for this function, and confirm what it returns when a reading
+# is exactly 0"—forces it to check the behavior instead of paraphrasing the name. That catches
+# more mismatches than a bare "document this function" request. It still won't catch every
+# discrepancy, so the check above is worth doing regardless of how the prompt was written.
 
 # %% [markdown]
 # ## Part 6: Generating Documentation with Sphinx

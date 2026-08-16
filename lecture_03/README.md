@@ -2,10 +2,11 @@
 
 ## Overview
 This lecture is a foundations-only introduction to AI-assisted coding: what these tools
-actually do, the one habit that keeps you safe while using them, and the most common ways
-they go wrong. It deliberately stays narrow—deeper AI topics return in context throughout the
-rest of the course (testing in Lecture 5, debugging in Lecture 7, code review in Lecture 10,
-and legal/ethical/data-protection questions in Lecture 14).
+actually do, what they're genuinely good at, how to prompt them effectively, the one habit
+that keeps you safe while using them, and the most common ways they go wrong. It deliberately
+stays narrow—deeper AI topics return in context throughout the rest of the course (testing in
+Lecture 5, debugging in Lecture 7, code review in Lecture 10, and legal/ethical/data-protection
+questions in Lecture 14).
 
 **Duration**: ~90 minutes
 
@@ -13,6 +14,7 @@ and legal/ethical/data-protection questions in Lecture 14).
 - A cautionary tale: AI generates plausible code, not necessarily correct code
 - Three categories of AI coding tools: autocomplete-style, chat-style, agentic
 - How these tools actually work (and why they don't "understand" your code)
+- What AI is actually good at: boilerplate, orientation, first drafts, exploring alternatives
 - Effective prompting: turning silent assumptions into visible, checkable decisions
 - The core habit: review every AI suggestion like a diff, verified against a case you can
   check by hand

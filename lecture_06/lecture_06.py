@@ -47,6 +47,8 @@
 # - Git and GitHub basics (covered in Lectures 1-2)
 # - Python project structure and virtual environments (covered in Lecture 4)
 # - Basic YAML syntax (we'll explain as we go)
+# - AI-assisted coding basics, including reviewing AI suggestions like a diff (covered in
+#   Lecture 3)
 #
 # This lecture directly builds on Lecture 5's testing concepts and requires a GitHub account.
 #
@@ -57,6 +59,8 @@
 # - Build reproducible research pipelines
 # - Automate code quality checks
 # - Prevent bugs from reaching production/publication
+# - Use AI assistants to draft CI workflows productively, while still verifying they run what
+#   they claim to run
 
 # %% [markdown]
 # ## Part 1: The Missing Piece - Automation
@@ -115,6 +119,17 @@
 
 # %% [markdown]
 # ## Part 2: Introduction to GitHub Actions
+#
+# ### A Note on AI and CI Configuration
+#
+# Writing CI workflow files is exactly the kind of task AI assistants are good at—the YAML
+# syntax is well-documented, the patterns are standard, and there's a huge amount of example
+# workflow code to draw on. Asking an AI assistant to draft a starting workflow, or to add a
+# step for a new Python version or operating system, is a reasonable way to save time on the
+# boilerplate ahead. The usual habits from Lecture 3 still apply, though: read the generated
+# workflow like a diff rather than trusting it blindly, and run it for real before assuming it
+# does what it claims—a CI config is still just code, and "looks right" isn't the same as "is
+# right."
 #
 # ### What is GitHub Actions?
 #

@@ -13,6 +13,7 @@ This lecture introduces software testing practices essential for reliable resear
 - Applying Test-Driven Development (TDD) principles
 - Building comprehensive test suites
 - Complete example: from buggy code to full test coverage
+- Critically evaluating whether an AI-generated test actually verifies correct behavior
 
 ## Key Concepts
 - **Unit testing**: Testing individual functions in isolation

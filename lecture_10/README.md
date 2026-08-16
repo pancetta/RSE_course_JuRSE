@@ -14,6 +14,8 @@ This lecture explores how to work effectively in research software teams, from c
 - Collaboration practices across different version control platforms
 - Team dynamics and communication challenges
 - Adapting collaboration practices for different programming languages
+- Reviewing AI-assisted and agentic pull requests, including attribution norms for AI-authored
+  commits
 
 ## Key Concepts
 - **Pull Requests (PRs)**: Formal requests to merge changes with built-in review processes

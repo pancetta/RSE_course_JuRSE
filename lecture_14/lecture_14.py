@@ -59,6 +59,8 @@
 # - Connect with the international and German RSE communities
 # - Know where to find ongoing support and resources
 # - Feel confident continuing your RSE journey
+# - Know what to check before using AI tools with sensitive research data, and understand how
+#   AI reshapes—rather than replaces—the RSE role
 
 # %% [markdown]
 # ## Part 1: Course Summary - What We've Learned
@@ -651,6 +653,40 @@
 # </div>
 
 # %% [markdown]
+# ### Using AI Responsibly: Legal, Ethical, and Data Protection Considerations
+#
+# Lecture 3 introduced the technical habits for working with AI coding assistants safely.
+# Before you rely on them in a real research project, there are a few institutional and legal
+# considerations worth knowing about too—not a complete legal briefing, but things to check
+# before they become a problem.
+#
+# **Licensing and copyright**: Lecture 3 focused on whether AI-generated code is *correct*.
+# There's a separate question: is it *yours to use*? AI models are trained on large amounts of
+# existing code, some of it under licenses (like GPL) that impose obligations on anything
+# derived from it, and AI-generated code can closely resemble licensed code without any visible
+# indication that it does. There's no simple test to check this yourself, but treating
+# AI-generated code the way you'd treat code copied from a random web page—unknown provenance
+# until proven otherwise—is a reasonable default.
+#
+# **Data protection and privacy**: Whatever you paste into a chat-based AI assistant may leave
+# your institution's control, depending on the tool and how it's configured. Before pasting
+# unpublished results, patient data, proprietary data, or anything covered by a data-sharing
+# agreement into a cloud-based tool, check your institution's policy—many research institutions
+# now have explicit rules about this, precisely because "just ask the AI" is an easy habit to
+# fall into without thinking about where the data goes.
+#
+# **When self-hosted tools matter**: For genuinely sensitive data, self-hosted or local AI
+# models—running entirely on infrastructure you or your institution control—avoid sending data
+# to a third party at all. They typically lag behind the largest cloud-based models in
+# capability, which is a real trade-off, but for some research data that's the right trade-off
+# to make. It's worth knowing the option exists before you need it.
+#
+# **The practical takeaway**: none of this requires becoming a lawyer. It requires knowing
+# these questions exist, checking your institution's policy before you're mid-deadline and
+# tempted to skip that step, and applying the same "verify before you trust it" habit from
+# Lecture 3 to claims about what a tool does or doesn't do with your data.
+
+# %% [markdown]
 # ## Part 4: Next Steps and Closing Thoughts
 #
 # ### What Comes Next for This Course
@@ -715,6 +751,26 @@
 #
 # RSE skills are increasingly valued—many institutions are creating dedicated RSE
 # positions recognizing that good software is essential to modern research.
+#
+# ### AI and the Future of the RSE Role
+#
+# It's worth asking directly: if AI can write code, what's left for an RSE to do? The honest
+# answer has been consistent in every lecture that touched AI: AI changes *how* you work, not
+# *whether* the work needs you.
+#
+# What AI is good at is generating code that matches patterns it has seen before. What it can't
+# do is know whether a normalization method matches your specific dataset (Lecture 3), whether a
+# test actually verifies the behavior you care about (Lecture 5), whether a fix addresses the
+# root cause or just silences the symptom (Lecture 7), whether a docstring matches what the code
+# actually does at the boundaries (Lecture 8), or whether a design decision will hold up as a
+# research codebase grows. Those all require domain knowledge, critical judgment, and the
+# verification habits this course has spent 14 lectures building—exactly what AI doesn't have.
+#
+# **What this means for your career**: RSE skills aren't becoming less valuable because AI can
+# write code faster. They're becoming more valuable, because the bottleneck shifts from "can
+# someone write this code" to "can someone tell whether the code is right"—and that's a skill
+# only you bring. The RSE who knows how to review, test, and verify is more useful with AI tools
+# available, not less.
 #
 # ### Final Thoughts
 #

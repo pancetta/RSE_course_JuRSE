@@ -15,6 +15,8 @@ This lecture teaches you how to document research software effectively and share
 - Making software citable with DOIs (Zenodo)
 - Submitting to Journal of Open Source Software (JOSS)
 - Documentation tools for other programming languages
+- Verifying AI-drafted documentation against actual code behavior, not just what the function
+  name suggests
 
 ## Key Concepts
 - **Documentation hierarchy**: README, docstrings, API docs, tutorials, citation

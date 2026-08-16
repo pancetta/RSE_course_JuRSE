@@ -34,9 +34,9 @@
 #
 # ## Overview
 # This lecture is a foundations-only introduction to AI-assisted coding: what these tools
-# actually do, how to prompt them effectively, the one habit that keeps you safe while using
-# them, and the most common ways they go wrong. It won't make you an expert, and that's on
-# purpose—later lectures pick this
+# actually do, what they're genuinely good at, how to prompt them effectively, the one habit
+# that keeps you safe while using them, and the most common ways they go wrong. It won't make
+# you an expert, and that's on purpose—later lectures pick this
 # back up in context, once you have more RSE fundamentals to apply. Lecture 5 asks whether AI
 # can write your tests for you, Lecture 7 uses AI to help track down a bug, Lecture 10 covers
 # reviewing AI-assisted pull requests, and Lecture 14 covers the legal, ethical, and
@@ -57,6 +57,7 @@
 # ## Learning Objectives
 # - Distinguish autocomplete-style, chat-style, and agentic AI coding tools by what they do to
 #   your review burden, not by brand name
+# - Identify the kinds of RSE tasks where AI assistants genuinely save time
 # - Write specific, well-scoped prompts that make an AI assistant's assumptions visible
 #   instead of silent
 # - Apply the core habit: treat every AI suggestion as a diff you must review before committing
@@ -117,7 +118,7 @@
 #
 # Notice the pattern: as tools move from autocomplete toward agentic, you see less of the
 # process and more of the result. Your review habits need to adjust accordingly—which is
-# exactly what Part 4 is about.
+# exactly what Part 5 is about.
 #
 # ### How These Tools Actually Work
 #
@@ -156,7 +157,63 @@
 # </div>
 
 # %% [markdown]
-# ## Part 3: Getting Good Results - Effective Prompting
+# ## Part 3: What AI Is Actually Good At
+#
+# It would be easy for a lecture like this to turn into a parade of cautionary tales—we've
+# already had one, and there are more ahead. Before that happens, it's worth being direct
+# about the other half of the picture: used well, these tools genuinely save real time on
+# real tasks. That's not a caveat before a warning—it's true on its own terms.
+#
+# **Accelerating boilerplate and repetitive code**: turning a handful of known values into
+# test cases, generating a standard class scaffold, writing the docstring for the tenth
+# similar function today—AI is very good at mechanical pattern completion. This is exactly
+# the kind of task where typing it out by hand adds no value.
+
+
+# %%
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    return celsius * 9 / 5 + 32
+
+
+# Give an AI assistant five known conversions and ask for test cases—turning a short list
+# of known values into code like this is exactly the kind of repetitive pattern completion
+# these tools handle well:
+known_conversions = [
+    (0, 32),
+    (100, 212),
+    (-40, -40),
+    (37, 98.6),
+    (20, 68),
+]
+
+for celsius, expected in known_conversions:
+    actual = celsius_to_fahrenheit(celsius)
+    status = "PASS" if abs(actual - expected) < 0.1 else "FAIL"
+    print(f"{status}: celsius_to_fahrenheit({celsius}) = {actual} (expected {expected})")
+
+# %% [markdown]
+# **Getting oriented fast**: pointed at an unfamiliar library, an unfamiliar error message, or
+# a codebase you didn't write, an AI assistant is often faster than a documentation search for
+# a first orientation—"what does this function do," "why am I getting this error," "what's the
+# idiomatic way to do this in this library." You'll still confirm what comes back, but as a
+# starting point for exploration, it's hard to beat.
+#
+# **Drafting a first pass**: a rough first version of a test suite, a README section, an
+# explanation of what a piece of code does—having something concrete to react to and edit is
+# often faster than starting from a blank page, even when you end up changing most of it.
+#
+# **Exploring alternatives**: "what's another way to do this," "is there a simpler
+# approach"—AI is a reasonable brainstorming partner for surfacing options you might not have
+# considered, precisely because it's drawing on a huge range of code it's seen before.
+#
+# None of this requires blind trust in the output. It just means the honest starting point
+# for this course isn't "AI is dangerous, be careful." It's "AI is a genuinely useful tool for
+# a specific set of tasks—here's how to get the most out of it, and here's what to watch for
+# along the way."
+
+# %% [markdown]
+# ## Part 4: Getting Good Results - Effective Prompting
 #
 # Before we get to reviewing what comes out of an AI assistant, it's worth spending a moment
 # on what goes in. A vague request forces the model to guess at the details you didn't
@@ -240,7 +297,7 @@ print(f"Normal sample: {remove_outliers_specified([21.0, 22.5, 21.8, 22.3, 21.6,
 # %% [markdown]
 # No crash, and the edge case is handled the way we actually decided it should be—because we
 # decided it, in the prompt, instead of leaving it to chance. Specificity doesn't guarantee a
-# correct result (you still need to review it, per Part 4), but it turns silent guesses into
+# correct result (you still need to review it, per Part 5), but it turns silent guesses into
 # visible decisions you can check.
 
 # %% [markdown]
@@ -263,7 +320,7 @@ print(f"Normal sample: {remove_outliers_specified([21.0, 22.5, 21.8, 22.3, 21.6,
 # </div>
 
 # %% [markdown]
-# ## Part 4: The Core Habit - Review Every Suggestion Like a Diff
+# ## Part 5: The Core Habit - Review Every Suggestion Like a Diff
 #
 # You already know how to review a diff—Lecture 2 covered reading `git diff` output and
 # reviewing pull requests. Apply exactly that skill here: **an AI suggestion is a diff someone
@@ -364,7 +421,7 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 # </div>
 
 # %% [markdown]
-# ## Part 5: Common Pitfalls
+# ## Part 6: Common Pitfalls
 #
 # ### Hallucinated APIs and Plausible-Looking Bugs
 #
@@ -400,7 +457,7 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 #   practice
 #
 # Neither of these is exotic—they're exactly the kind of thing a normal code review catches,
-# which is precisely why the diff-review habit from Part 4 covers them too. AI-generated code
+# which is precisely why the diff-review habit from Part 5 covers them too. AI-generated code
 # doesn't get a pass on scrutiny just because a human didn't type it.
 #
 # ### Automation Bias: The Cognitive Risk
@@ -417,7 +474,7 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 # - The more code an agentic tool writes at once, the more there is to under-review in one
 #   pass
 #
-# **The mitigation is the same habit from Part 4**: verify against a case you can check by
+# **The mitigation is the same habit from Part 5**: verify against a case you can check by
 # hand, every time, regardless of how confident the output looks. Confidence in the output is
 # not evidence of correctness.
 
@@ -439,7 +496,7 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 # </div>
 
 # %% [markdown]
-# ## Part 6: Where AI Shows Up for the Rest of This Course
+# ## Part 7: Where AI Shows Up for the Rest of This Course
 #
 # This lecture deliberately stayed narrow: a shared vocabulary and one habit, not a complete
 # guide. The rest of the course picks this back up once you have more to apply it with:
@@ -453,7 +510,7 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 #   privacy, and when self-hosted tools matter for sensitive research data—get the dedicated
 #   treatment they deserve, once you've seen how these tools behave in practice.
 #
-# You don't need to memorize all of this now. Just remember the core habit from Part 4: treat
+# You don't need to memorize all of this now. Just remember the core habit from Part 5: treat
 # every AI suggestion as a diff you must review before committing.
 
 # %% [markdown]
@@ -465,6 +522,9 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 #   ran without errors" is not the same as "it's right"
 # - **Three categories, not brands**: autocomplete-style, chat-style, and agentic tools differ
 #   in how much of the process you see before you review the result
+# - **What AI is good at**: accelerating boilerplate, getting oriented fast, drafting a first
+#   pass, exploring alternatives—genuine time savings on real tasks, not just a lead-in to a
+#   warning
 # - **Effective prompting**: specific prompts that name edge cases and constraints turn silent
 #   assumptions into visible decisions you can check
 # - **The core habit**: treat every AI suggestion as a diff you must review before
@@ -510,11 +570,16 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 # %% [markdown]
 # ### Next Steps
 #
-# You now have a shared vocabulary for AI-assisted coding and one habit to carry through the
-# rest of the course: review every suggestion like a diff. Lecture 4 puts that discipline to
-# work on something concrete—organizing research code into professional Python projects and
-# working with NumPy and Matplotlib—the kind of code you'll be writing, reviewing, and
-# sometimes AI-assisting, from here on.
+# Bringing it together: these tools can genuinely speed up real work—boilerplate, orientation,
+# first drafts, exploring alternatives. What deserves your attention is the specific ways they
+# go wrong: confident-looking mistakes, hallucinated APIs, edge cases silently skipped. And the
+# way to use them responsibly is the habit this lecture keeps returning to: review every
+# suggestion like a diff, checked against a case you can verify by hand. Within that, there's
+# real room to enjoy the speed—go have fun with these tools, and stay safe while you do.
+#
+# Lecture 4 puts that discipline to work on something concrete—organizing research code into
+# professional Python projects and working with NumPy and Matplotlib—the kind of code you'll be
+# writing, reviewing, and sometimes AI-assisting, from here on.
 #
 # **Ready to continue? Move on to Lecture 4: Python Project Structure and Scientific
 # Libraries!**

@@ -46,6 +46,8 @@
 # - Writing and running tests with pytest (covered in Lecture 5)
 # - Basic command-line usage
 # - Scientific computing with NumPy (covered in Lecture 4)
+# - AI-assisted coding basics, including reviewing AI suggestions like a diff (covered in
+#   Lecture 3)
 #
 # This lecture introduces debugging and profiling tools that work with the code you've been writing.
 #
@@ -56,6 +58,8 @@
 # - Profile code to identify performance bottlenecks
 # - Optimize research code based on profiling data
 # - Make informed decisions about when and where to optimize
+# - Distinguish an AI-suggested fix that addresses the root cause from one that just silences
+#   the error
 
 # %% [markdown]
 # ## Part 1: The Art of Debugging
@@ -1554,6 +1558,74 @@ def analyze_nearby_stations_only(stations):
 # - Test against validated outputs
 # - Use simple cases where you can calculate by hand
 # - Compare with other implementations
+
+# %% [markdown]
+# ### AI and Debugging
+#
+# AI assistants are genuinely good at debugging support—recognizing a common error pattern and
+# suggesting a fix is exactly the kind of thing they're fast at, often faster than searching
+# for the error message yourself. What they're not automatically good at is knowing whether
+# that fix addresses the actual problem or just makes the symptom disappear: an AI assistant's
+# job is to make the error go away, and the fastest way to do that isn't always the same as
+# fixing the actual cause. The debugging skill from this lecture—finding the root cause, not
+# just the symptom—is exactly what lets you tell the difference.
+#
+# Consider a function with a classic off-by-one bug:
+
+
+# %%
+def get_reading_at_position(readings, position):
+    """Get the reading at the given position (1-indexed)."""
+    return readings[position]
+
+
+try:
+    print(get_reading_at_position([21.5, 22.0, 21.8], 3))
+except IndexError as e:
+    print(f"Crashed: {e}")
+
+# %% [markdown]
+# Asked to "fix this crash," an AI assistant might reasonably suggest catching the exception:
+
+
+# %%
+def get_reading_at_position_papered_over(readings, position):
+    """Get the reading at the given position (1-indexed)."""
+    try:
+        return readings[position]
+    except IndexError:
+        return None
+
+
+# No more crash...
+print(get_reading_at_position_papered_over([21.5, 22.0, 21.8], 3))
+
+# %% [markdown]
+# ...but the 3rd reading (1-indexed) genuinely exists—it's `21.8`. The fix removed the crash
+# without fixing the bug: the function now silently returns the wrong answer (`None`) for
+# perfectly valid input. That's worse than the crash, which at least told you something was
+# wrong. The root cause is the off-by-one indexing itself:
+
+
+# %%
+def get_reading_at_position_fixed(readings, position):
+    """Get the reading at the given position (1-indexed)."""
+    return readings[position - 1]
+
+
+print(get_reading_at_position_fixed([21.5, 22.0, 21.8], 3))
+
+# %% [markdown]
+# This is exactly tip #5 from above: compare against a case you can verify by hand—the 3rd
+# reading in `[21.5, 22.0, 21.8]` is obviously `21.8`. A fix that makes the error message
+# disappear isn't the same as a fix that makes the code correct, whether a human or an AI
+# assistant wrote it.
+#
+# **How prompting helps (but doesn't replace review)**: asking an AI assistant to explain *why*
+# the crash happens before asking it to fix it—or explicitly requesting "a fix that addresses
+# the root cause, not just the exception"—makes a papered-over fix less likely. It doesn't make
+# it impossible. The verification step, checking the fix against a case you can compute by
+# hand, still has to happen either way.
 
 # %% [markdown]
 # ## Summary

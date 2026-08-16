@@ -13,6 +13,7 @@ This lecture teaches you how to automate testing and ensure code quality through
 - Automating code quality checks
 - Best practices for CI in research software
 - Complete workflow examples for research projects
+- Using AI assistants to draft CI workflows productively, while verifying they run what they claim
 
 ## Key Concepts
 - **Continuous Integration (CI)**: Automated testing on every code change

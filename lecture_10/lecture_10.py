@@ -49,6 +49,8 @@
 # - GitHub/GitLab basics including pull/merge requests
 # - Writing and testing Python code (covered in Lectures 2-5)
 # - Code review concepts from earlier lectures
+# - AI-assisted coding basics, including reviewing AI suggestions like a diff (covered in
+#   Lecture 3)
 #
 # This lecture builds on your Git knowledge and introduces systematic collaboration practices.
 #
@@ -61,6 +63,8 @@
 # - Apply collaboration practices across different version control platforms
 # - Navigate team dynamics and communication challenges
 # - Adapt collaboration practices for different programming languages
+# - Review AI-assisted and agentic pull requests with the same rigor as any other PR, and
+#   apply a clear attribution norm for AI-authored contributions
 
 # %% [markdown]
 # ## Part 1: Why Collaboration Is Hard - A Research Lab Story
@@ -485,6 +489,88 @@
 #         <li><strong>Practice "Yes, and..."</strong>: Next time you see code you'd do
 #         differently, start your comment with "This works, and we could also..." Notice
 #         how the tone changes!</li>
+#     </ul>
+# </div>
+
+# %% [markdown]
+# ### Reviewing AI-Assisted and Agentic Pull Requests
+#
+# Agentic tools are genuinely good at producing a complete, consistent first draft across
+# several files at once—applying the same fix pattern everywhere it's needed, or scaffolding a
+# multi-file feature—faster than typing it out by hand. What they're not automatically good at
+# is knowing when that draft is actually ready for someone else to build on. Everything above
+# about giving and receiving feedback still applies whether a human or an AI assistant wrote
+# the code under review—the review process doesn't get a "trust me, an AI wrote it" exemption,
+# and it doesn't get an extra-suspicious one either. What does change is scale: an agentic tool
+# can open a PR touching several files in one step, the way Lecture 3 discussed. A five-line
+# diff gets a five-line review; a fifty-line, five-file diff needs the same scrutiny you'd give
+# a colleague's PR of that size, not the glance you'd give a one-line autocomplete suggestion.
+#
+# ### A Note on Attribution
+#
+# If an AI assistant wrote or substantially contributed to a commit, say so—many teams use a
+# trailer in the commit message (for example, `Co-Authored-By: <tool name>`) to record it,
+# similar to how you'd credit a human collaborator. This isn't about assigning blame; it's about
+# provenance. A future maintainer (including you, in six months) benefits from knowing which
+# parts of the history came from an assistant, the same way version control already tracks who
+# wrote what and when.
+#
+# ### Practice: Reviewing an Agentic PR
+#
+# Suppose an agentic tool was asked to "add a moving average function to smooth a temperature
+# time series" and opened this PR:
+
+
+# %%
+def moving_average(readings, window):
+    """Compute the moving average of readings using the given window size."""
+    result = []
+    for i in range(len(readings)):
+        window_readings = readings[max(0, i - window) : i]
+        result.append(sum(window_readings) / window)
+    return result
+
+
+# %% [markdown]
+# Applying the review habits from this lecture and Lecture 3—read it like a diff, and verify
+# against a case you can check by hand—let's see what it does with a short series:
+
+# %%
+readings = [10, 20, 30, 40, 50]
+print([round(v, 2) for v in moving_average(readings, window=3)])
+
+# %% [markdown]
+# Only the last two entries are correct 3-point averages: `[10, 20, 30]` → `20.0` and
+# `[20, 30, 40]` → `30.0`, once the window is actually full. The first three are wrong in a way
+# that's easy to miss: at `i=0` there are no prior readings at all, yet the function still
+# divides by `window` (3), silently producing `0.0`. At `i=1`, only one reading is available
+# (`[10]`), but it's still divided by 3, giving `3.33` instead of `10`. At `i=2`, two readings
+# are available (`[10, 20]`), divided by 3 again, giving `10.0` instead of `15.0`. The bug is
+# real, but it's invisible unless you check a case where the window isn't full yet—exactly the
+# kind of boundary a quick skim misses and a hand-calculated check catches.
+#
+# **How prompting helps (but doesn't replace review)**: a prompt that names the edge case up
+# front—"add a moving_average function; for indices before the window is fully populated,
+# average over whatever data is actually available"—is much less likely to produce this exact
+# bug. But "less likely" isn't "guaranteed," and a well-specified prompt for this function might
+# still miss a different edge case neither of us thought to name. The review habit is what
+# catches whichever one shows up.
+
+# %% [markdown]
+# <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
+#     <h4 style="color: #7b1fa2; margin-top: 0;">💡 Try It Yourself</h4>
+#     <p>Practice reviewing AI-assisted contributions:</p>
+#     <ul>
+#         <li><strong>Write the review comment:</strong> Using the constructive feedback
+#         techniques from this lecture, write the PR comment you'd leave on
+#         <code>moving_average</code>—identify the bug and suggest what the function should do
+#         at the boundaries.</li>
+#         <li><strong>Fix it and re-verify:</strong> Rewrite <code>moving_average</code> so it
+#         either skips indices without a full window or averages over however many readings are
+#         actually available—then check it against the same hand-calculated case.</li>
+#         <li><strong>Decide your team's attribution norm:</strong> Would you want AI-assisted
+#         commits marked in your own project's history? Write one sentence for a
+#         CONTRIBUTING.md explaining the policy and why.</li>
 #     </ul>
 # </div>
 

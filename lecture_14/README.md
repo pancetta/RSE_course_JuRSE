@@ -15,6 +15,8 @@ This final half-lecture wraps up our Research Software Engineering journey by re
 - German RSE community and local resources
 - Continuing education opportunities
 - Where to find ongoing support and resources
+- Using AI responsibly: licensing/copyright, data protection, and when self-hosted tools matter
+- How AI reshapes—rather than replaces—the RSE role
 
 ## Key Concepts
 - **Course integration**: How version control, testing, CI/CD, and documentation work together

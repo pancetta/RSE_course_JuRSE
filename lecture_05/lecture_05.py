@@ -46,6 +46,8 @@
 # - Python project structure and modules
 # - Basic use of the command line for running Python scripts
 # - NumPy arrays and basic scientific computing (covered in Lecture 4)
+# - AI-assisted coding basics, including reviewing AI suggestions like a diff (covered in
+#   Lecture 3)
 #
 # This lecture builds on your Python programming skills and introduces testing methodologies.
 #
@@ -57,6 +59,7 @@
 # - Measure test coverage
 # - Apply test-driven development (TDD) principles
 # - Build confidence in research results through comprehensive testing
+# - Critically evaluate whether an AI-generated test actually verifies correct behavior
 
 # %% [markdown]
 # ## Part 1: A Cautionary Tale - The Temperature Conversion Disaster
@@ -1240,6 +1243,61 @@ test_classify_temperature_comprehensive()
 # - **Overall project**: 80%+ coverage
 # - **Don't obsess**: 100% isn't always necessary
 # - **Focus on logic**: Trivial getters/setters less important
+
+# %% [markdown]
+# ### AI and Test Writing
+#
+# AI assistants are genuinely good at test writing—given a function, they'll turn it into a
+# structured `test_*` function in seconds, faster than typing the boilerplate by hand. What
+# they're not automatically good at is choosing an assertion that actually verifies the
+# behavior you care about. The question from Lecture 3 applies here just as much as to
+# production code: **a test you don't understand is a test you can't trust.**
+#
+# The specific risk for tests is subtle: a test can *pass* while checking almost nothing. That
+# looks fine on a coverage report (the code ran, so it counts as "covered"), but a passing test
+# that doesn't actually verify the right answer gives you false confidence—arguably worse than
+# no test at all, since it looks like safety without providing it.
+
+
+# %%
+def broken_converter(celsius):
+    """Convert Celsius to Fahrenheit (deliberately broken for this demo)."""
+    return 98.6  # Always returns the same wrong value, regardless of input!
+
+
+# A weak, AI-generated-style test: checks that something came back, not that it's correct
+def test_weak(convert):
+    result = convert(0)
+    assert result is not None
+    return "PASSED"
+
+
+# A meaningful test: checks against a known, hand-calculated value
+def test_meaningful(convert):
+    result = convert(0)
+    assert result == 32, f"Expected 32, got {result}"
+    return "PASSED"
+
+
+print(f"Weak test against broken_converter: {test_weak(broken_converter)}")
+try:
+    print(f"Meaningful test against broken_converter: {test_meaningful(broken_converter)}")
+except AssertionError as e:
+    print(f"Meaningful test against broken_converter: FAILED - {e}")
+
+# %% [markdown]
+# The weak test passes against a function that's obviously wrong—`assert result is not None`
+# is true for almost anything, including `98.6` every single time. The meaningful test catches
+# the bug immediately, because it checks against a value we can verify by hand (0°C is exactly
+# 32°F). When you review an AI-generated test, ask the same question you'd ask of AI-generated
+# production code: **if this code were completely wrong, would the test actually fail?** If you
+# can't answer yes, it isn't testing what you think it's testing.
+#
+# **How prompting helps (but doesn't replace review)**: asking specifically for what the test
+# should verify—"check that this returns exactly 32 for 0°C and exactly 212 for 100°C"—is far
+# more likely to produce a meaningful assertion than "write a test for this function." That's
+# the specificity habit from Lecture 3. It shifts the odds; it doesn't guarantee the result. You
+# still have to read the test before you trust it.
 
 # %% [markdown]
 # ## Part 8: Defensive Programming with Assertions

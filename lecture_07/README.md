@@ -32,6 +32,8 @@ Learn how to:
 - Complete debugging and profiling workflow
 - Common research software bugs
 - Debugging strategies and tips
+- Distinguishing an AI-suggested fix that addresses the root cause from one that just silences
+  the error
 
 ## Duration
 
