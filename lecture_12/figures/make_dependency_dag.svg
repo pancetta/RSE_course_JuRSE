@@ -8,8 +8,7 @@
   <text x="400" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">The Make Dependency Graph</text>
 
   <line x1="12" y1="150" x2="48" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arrow12)"/>
-  <text x="28" y="138" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8.5" fill="#64748b">download</text>
-  <text x="28" y="147" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8.5" fill="#64748b">_data.py</text>
+  <text x="125" y="112" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" fill="#64748b">download_data.py</text>
 
   <!-- N1 -->
   <rect x="50" y="120" width="150" height="60" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>

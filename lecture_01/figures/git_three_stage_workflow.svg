@@ -33,13 +33,15 @@
   <rect x="539" y="158" width="172" height="26" rx="5" fill="#ffffff" stroke="#16a34a" stroke-width="1"/>
   <text x="625" y="175" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="10.5" fill="#14532d">analysis.py (committed)</text>
 
-  <!-- Arrow 1: add -->
+  <!-- Arrow 1: add; label sits above the boxes since the 55px gap is too narrow for "git add" at any reasonable size -->
   <line x1="230" y1="145" x2="280" y2="145" stroke="#475569" stroke-width="2.5" marker-end="url(#arrowSolid)"/>
-  <text x="255" y="128" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="12" font-weight="700" fill="#334155">git add</text>
+  <text x="255" y="74" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="12" font-weight="700" fill="#334155">git add</text>
+  <line x1="255" y1="80" x2="255" y2="140" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,3"/>
 
-  <!-- Arrow 2: commit -->
+  <!-- Arrow 2: commit; same reasoning -->
   <line x1="475" y1="145" x2="525" y2="145" stroke="#475569" stroke-width="2.5" marker-end="url(#arrowSolid)"/>
-  <text x="500" y="128" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="12" font-weight="700" fill="#334155">git commit</text>
+  <text x="500" y="74" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="12" font-weight="700" fill="#334155">git commit</text>
+  <line x1="500" y1="80" x2="500" y2="140" stroke="#94a3b8" stroke-width="1" stroke-dasharray="2,3"/>
 
   <!-- Dashed return arrow: checkout/restore -->
   <path d="M 625 200 C 625 250, 135 250, 135 205" fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="6,5" marker-end="url(#arrowDashed)"/>
