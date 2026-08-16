@@ -1,44 +1,40 @@
-<svg viewBox="0 0 780 480" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The fourteen lectures grouped into four stacks: a Foundation Stack of version control, Python skills, testing and CI/CD; a Quality Stack of debugging, documentation and code review; a Research Stack of research data, workflows and reproducibility; and a Modern Stack of AI tools on top.">
-  <rect x="1" y="1" width="778" height="478" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+<svg viewBox="0 0 780 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The fourteen lectures grouped into three stacks: a Foundation Stack of version control, Python skills, testing and CI/CD; a Quality Stack of debugging, documentation, code review, and architecture and design; and a Research Stack of research data, workflows and reproducibility.">
+  <rect x="1" y="1" width="778" height="398" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
   <text x="390" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">How the 14 Lectures Fit Together</text>
 
-  <!-- Modern Stack -->
-  <rect x="40" y="100" width="700" height="80" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
-  <text x="54" y="122" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#9a3412">Modern Stack</text>
-  <rect x="54" y="142" width="220" height="26" rx="13" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
-  <text x="164" y="159" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#9a3412">L13 · AI Tools</text>
-
   <!-- Research Stack -->
-  <rect x="40" y="180" width="700" height="80" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
-  <text x="54" y="202" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#14532d">Research Stack</text>
-  <rect x="54" y="222" width="158" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="133" y="239" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#14532d">L11 · Research Data</text>
-  <rect x="222" y="222" width="134" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="289" y="239" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#14532d">L12 · Workflows</text>
-  <rect x="366" y="222" width="166" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
-  <text x="449" y="239" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#14532d">L9 · Reproducibility</text>
+  <rect x="40" y="90" width="700" height="80" rx="10" fill="#f0fdf4" stroke="#86efac" stroke-width="1.5"/>
+  <text x="54" y="112" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#14532d">Research Stack</text>
+  <rect x="54" y="132" width="158" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="133" y="149" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#14532d">L11 · Research Data</text>
+  <rect x="222" y="132" width="134" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="289" y="149" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#14532d">L12 · Workflows</text>
+  <rect x="366" y="132" width="166" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="449" y="149" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#14532d">L9 · Reproducibility</text>
 
   <!-- Quality Stack -->
-  <rect x="40" y="260" width="700" height="80" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5"/>
-  <text x="54" y="282" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4c1d95">Quality Stack</text>
-  <rect x="54" y="302" width="150" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="129" y="319" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L7 · Debugging</text>
-  <rect x="224" y="302" width="180" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="314" y="319" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L8 · Documentation</text>
-  <rect x="424" y="302" width="180" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
-  <text x="514" y="319" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L10 · Code Review</text>
+  <rect x="40" y="170" width="700" height="80" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5"/>
+  <text x="54" y="192" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#4c1d95">Quality Stack</text>
+  <rect x="54" y="212" width="120" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="114" y="229" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L7 · Debugging</text>
+  <rect x="184" y="212" width="150" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="259" y="229" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L8 · Documentation</text>
+  <rect x="344" y="212" width="148" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="418" y="229" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L10 · Code Review</text>
+  <rect x="502" y="212" width="148" height="26" rx="13" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="576" y="229" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#4c1d95">L13 · Architecture</text>
 
   <!-- Foundation Stack -->
-  <rect x="40" y="340" width="700" height="80" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
-  <text x="54" y="362" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">Foundation Stack</text>
-  <rect x="54" y="382" width="168" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-  <text x="138" y="399" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L1–2 · Version Control</text>
-  <rect x="232" y="382" width="158" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-  <text x="311" y="399" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L2, 4 · Python Skills</text>
-  <rect x="400" y="382" width="96" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-  <text x="448" y="399" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L5 · Testing</text>
-  <rect x="506" y="382" width="96" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
-  <text x="554" y="399" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L6 · CI/CD</text>
+  <rect x="40" y="250" width="700" height="80" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="54" y="272" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">Foundation Stack</text>
+  <rect x="54" y="292" width="168" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="138" y="309" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L1–2 · Version Control</text>
+  <rect x="232" y="292" width="158" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="311" y="309" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L2, 4 · Python Skills</text>
+  <rect x="400" y="292" width="96" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="448" y="309" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L5 · Testing</text>
+  <rect x="506" y="292" width="96" height="26" rx="13" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="554" y="309" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e3a8a">L6 · CI/CD</text>
 
-  <text x="390" y="450" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#334155">14 lectures → one integrated Research Software Engineer skill set</text>
+  <text x="390" y="368" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#334155">14 lectures → one integrated Research Software Engineer skill set</text>
 </svg>

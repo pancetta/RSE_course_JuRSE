@@ -19,9 +19,9 @@
   <text x="118" y="185" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#2563eb">repeat for</text>
   <text x="118" y="198" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#2563eb">next bug</text>
 
-  <!-- feedback: hypothesis wrong -->
-  <path d="M 300 545 C 300 575, 340 575, 400 495" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow7warn)"/>
-  <text x="300" y="590" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#9a3412">hypothesis wrong — try another</text>
+  <!-- feedback: hypothesis wrong (Test it, box 4, bottom-center 177,545 -> Hypothesize, box 3, bottom-center 423,545) -->
+  <path d="M 177 545 C 177 590, 423 590, 423 545" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#arrow7warn)"/>
+  <text x="300" y="604" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#9a3412">hypothesis wrong — try another</text>
 
   <!-- N1 top: Reproduce -->
   <rect x="215" y="95" width="170" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>

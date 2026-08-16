@@ -8,12 +8,13 @@
   <text x="380" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">Without CI vs. With CI</text>
 
   <!-- start box -->
-  <rect x="260" y="52" width="240" height="46" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
-  <text x="380" y="80" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#334155">Developer writes buggy code, commits &amp; pushes</text>
+  <rect x="245" y="50" width="270" height="58" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="380" y="73" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#334155">Developer writes buggy code,</text>
+  <text x="380" y="91" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#334155">commits &amp; pushes</text>
 
   <!-- diagonals -->
-  <line x1="320" y1="98" x2="180" y2="140" stroke="#94a3b8" stroke-width="2"/>
-  <line x1="440" y1="98" x2="580" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="320" y1="108" x2="180" y2="140" stroke="#94a3b8" stroke-width="2"/>
+  <line x1="440" y1="108" x2="580" y2="140" stroke="#94a3b8" stroke-width="2"/>
 
   <text x="180" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#991b1b">Without CI</text>
   <text x="580" y="122" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#166534">With CI</text>

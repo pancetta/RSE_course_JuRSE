@@ -111,6 +111,8 @@
 # would have prevented the mess, then the smells that would have flagged it in progress, then the
 # decision about what to do once it's already there, and finally the review practice that stops
 # it from happening again.
+#
+# <img src="figures/stationwatch_what_went_wrong.svg" alt="StationWatch before and after: two nearly-identical 80-line functions reaching into differently-structured readings, versus one shared calculate_statistics function" width="700"/>
 
 # %% [markdown]
 # ## Part 2: Design Principles for Maintainable Code
@@ -327,6 +329,8 @@ print("Each function has ONE clear job! ✓")
 # ├── visualization.py     # Concern: Creating plots
 # └── export.py            # Concern: Saving results
 # ```
+#
+# <img src="figures/separation_of_concerns_pipeline.svg" alt="Pipeline diagram of five separated concerns: data access, validation, analysis, presentation, and export" width="700"/>
 #
 # **Example in practice:** exactly the separation StationWatch was missing—if data access,
 # validation, and analysis had been kept apart, adding soil-moisture sensors would have meant
