@@ -1232,6 +1232,13 @@ print("✅ Could NOT publish with broken code")
 # 6. Developer fixes bug before it causes harm
 #
 # **Result:** Crisis averted! ✅
+#
+# The flowchart below lines the two paths up side by side, starting from the exact same commit:
+#
+# <img src="figures/without_ci_vs_with_ci.svg" alt="Branching flowchart: the same buggy commit without CI leads to a retracted paper, while with CI the bug is caught and fixed before it spreads" width="700"/>
+#
+# *Same bug, same commit — the only thing that changes between the two paths is whether a
+# test suite ran automatically before the code could spread anywhere else.*
 
 # %% [markdown]
 # ## Part 10: Setting Up CI for Your Research Project

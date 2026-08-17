@@ -1,0 +1,95 @@
+<svg viewBox="0 0 780 580" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Comparison of a fast-forward merge, where the main branch pointer simply slides forward with no new commit, and a three-way merge, where main and a feature branch each gained commits and Git creates a new merge commit with two parents.">
+  <defs>
+    <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+    <marker id="arrowDash2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+  </defs>
+
+  <rect x="1" y="1" width="778" height="578" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="34" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#0f172a">Fast-Forward vs. Three-Way Merge</text>
+
+  <!-- ============ PANEL A: FAST-FORWARD ============ -->
+  <rect x="24" y="56" width="732" height="200" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="44" y="80" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">Fast-Forward Merge — main hasn't moved since branching</text>
+
+  <!-- commit line -->
+  <line x1="140" y1="150" x2="460" y2="150" stroke="#94a3b8" stroke-width="3"/>
+  <circle cx="140" cy="150" r="18" fill="#475569"/>
+  <text x="140" y="155" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C1</text>
+  <circle cx="300" cy="150" r="18" fill="#ea580c"/>
+  <text x="300" y="155" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C2</text>
+  <circle cx="460" cy="150" r="18" fill="#ea580c"/>
+  <text x="460" y="155" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C3</text>
+
+  <!-- add-statistics tag above C3 -->
+  <rect x="410" y="95" width="120" height="26" rx="13" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="470" y="112" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="700" fill="#9a3412">add-statistics</text>
+  <line x1="470" y1="121" x2="460" y2="132" stroke="#ea580c" stroke-width="1.5"/>
+
+  <!-- main before tag under C1 -->
+  <rect x="85" y="192" width="110" height="40" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="1.5"/>
+  <text x="140" y="208" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="700" fill="#334155">main</text>
+  <text x="140" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#64748b">(before merge)</text>
+  <line x1="140" y1="192" x2="140" y2="168" stroke="#64748b" stroke-width="1.5"/>
+
+  <!-- main after tag under C3 -->
+  <rect x="405" y="192" width="110" height="40" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="460" y="208" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="700" fill="#14532d">main</text>
+  <text x="460" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#166534">(after: fast-forward)</text>
+  <line x1="460" y1="192" x2="460" y2="168" stroke="#16a34a" stroke-width="1.5"/>
+
+  <!-- dashed movement arrow -->
+  <path d="M 195 213 L 400 213" fill="none" stroke="#16a34a" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrowDash2)"/>
+  <text x="298" y="244" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#166534">git merge add-statistics → pointer just slides forward, no new commit created</text>
+
+  <!-- ============ PANEL B: THREE-WAY ============ -->
+  <rect x="24" y="272" width="732" height="296" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="44" y="296" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#0f172a">Three-Way Merge — both branches gained commits</text>
+
+  <!-- diagonal lines -->
+  <line x1="150" y1="430" x2="290" y2="380" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="290" y1="380" x2="420" y2="380" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="150" y1="430" x2="290" y2="480" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="420" y1="380" x2="570" y2="430" stroke="#94a3b8" stroke-width="3"/>
+  <line x1="290" y1="480" x2="570" y2="430" stroke="#94a3b8" stroke-width="3"/>
+
+  <!-- shared ancestor -->
+  <circle cx="150" cy="430" r="18" fill="#475569"/>
+  <text x="150" y="435" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C1</text>
+
+  <!-- feature branch -->
+  <circle cx="290" cy="380" r="18" fill="#ea580c"/>
+  <text x="290" y="385" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C2</text>
+  <circle cx="420" cy="380" r="18" fill="#ea580c"/>
+  <text x="420" y="385" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C3</text>
+
+  <!-- main branch -->
+  <circle cx="290" cy="480" r="18" fill="#2563eb"/>
+  <text x="290" y="485" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff">C2'</text>
+
+  <!-- merge commit -->
+  <circle cx="570" cy="430" r="20" fill="#16a34a"/>
+  <text x="570" y="436" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#ffffff">C4</text>
+
+  <!-- add-statistics tag -->
+  <rect x="365" y="325" width="120" height="26" rx="13" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="425" y="342" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="700" fill="#9a3412">add-statistics</text>
+  <line x1="420" y1="351" x2="420" y2="362" stroke="#ea580c" stroke-width="1.5"/>
+
+  <!-- main before tag -->
+  <rect x="235" y="510" width="110" height="40" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="290" y="526" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="700" fill="#1e3a8a">main</text>
+  <text x="290" y="540" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#1e40af">(before merge)</text>
+  <line x1="290" y1="510" x2="290" y2="498" stroke="#2563eb" stroke-width="1.5"/>
+
+  <!-- main after tag -->
+  <rect x="605" y="418" width="130" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="670" y="435" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="11" font-weight="700" fill="#14532d">main (after)</text>
+  <line x1="605" y1="431" x2="592" y2="430" stroke="#16a34a" stroke-width="1.5"/>
+
+  <text x="570" y="470" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#166534">merge commit — two parents</text>
+  <text x="390" y="562" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#475569">git merge add-statistics → Git opens an editor and creates commit C4, preserving both histories</text>
+</svg>
