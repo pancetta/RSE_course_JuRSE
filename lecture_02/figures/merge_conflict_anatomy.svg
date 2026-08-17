@@ -12,11 +12,11 @@
 
   <text x="64" y="84" font-family="SFMono-Regular, Consolas, monospace" font-size="13" font-weight="700" fill="#93c5fd">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD (your changes)</text>
   <text x="64" y="108" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#e2e8f0">def calculate_temperature(kelvin):</text>
-  <text x="64" y="132" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">    """Convert Kelvin to Celsius."""</text>
-  <text x="64" y="156" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#e2e8f0">    return kelvin - 273.15</text>
+  <text x="96" y="132" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">"""Convert Kelvin to Celsius."""</text>
+  <text x="96" y="156" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#e2e8f0">return kelvin - 273.15</text>
   <text x="64" y="180" font-family="SFMono-Regular, Consolas, monospace" font-size="13" font-weight="700" fill="#cbd5e1">=======</text>
   <text x="64" y="204" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#e2e8f0">def calculate_temperature_celsius(kelvin):</text>
-  <text x="64" y="228" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#e2e8f0">    return kelvin - 273.15</text>
+  <text x="96" y="228" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#e2e8f0">return kelvin - 273.15</text>
   <text x="64" y="252" font-family="SFMono-Regular, Consolas, monospace" font-size="13" font-weight="700" fill="#fdba74">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/main (their changes)</text>
 
   <!-- callouts -->
@@ -39,8 +39,8 @@
   <rect x="40" y="332" width="700" height="112" rx="10" fill="#0f172a"/>
   <rect x="56" y="342" width="500" height="92" rx="4" fill="#166534" opacity="0.55"/>
   <text x="64" y="362" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">def calculate_temperature_celsius(kelvin):</text>
-  <text x="64" y="386" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">    """Convert temperature from Kelvin to Celsius."""</text>
-  <text x="64" y="410" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">    return kelvin - 273.15</text>
+  <text x="96" y="386" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">"""Convert temperature from Kelvin to Celsius."""</text>
+  <text x="96" y="410" font-family="SFMono-Regular, Consolas, monospace" font-size="13" fill="#bbf7d0">return kelvin - 273.15</text>
 
   <text x="390" y="466" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#334155">git add the resolved file, then git commit — Git knows the conflict is resolved once no markers remain.</text>
 </svg>
