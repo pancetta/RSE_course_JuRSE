@@ -222,6 +222,8 @@
 # version, sometimes the other, and sometimes you'll combine both. After editing, save the file,
 # stage it with `git add`, and complete the merge with `git commit`.
 #
+# <img src="figures/merge_conflict_anatomy.svg" alt="Annotated merge conflict markers: the section from HEAD to the divider is your branch, the section from the divider to the end marker is the incoming branch, and the resolution keeps both intents before removing the markers" width="700"/>
+#
 # **Common mistake**: Forgetting to remove the conflict markers (`<<<<<<<`, etc.) from your code.
 # If you leave them in, your code won't run! Always check that the final version is valid code
 # before committing.

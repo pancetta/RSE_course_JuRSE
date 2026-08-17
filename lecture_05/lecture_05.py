@@ -656,6 +656,11 @@ print(test_file_content)
 # 3. **Refactor**: Improve the code while keeping tests passing
 # 4. **Repeat**: Add next test
 #
+# <img src="figures/tdd_cycle.svg" alt="The TDD red-green-refactor cycle: write a failing test, write minimal code to pass it, refactor while keeping tests green, then add the next test" width="500"/>
+#
+# *Skipping straight to green—writing the code before you've watched the test fail—means you
+# never confirmed the test can actually catch a bug. Let it fail first.*
+#
 # ### TDD Example: Temperature Statistics
 #
 # Let's use TDD to build a function that calculates temperature statistics:

@@ -1,0 +1,39 @@
+<svg viewBox="0 0 700 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The reproducibility hierarchy as a five-step ladder, from weakest to strongest: install these packages, requirements.txt or environment.yml, locked dependencies, containers, and containers archived with a DOI.">
+  <defs>
+    <marker id="rlArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="698" height="418" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="350" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">The Reproducibility Hierarchy</text>
+
+  <!-- step 1 lowest, widest -->
+  <rect x="60" y="330" width="580" height="52" rx="6" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="80" y="352" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#7f1d1d">1. "Install these packages"</text>
+  <text x="80" y="370" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#991b1b">a paragraph in the README — will probably break</text>
+
+  <!-- step 2 -->
+  <rect x="90" y="270" width="520" height="52" rx="6" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="110" y="292" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#9a3412">2. requirements.txt / environment.yml</text>
+  <text x="110" y="310" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#9a3412">better, but doesn't capture system libraries</text>
+
+  <!-- step 3 -->
+  <rect x="120" y="210" width="460" height="52" rx="6" fill="#fef9c3" stroke="#ca8a04" stroke-width="2"/>
+  <text x="140" y="232" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#713f12">3. Locked dependencies (conda-lock)</text>
+  <text x="140" y="250" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#854d0e">exact versions pinned — good for the Python layer only</text>
+
+  <!-- step 4 -->
+  <rect x="150" y="150" width="400" height="52" rx="6" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="170" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">4. Containers</text>
+  <text x="170" y="190" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e40af">captures everything — OS, system libs, code, data paths</text>
+
+  <!-- step 5 top, narrowest -->
+  <rect x="180" y="90" width="340" height="52" rx="6" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="200" y="112" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#14532d">5. Containers + DOI (Zenodo)</text>
+  <text x="200" y="130" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#166534">perfect — a permanent, citable, archived environment</text>
+
+  <line x1="30" y1="380" x2="30" y2="100" stroke="#334155" stroke-width="2" marker-end="url(#rlArrow)"/>
+  <text x="20" y="240" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#334155" transform="rotate(-90 20 240)">stronger guarantee</text>
+
+  <text x="350" y="404" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#334155">Each rung fixes what the one below can't — but every rung is better than nothing. Start where you are.</text>
+</svg>

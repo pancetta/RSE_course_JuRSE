@@ -778,6 +778,11 @@
 # only you bring. The RSE who knows how to review, test, and verify is more useful with AI tools
 # available, not less.
 #
+# <img src="figures/ai_bottleneck_shift.svg" alt="AI generates code fast, but the RSE still has to verify it: does the normalization match the dataset, does the test verify real behavior, is the root cause fixed, does the docstring match behavior at the boundaries" width="700"/>
+#
+# *Every one of those four checks came from an earlier lecture in this course — the verification
+# habit isn't a bonus skill on top of RSE practice, it *is* RSE practice.*
+#
 # ### Final Thoughts
 #
 # **You've learned a lot**. From command-line basics to AI-assisted development,

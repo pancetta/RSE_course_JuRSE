@@ -838,6 +838,11 @@ def calculate_temperature_anomaly_clean(temperatures_f, baseline_f):
 # gradually replacing pieces until nothing of the old remains. Named after the fig tree that
 # grows around and eventually replaces its host tree.
 #
+# <img src="figures/strangler_fig.svg" alt="Three-panel evolution: new code starts as one small piece alongside the old code, grows while the old code shrinks, and eventually fully replaces it" width="700"/>
+#
+# *The key property: at every single point in this progression, the system is deployable.
+# A big-bang rewrite has no equivalent of the middle panel — it's all-or-nothing.*
+#
 # #### Profiling-Driven Refactoring: A Case Study
 #
 # Let's make this concrete with a different piece of the StationWatch pipeline, further down the

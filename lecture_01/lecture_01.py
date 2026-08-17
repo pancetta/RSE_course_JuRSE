@@ -421,6 +421,12 @@
 # cycle keeps everyone synchronized. These two repositories are separate: unless you sync them as described
 # they can evolve independently.
 #
+# <img src="figures/local_vs_remote.svg" alt="Your computer and a collaborator's computer each keep their own local repository, both pushing to and pulling from a single shared GitHub repository" width="700"/>
+#
+# *A commit only exists on your machine until you push it. GitHub is the shared point every
+# collaborator's local repository syncs against — it doesn't automatically know about anyone's
+# local changes.*
+#
 # ```bash
 # # Clone an existing repository
 # git clone https://github.com/username/repository.git

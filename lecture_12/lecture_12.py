@@ -130,6 +130,11 @@
 # %% [markdown]
 # ## Part 2: Automation Approaches - From Scripts to Workflows
 #
+# Four tools, each solving problems the last one couldn't — here's the whole arc before we
+# walk through it step by step:
+#
+# <img src="figures/automation_maturity.svg" alt="Progression from a plain shell script through a smarter shell script, Make, to Snakemake, with a checklist of which of Elena's five problems each stage solves" width="760"/>
+#
 # ### Approach 1: The Shell Script
 #
 # Elena's first attempt was a simple bash script:

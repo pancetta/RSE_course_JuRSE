@@ -259,6 +259,11 @@ print(basic_workflow)
 #
 # Let's break down each part of the workflow to understand what it does and why:
 #
+# <img src="figures/actions_hierarchy.svg" alt="GitHub Actions concept hierarchy: a workflow contains a job, which contains four sequential steps for checking out, setting up Python, installing dependencies, and running tests" width="700"/>
+#
+# *A workflow can have multiple jobs running in parallel; this one has just the single `test`
+# job shown above. Steps inside a job always run in order, top to bottom.*
+#
 # **Triggers (`on`):**
 # - `push`: Run when code is pushed to main or develop branches—catches bugs in merged code
 # - `pull_request`: Run when PR is opened/updated targeting main—prevents bugs from being merged
