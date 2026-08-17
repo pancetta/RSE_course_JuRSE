@@ -395,6 +395,13 @@ print(f"Matches hand calculation: {abs(fixed_result - expected) < 0.01}")
 # instead—the kind of edge case a careful review catches, exactly like the error-handling
 # habits from Lecture 2.
 #
+# That's the whole habit, generalized into a loop you can run on every suggestion:
+#
+# <img src="figures/diff_review_loop.svg" alt="The diff-review habit loop: treat an AI suggestion as a diff, check it against a hand-computable case, then fix or accept before the next suggestion" width="700"/>
+#
+# *The loop doesn't get you out of thinking—it gets you a repeatable procedure for catching
+# the cases where the AI produced something that merely looks right.*
+#
 # ### Review Scales With What You Can't See
 #
 # The example above was a single function—easy to check by hand in a minute. Now imagine an

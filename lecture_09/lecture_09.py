@@ -1237,6 +1237,11 @@
 # 4. **Containers** - Best: captures everything
 # 5. **Containers + DOI** - Perfect: permanent archived environment
 #
+# <img src="figures/reproducibility_ladder.svg" alt="Reproducibility hierarchy as a five-step ladder from a plain install instruction at the bottom to containers archived with a DOI at the top" width="600"/>
+#
+# *You don't have to start at the top. Moving up even one rung — say, from a loose
+# requirements.txt to a locked one — is real progress, not all-or-nothing.*
+#
 # ### Next Steps
 #
 # **Start small:**

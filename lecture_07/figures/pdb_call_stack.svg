@@ -1,0 +1,50 @@
+<svg viewBox="0 0 700 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="pdb navigation on the call stack: step (s) descends into a called function, next (n) stays at the same level and moves to the next line, and return (r) pops back up to the caller.">
+  <defs>
+    <marker id="pdbArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="698" height="398" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="350" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">Where pdb Commands Move You</text>
+
+  <!-- frame 3: inner call (top) -->
+  <rect x="150" y="76" width="260" height="66" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="280" y="100" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#475569">sum(...) — inner call</text>
+  <text x="280" y="118" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#64748b">only exists after stepping in</text>
+
+  <!-- frame 2: current function (middle) -->
+  <rect x="150" y="180" width="260" height="80" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="280" y="204" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">analyze_temperature_trends()</text>
+  <text x="280" y="222" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9.5" fill="#1e40af">→ moving_average = sum(...) / n</text>
+  <rect x="164" y="230" width="80" height="18" rx="4" fill="#2563eb"/>
+  <text x="204" y="243" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9" font-weight="700" fill="#ffffff">(Pdb)</text>
+
+  <!-- frame 1: main script (bottom) -->
+  <rect x="150" y="300" width="260" height="70" rx="8" fill="#f1f5f9" stroke="#64748b" stroke-width="2"/>
+  <text x="280" y="325" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#334155">main script</text>
+  <text x="280" y="342" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9.5" fill="#334155">analyze_temperature_trends(temps)</text>
+
+  <!-- s: step; vertical arrow from frame 2's top edge up to frame 3's bottom edge -->
+  <line x1="230" y1="180" x2="230" y2="142" stroke="#16a34a" stroke-width="2.4" marker-end="url(#pdbArrow)"/>
+  <rect x="200" y="150" width="60" height="22" rx="11" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="230" y="165" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="10.5" font-weight="700" fill="#14532d">s</text>
+  <text x="430" y="90" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#166534">step</text>
+  <text x="430" y="104" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#166534">go into the call</text>
+
+  <!-- r: return; vertical arrow from frame 2's bottom edge down to frame 1's top edge -->
+  <line x1="330" y1="260" x2="330" y2="298" stroke="#ea580c" stroke-width="2.4" marker-end="url(#pdbArrow)"/>
+  <rect x="300" y="268" width="60" height="22" rx="11" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="330" y="283" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="10.5" font-weight="700" fill="#9a3412">r</text>
+  <text x="430" y="310" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#9a3412">return</text>
+  <text x="430" y="324" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#9a3412">pop to the caller</text>
+
+  <!-- n: next; small loop that stays on frame 2, re-entering its own right edge -->
+  <path d="M 410 205 C 460 205, 460 245, 410 245" fill="none" stroke="#2563eb" stroke-width="2.4" marker-end="url(#pdbArrow)"/>
+  <rect x="416" y="214" width="60" height="22" rx="11" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="446" y="229" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="10.5" font-weight="700" fill="#1e3a8a">n</text>
+  <text x="490" y="205" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#1e40af">next</text>
+  <text x="490" y="219" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e40af">same frame,</text>
+  <text x="490" y="233" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e40af">next line</text>
+
+  <text x="350" y="388" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#334155">Use n to skip over a call you trust; use s only when you need to see inside it.</text>
+</svg>

@@ -333,6 +333,11 @@ print(json.dumps(fair_data["metadata"], indent=2)[:500] + "...")
 # └─ /experiment_002
 #    └─ ...
 # ```
+#
+# <img src="figures/hdf5_tree.svg" alt="HDF5 file structure drawn as a folder tree: climate_data.h5 contains a metadata group and experiment groups, each holding temperature and pressure datasets plus its own metadata" width="600"/>
+#
+# *Groups nest like directories; datasets are the actual arrays, and you can read a slice of
+# one — say, just `/experiment_001/temperature[0, :, :]` — without loading the other 364 days.*
 
 # %% [markdown]
 # ### Practical Example: Climate Data with HDF5

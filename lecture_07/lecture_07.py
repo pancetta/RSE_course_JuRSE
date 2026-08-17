@@ -286,6 +286,14 @@ print(f"  Fraction above baseline: {result['positive_fraction']:.1%}")
 # - `q` (quit) - Exit the debugger
 # - `h` (help) - Show help message
 # - `h command` - Help for specific command
+#
+# The three navigation commands people mix up most—`n`, `s`, and `r`—all do something different
+# to the call stack:
+#
+# <img src="figures/pdb_call_stack.svg" alt="pdb navigation on the call stack: step descends into a called function, next stays at the same level, and return pops back up to the caller" width="600"/>
+#
+# *`n` treats a function call as a black box and moves past it in one step. `s` follows the
+# call inside — only use it when the bug might be in there.*
 
 # %% [markdown]
 # ### Debugging Example: Finding a Subtle Bug

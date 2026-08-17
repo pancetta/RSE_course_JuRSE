@@ -346,6 +346,11 @@ print("__init__.py patterns demonstrated above")
 # Without virtual environments, you're stuck—you can only have one version installed globally. With
 # virtual environments, each project gets its own isolated set of packages.
 #
+# <img src="figures/venv_isolation.svg" alt="Before and after: a global Python install can only satisfy one project's numpy version, while giving each project its own virtual environment lets both versions coexist" width="700"/>
+#
+# *The conflict isn't a Python problem to work around—it's what happens by default without
+# isolation. A venv per project makes "both can't be installed at once" simply not apply.*
+#
 # #### Creating Virtual Environments
 #
 # **Option 1: venv (built-in, Python 3.3+)**

@@ -1,0 +1,56 @@
+<svg viewBox="0 0 780 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GitHub Actions concept hierarchy: a workflow triggered on push or pull request runs on a runner, contains one job, which contains four sequential steps -- checkout, set up Python, install dependencies, and run tests.">
+  <rect x="1" y="1" width="778" height="378" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">Workflow → Job → Steps</text>
+
+  <!-- Workflow (outermost) -->
+  <rect x="30" y="54" width="720" height="304" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+  <text x="46" y="78" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">Workflow: Test Suite</text>
+  <text x="46" y="94" font-family="SFMono-Regular, Consolas, monospace" font-size="9.5" fill="#1e40af">Trigger: on push / pull_request → main, develop</text>
+  <text x="734" y="78" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">Runner: ubuntu-latest</text>
+
+  <!-- Job -->
+  <rect x="54" y="110" width="672" height="228" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+  <text x="70" y="132" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#4c1d95">Job: test — "Run Tests"</text>
+
+  <!-- Steps -->
+  <rect x="72" y="150" width="150" height="170" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="147" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#4c1d95">Step 1</text>
+  <text x="147" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#4c1d95">Check out repo</text>
+  <rect x="86" y="200" width="122" height="22" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="147" y="215" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" fill="#4c1d95">action</text>
+  <text x="147" y="240" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8" fill="#4c1d95">actions/</text>
+  <text x="147" y="252" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8" fill="#4c1d95">checkout@v4</text>
+
+  <rect x="234" y="150" width="150" height="170" rx="8" fill="#ffffff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="309" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#4c1d95">Step 2</text>
+  <text x="309" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#4c1d95">Set up Python 3.11</text>
+  <rect x="248" y="200" width="122" height="22" rx="10" fill="#ede9fe" stroke="#7c3aed" stroke-width="1"/>
+  <text x="309" y="215" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" fill="#4c1d95">action</text>
+  <text x="309" y="240" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8" fill="#4c1d95">actions/</text>
+  <text x="309" y="252" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8" fill="#4c1d95">setup-python@v5</text>
+
+  <rect x="396" y="150" width="150" height="170" rx="8" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="471" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#92400e">Step 3</text>
+  <text x="471" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#92400e">Install deps</text>
+  <rect x="410" y="200" width="122" height="22" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="471" y="215" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" fill="#92400e">run: shell</text>
+  <text x="471" y="240" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8" fill="#92400e">pip install pytest</text>
+  <text x="471" y="252" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="8" fill="#92400e">pytest-cov -r req.txt</text>
+
+  <rect x="558" y="150" width="150" height="170" rx="8" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="633" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#92400e">Step 4</text>
+  <text x="633" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#92400e">Run tests</text>
+  <rect x="572" y="200" width="122" height="22" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="1"/>
+  <text x="633" y="215" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="8.5" font-weight="700" fill="#92400e">run: shell</text>
+  <text x="633" y="240" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="7.5" fill="#92400e">pytest --cov=src</text>
+  <text x="633" y="252" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="7.5" fill="#92400e">tests/</text>
+
+  <line x1="222" y1="235" x2="234" y2="235" stroke="#7c3aed" stroke-width="2"/>
+  <line x1="384" y1="235" x2="396" y2="235" stroke="#7c3aed" stroke-width="2"/>
+  <line x1="546" y1="235" x2="558" y2="235" stroke="#7c3aed" stroke-width="2"/>
+
+  <text x="147" y="298" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9" font-style="italic" fill="#7c3aed">reusable, pre-built</text>
+  <text x="471" y="298" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9" font-style="italic" fill="#92400e">plain shell commands</text>
+
+  <text x="390" y="352" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#334155">Think script → functions → commands: a workflow is the script, the job is a function, each step is one command.</text>
+</svg>

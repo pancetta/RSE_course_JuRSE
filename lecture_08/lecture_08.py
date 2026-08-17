@@ -1456,6 +1456,11 @@ print(f"Output: {get_valid_readings(readings)}")
 # - Archive on Zenodo for DOI/citation
 # - Consider JOSS for academic publication
 #
+# <img src="figures/docs_publish_cite.svg" alt="Toolchain from docstrings through Sphinx, Read the Docs, PyPI, and Zenodo, to an optional JOSS submission" width="760"/>
+#
+# *Each arrow here is a section of this lecture — Parts 4-5 write the docstrings, Part 6
+# builds and hosts the site, Part 8 publishes the package, Part 9 archives it for a DOI.*
+#
 # **Impact of good documentation:**
 # - **More citations** - People can use and cite your work
 # - **More collaborators** - Others can contribute

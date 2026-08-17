@@ -1,0 +1,64 @@
+<svg viewBox="0 0 780 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The diff-review habit loop: an AI suggestion is treated as an unreviewed diff, checked against a hand-computable case, and either fixed or accepted, then the loop repeats for the next suggestion.">
+  <defs>
+    <marker id="drlArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2563eb"/>
+    </marker>
+    <marker id="drlArrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="778" height="458" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">The Diff-Review Habit Loop</text>
+
+  <!-- 1 -->
+  <rect x="40" y="66" width="170" height="76" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="125" y="92" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">1. AI suggests code</text>
+  <text x="125" y="110" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e40af">e.g. average_ignoring</text>
+  <text x="125" y="124" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9.5" fill="#1e40af">_missing(values)</text>
+
+  <line x1="210" y1="104" x2="256" y2="104" stroke="#2563eb" stroke-width="2.2" marker-end="url(#drlArrow)"/>
+
+  <!-- 2 -->
+  <rect x="258" y="66" width="170" height="76" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="343" y="92" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">2. Treat as a diff</text>
+  <text x="343" y="110" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e40af">a colleague wrote and</text>
+  <text x="343" y="124" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#1e40af">you must review</text>
+
+  <line x1="428" y1="104" x2="474" y2="104" stroke="#2563eb" stroke-width="2.2" marker-end="url(#drlArrow)"/>
+
+  <!-- 3 -->
+  <rect x="476" y="66" width="264" height="76" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="608" y="92" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#1e3a8a">3. Check by hand</text>
+  <text x="608" y="110" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="10" fill="#1e40af">[10, 20, None, 40] → (10+20+40)/3</text>
+  <text x="608" y="126" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="10" fill="#1e40af">expected = 23.33</text>
+
+  <line x1="608" y1="142" x2="608" y2="180" stroke="#2563eb" stroke-width="2.2" marker-end="url(#drlArrow)"/>
+
+  <!-- 4: decision -->
+  <polygon points="608,182 700,232 608,282 516,232" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="608" y="226" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#9a3412">4. Match?</text>
+  <text x="608" y="242" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#9a3412">function vs. hand calc</text>
+
+  <!-- mismatch -> fix -->
+  <line x1="516" y1="232" x2="330" y2="232" stroke="#dc2626" stroke-width="2.2" marker-end="url(#drlArrowRed)"/>
+  <text x="423" y="222" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#991b1b">no match</text>
+
+  <rect x="140" y="196" width="190" height="72" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+  <text x="235" y="220" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#7f1d1d">Bug found — fix it</text>
+  <text x="235" y="236" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#991b1b">divisor counted the None</text>
+  <text x="235" y="250" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#991b1b">entry — use len(present)</text>
+
+  <!-- match -> accept: elbow down from the diamond's tip, then left into the Accept box's right edge -->
+  <path d="M 700 232 L 700 334 L 334 334" fill="none" stroke="#16a34a" stroke-width="2.2" marker-end="url(#drlArrow)"/>
+  <text x="608" y="318" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" font-weight="700" fill="#166534">match — accept</text>
+
+  <rect x="140" y="304" width="190" height="60" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+  <text x="235" y="328" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" font-weight="700" fill="#14532d">Accept the suggestion</text>
+  <text x="235" y="344" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#166534">but stay alert for automation bias</text>
+
+  <!-- loop back to 1: elbowed so the final approach is horizontal, entering box 1's left edge perpendicular -->
+  <path d="M 140 250 L 25 250 L 25 104 L 36 104" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="5,4" marker-end="url(#drlArrow)"/>
+  <text x="14" y="180" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#334155" transform="rotate(-90 14 180)">next suggestion</text>
+
+  <text x="390" y="410" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#334155">An AI suggestion is a diff someone else wrote — you're the reviewer, whether you asked to be or not.</text>
+</svg>

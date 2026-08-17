@@ -1,0 +1,40 @@
+<svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The TDD red-green-refactor cycle: write a failing test, write the minimal code to pass it, refactor while keeping tests green, then repeat for the next requirement.">
+  <defs>
+    <marker id="tddArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="598" height="418" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="300" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">Red — Green — Refactor</text>
+
+  <!-- RED top -->
+  <rect x="215" y="66" width="170" height="82" rx="10" fill="#fee2e2" stroke="#dc2626" stroke-width="2.5"/>
+  <text x="300" y="96" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#7f1d1d">RED</text>
+  <text x="300" y="115" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#991b1b">write a test that fails</text>
+  <text x="300" y="132" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9.5" fill="#991b1b">test_temperature_mean</text>
+
+  <!-- GREEN bottom-right -->
+  <rect x="380" y="270" width="170" height="82" rx="10" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="465" y="300" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#14532d">GREEN</text>
+  <text x="465" y="319" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#166534">minimal code to pass</text>
+  <text x="465" y="336" text-anchor="middle" font-family="SFMono-Regular, Consolas, monospace" font-size="9.5" fill="#166534">temperature_statistics()</text>
+
+  <!-- REFACTOR bottom-left -->
+  <rect x="50" y="270" width="170" height="82" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="135" y="300" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#1e3a8a">REFACTOR</text>
+  <text x="135" y="319" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">clean up the code</text>
+  <text x="135" y="336" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#1e40af">tests stay green</text>
+
+  <!-- arrows around the triangle: each ends exactly at its target box's edge, not inside it -->
+  <path d="M 350 148 C 400 180, 440 230, 465 268" fill="none" stroke="#475569" stroke-width="2.2" marker-end="url(#tddArrow)"/>
+  <path d="M 380 320 C 320 330, 245 330, 220 320" fill="none" stroke="#475569" stroke-width="2.2" marker-end="url(#tddArrow)"/>
+  <path d="M 160 270 C 170 220, 200 170, 260 148" fill="none" stroke="#475569" stroke-width="2.2" marker-end="url(#tddArrow)"/>
+
+  <text x="500" y="195" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#334155">test fails,</text>
+  <text x="500" y="207" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#334155">write code</text>
+  <text x="300" y="360" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#334155">tests still pass</text>
+  <text x="95" y="195" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#334155">add the next</text>
+  <text x="95" y="207" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" font-weight="700" fill="#334155">test case</text>
+
+  <text x="300" y="398" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11.5" fill="#334155">Never skip straight to green — a test you haven't watched fail might be testing nothing at all.</text>
+</svg>

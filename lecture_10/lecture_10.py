@@ -706,6 +706,10 @@ print([round(v, 2) for v in moving_average(readings, window=3)])
 # >>>>>>> origin/main (their changes)
 # ```
 #
+# Zooming out, here's how the two branches actually diverged and collided:
+#
+# <img src="figures/merge_conflict_branches.svg" alt="Branch graph showing your branch and a colleague's branch both editing the same function; the colleague's branch merges first, and your merge attempt hits a conflict that's resolved by combining both changes" width="700"/>
+#
 # **Step 4: Resolve the conflict**
 #
 # You need to decide how to combine the changes. Options:
