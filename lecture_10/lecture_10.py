@@ -210,6 +210,14 @@
 # - Merge the PR (squash, rebase, or merge commit - team decision)
 # - Delete the feature branch
 #
+# The diagram below ties all seven steps together, including the loop back to step 3
+# whenever a reviewer requests changes:
+#
+# <img src="figures/pull_request_lifecycle.svg" alt="The pull request lifecycle from syncing main through opening the PR, a review feedback loop, and merging after approval" width="700"/>
+#
+# *Steps 5-6 can repeat several times before a PR is ready—that's normal, not a sign
+# something went wrong. The PR only moves to step 7 once both a human and CI agree.*
+#
 # ### Platform Comparison: GitHub vs GitLab
 #
 # **GitHub Pull Requests:**

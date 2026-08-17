@@ -1,0 +1,55 @@
+<svg viewBox="0 0 780 430" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The FAIR principles: Findable, Accessible, Interoperable, and Reusable, each shown as a column with its defining criteria.">
+  <rect x="1" y="1" width="778" height="428" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">The FAIR Principles</text>
+
+  <!-- F -->
+  <rect x="38" y="60" width="165" height="300" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <circle cx="120" cy="118" r="30" fill="#dbeafe" stroke="#2563eb" stroke-width="2.5"/>
+  <text x="120" y="129" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#1e3a8a">F</text>
+  <text x="120" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Findable</text>
+  <circle cx="56" cy="197" r="2.3" fill="#2563eb"/>
+  <text x="66" y="201" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">DOI or persistent ID</text>
+  <circle cx="56" cy="219" r="2.3" fill="#2563eb"/>
+  <text x="66" y="223" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Rich metadata</text>
+  <circle cx="56" cy="241" r="2.3" fill="#2563eb"/>
+  <text x="66" y="245" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Indexed &amp; searchable</text>
+
+  <!-- A -->
+  <rect x="218" y="60" width="165" height="300" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <circle cx="300" cy="118" r="30" fill="#ffedd5" stroke="#ea580c" stroke-width="2.5"/>
+  <text x="300" y="129" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#9a3412">A</text>
+  <text x="300" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Accessible</text>
+  <circle cx="236" cy="197" r="2.3" fill="#ea580c"/>
+  <text x="246" y="201" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Standard access method</text>
+  <circle cx="236" cy="219" r="2.3" fill="#ea580c"/>
+  <text x="246" y="223" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Metadata stays open</text>
+  <circle cx="236" cy="241" r="2.3" fill="#ea580c"/>
+  <text x="246" y="245" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Clear access rules</text>
+
+  <!-- I -->
+  <rect x="398" y="60" width="165" height="300" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <circle cx="480" cy="118" r="30" fill="#ede9fe" stroke="#7c3aed" stroke-width="2.5"/>
+  <text x="480" y="129" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#4c1d95">I</text>
+  <text x="480" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Interoperable</text>
+  <circle cx="416" cy="197" r="2.3" fill="#7c3aed"/>
+  <text x="426" y="201" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Shared vocabularies</text>
+  <circle cx="416" cy="219" r="2.3" fill="#7c3aed"/>
+  <text x="426" y="223" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Links to related data</text>
+  <circle cx="416" cy="241" r="2.3" fill="#7c3aed"/>
+  <text x="426" y="245" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Community standards</text>
+
+  <!-- R -->
+  <rect x="578" y="60" width="165" height="300" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.5"/>
+  <circle cx="660" cy="118" r="30" fill="#dcfce7" stroke="#16a34a" stroke-width="2.5"/>
+  <text x="660" y="129" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="26" font-weight="700" fill="#14532d">R</text>
+  <text x="660" y="172" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Reusable</text>
+  <circle cx="596" cy="197" r="2.3" fill="#16a34a"/>
+  <text x="606" y="201" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Documented attributes</text>
+  <circle cx="596" cy="219" r="2.3" fill="#16a34a"/>
+  <text x="606" y="223" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Clear usage license</text>
+  <circle cx="596" cy="241" r="2.3" fill="#16a34a"/>
+  <text x="606" y="245" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#334155">Detailed provenance</text>
+
+  <text x="390" y="382" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#64748b">so that data are findable, accessible, interoperable, and reusable — by both humans and machines</text>
+  <text x="390" y="410" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" font-style="italic" fill="#94a3b8">Redrawn, inspired by Wilkinson et al. (2016), "The FAIR Guiding Principles", Scientific Data 3:160018</text>
+</svg>
