@@ -15,7 +15,7 @@ jobs:
     
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     
     - name: Check links with Lychee
       uses: lycheeverse/lychee-action@v1
@@ -36,7 +36,7 @@ jobs:
     
     - name: Upload link check report
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: link-check-report
         path: ./lychee-report.md
