@@ -126,7 +126,7 @@ jobs:
       shell: bash -el {0}
     
     - name: Upload PDF artifact
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v7
       with:
         name: course-pdf
         path: exports/book.pdf
