@@ -1,0 +1,49 @@
+<svg viewBox="0 0 780 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Fork, clone, branch, pull request workflow across two lanes: GitHub on top, your computer on the bottom. Fork and pull request happen entirely on GitHub; clone and push cross between the two lanes; branching and committing happen locally.">
+  <defs>
+    <marker id="fcbprArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect x="1" y="1" width="778" height="458" rx="16" fill="#ffffff" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="390" y="30" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" font-weight="700" fill="#0f172a">Fork → Clone → Branch → Pull Request</text>
+
+  <!-- lanes -->
+  <rect x="30" y="56" width="720" height="170" rx="10" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
+  <text x="46" y="76" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#1e3a8a">GitHub</text>
+
+  <rect x="30" y="270" width="720" height="160" rx="10" fill="#fff7ed" stroke="#fdba74" stroke-width="1.5"/>
+  <text x="46" y="290" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#9a3412">Your Computer</text>
+
+  <!-- Original repo / Your fork -->
+  <rect x="70" y="140" width="190" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="165" y="168" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1e3a8a">Original repo</text>
+  <text x="165" y="186" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#1e40af">no direct write access here</text>
+
+  <rect x="520" y="140" width="190" height="70" rx="10" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="615" y="168" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#1e3a8a">Your fork</text>
+  <text x="615" y="186" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="9.5" fill="#1e40af">full control, your own copy</text>
+
+  <!-- 1. Fork -->
+  <line x1="260" y1="175" x2="516" y2="175" stroke="#475569" stroke-width="2.4" marker-end="url(#fcbprArrow)"/>
+  <text x="390" y="164" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#334155">1. Fork</text>
+
+  <!-- 6. Pull Request (arcs above both boxes) -->
+  <path d="M 620 140 Q 390 50 160 140" fill="none" stroke="#16a34a" stroke-width="2.4" marker-end="url(#fcbprArrow)"/>
+  <text x="390" y="72" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#166534">6. Pull Request</text>
+
+  <!-- Your local clone -->
+  <rect x="520" y="320" width="190" height="100" rx="10" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+  <text x="615" y="345" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12.5" font-weight="700" fill="#9a3412">Your local clone</text>
+  <text x="615" y="367" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#9a3412">3. new branch</text>
+  <text x="615" y="387" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#9a3412">4. edit + commit</text>
+
+  <!-- 2. Clone -->
+  <line x1="570" y1="212" x2="570" y2="318" stroke="#475569" stroke-width="2.4" marker-end="url(#fcbprArrow)"/>
+  <text x="555" y="265" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#334155">2. Clone</text>
+
+  <!-- 5. Push -->
+  <line x1="660" y1="318" x2="660" y2="212" stroke="#ea580c" stroke-width="2.4" marker-end="url(#fcbprArrow)"/>
+  <text x="675" y="265" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#9a3412">5. Push</text>
+
+  <text x="390" y="450" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#334155">Everything routes through your fork — you never need direct write access to the original repository.</text>
+</svg>

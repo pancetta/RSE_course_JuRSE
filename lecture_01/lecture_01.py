@@ -469,6 +469,14 @@
 # system lets the original authors review your changes before accepting them, ensuring code quality
 # and preventing malicious changes. This same workflow is used by major open-source projects with
 # thousands of contributors.
+#
+# The diagram below lays the six steps out across the two places they actually happen — GitHub
+# and your own computer:
+#
+# <img src="figures/fork_clone_branch_pr.svg" alt="Fork, clone, branch, pull request workflow across two lanes: GitHub on top, your computer on the bottom" width="700"/>
+#
+# *Steps 2 and 5 are the only ones that cross lanes — everything else happens entirely on
+# GitHub or entirely on your machine.*
 
 # %% [markdown]
 # <div style="background-color: #f3e5f5; border-left: 5px solid #9c27b0; padding: 15px; margin: 10px 0; border-radius: 5px;">
